@@ -1,5 +1,7 @@
 package se.jbee.io.classfile;
 
+import static se.jbee.io.classfile.Archive.archive;
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
@@ -21,11 +23,11 @@ public class Scanner {
 	public void scan( String file )
 			throws IOException {
 		if ( isZipFile( file ) ) {
-			scan( new ZipFile( file ), ".*/ist-.*" );
+			scan( new ZipFile( file ) );
 		}
 	}
 
-	public void scan( ZipFile zip, String innerArchivesRegex )
+	public void scan( ZipFile zip )
 			throws IOException {
 		Enumeration<? extends ZipEntry> entries = zip.entries();
 		while ( entries.hasMoreElements() ) {
@@ -35,7 +37,7 @@ public class Scanner {
 				if ( isClassFile( name ) ) {
 					Classfile.readClassfile( new ClassInputStream( zip.getInputStream( entry ) ),
 							out );
-				} else if ( isZipFile( name ) && name.matches( innerArchivesRegex ) ) {
+				} else if ( isZipFile( name ) && out.visit( archive( name ) ) ) {
 					ZipInputStream in = new ZipInputStream( zip.getInputStream( entry ) );
 					entry = in.getNextEntry();
 					while ( entry != null ) {
