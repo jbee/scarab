@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class ConstantPool implements References {
+public final class ConstantPool implements Usages {
 
 	private static final ConstantTag[] TAGS = ConstantTag.values();
 

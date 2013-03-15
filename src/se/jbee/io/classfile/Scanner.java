@@ -11,9 +11,9 @@ public class Scanner {
 
 	private static final Pattern ZIPS = Pattern.compile( "\\.(?:zip|jar|war|ear)$" );
 
-	private final ClassProcessor out;
+	private final ClassVisitor out;
 
-	private Scanner( ClassProcessor out ) {
+	private Scanner( ClassVisitor out ) {
 		super();
 		this.out = out;
 	}
@@ -61,6 +61,6 @@ public class Scanner {
 
 	public static void main( String[] args )
 			throws IOException {
-		new Scanner( new PrintClassProcessor( System.out ) ).scan( args[1] );
+		new Scanner( new ClassProcessorInterpreter( new PrintClassProcessor( System.out ) ) ).scan( args[1] );
 	}
 }

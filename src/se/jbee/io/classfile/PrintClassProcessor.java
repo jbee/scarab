@@ -15,18 +15,13 @@ public class PrintClassProcessor
 	}
 
 	@Override
-	public boolean process( Type type ) {
-		return true;
-	}
-
-	@Override
 	public void processClass( Type type, TypeRef extendsClass, TypeRef[] implementsInterfaces,
-			References references ) {
+			Usages references ) {
 		process( type, extendsClass, implementsInterfaces, references );
 	}
 
 	private void process( Type type, TypeRef extendsClass, TypeRef[] implementsInterfaces,
-			References references ) {
+			Usages references ) {
 		out.print( nr++ );
 		out.print( "\t" );
 		out.print( type );
@@ -72,17 +67,17 @@ public class PrintClassProcessor
 	}
 
 	@Override
-	public void processEnum( Type type, TypeRef[] implementsInterfaces, References references ) {
+	public void processEnum( Type type, TypeRef[] implementsInterfaces, Usages references ) {
 		process( type, TypeRef.NONE, implementsInterfaces, references );
 	}
 
 	@Override
-	public void processInterface( Type type, TypeRef[] extendsInterfaces, References references ) {
+	public void processInterface( Type type, TypeRef[] extendsInterfaces, Usages references ) {
 		process( type, TypeRef.NONE, extendsInterfaces, references );
 	}
 
 	@Override
-	public void processAnnotation( Type type, References references ) {
+	public void processAnnotation( Type type, Usages references ) {
 		process( type, TypeRef.NONE, new TypeRef[0], references );
 	}
 }
