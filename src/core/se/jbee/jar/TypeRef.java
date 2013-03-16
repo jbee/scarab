@@ -99,6 +99,13 @@ public final class TypeRef {
 		this.name = name;
 	}
 
+	public Package pkg() {
+		int idx = name.lastIndexOf( '/' );
+		return idx < 0
+			? Package.DEFAULT
+			: Package.pkg( name.substring( 0, idx ) );
+	}
+
 	public String canonicalName() {
 		return name.replace( '/', '.' );
 	}
@@ -108,11 +115,16 @@ public final class TypeRef {
 	}
 
 	@Override
-	public boolean equals( Object obj ) {
-		return obj instanceof TypeRef && isEqual( (TypeRef) obj );
+	public int hashCode() {
+		return name.hashCode();
 	}
 
-	public boolean isEqual( TypeRef other ) {
+	@Override
+	public boolean equals( Object obj ) {
+		return obj instanceof TypeRef && equalTo( (TypeRef) obj );
+	}
+
+	public boolean equalTo( TypeRef other ) {
 		return name == other.name;
 	}
 
