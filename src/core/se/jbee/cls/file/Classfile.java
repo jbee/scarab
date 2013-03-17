@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.jbee.cls.ref.Class;
+import se.jbee.cls.ref.ClassSignature;
 import se.jbee.cls.ref.Modifiers;
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.ref.Class;
 import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.TypeFilter;
 
@@ -14,11 +14,11 @@ public final class Classfile {
 
 	private static final int MAGIC_NUMBER = 0xcafebabe;
 
-	private static final Type[] PRIMITIVES = new Type[26];
+	private static final Class[] PRIMITIVES = new Class[26];
 
 	static {
 		for ( TypeCode c : TypeCode.values() ) {
-			PRIMITIVES[c.name().charAt( 0 ) - 'A'] = Type.type( c.name, 0 );
+			PRIMITIVES[c.name().charAt( 0 ) - 'A'] = Class.type( c.name, 0 );
 		}
 	}
 
@@ -41,39 +41,39 @@ public final class Classfile {
 		ConstantPool cp = ConstantPool.read( in );
 
 		Modifiers access = Modifiers.modifiers( in.uint16bit() );
-		Type type = type( cp.name0( in.uint16bit() ) );
-		Type superclass = type( cp.name0( in.uint16bit() ) );
-		Type[] interfaces = readInterfaces( in, cp, in.uint16bit() );
-		Class cls = Class.cls( access, type, superclass, interfaces );
+		Class type = type( cp.name0( in.uint16bit() ) );
+		Class superclass = type( cp.name0( in.uint16bit() ) );
+		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
+		ClassSignature cls = ClassSignature.classSignature( access, type, superclass, interfaces );
 		if ( filter.process( cls ) ) {
 			out.process( cls, cp );
 			//int fieldCount = stream.readUnsignedShort();
 		}
 	}
 
-	private static Type[] readInterfaces( ClassInputStream stream, ConstantPool cp,
+	private static Class[] readInterfaces( ClassInputStream stream, ConstantPool cp,
 			int interfaceCount )
 			throws IOException {
-		Type[] superinterfaces = new Type[interfaceCount];
+		Class[] superinterfaces = new Class[interfaceCount];
 		for ( int i = 0; i < interfaceCount; i++ ) {
 			superinterfaces[i] = type( cp.name0( stream.uint16bit() ) );
 		}
 		return superinterfaces;
 	}
 
-	public static Type type( String name ) {
+	public static Class type( String name ) {
 		if ( name == null || name.isEmpty() ) {
-			return Type.NONE;
+			return Class.NONE;
 		}
 		if ( !Character.isLowerCase( name.charAt( 0 ) ) && name.endsWith( ";" ) ) {
 			return types( name )[0];
 		}
-		return Type.type( name );
+		return Class.cls( name );
 	}
 
-	public static Type[] types( String descriptor ) {
+	public static Class[] types( String descriptor ) {
 		int index = 0;
-		List<Type> names = new ArrayList<Type>();
+		List<Class> names = new ArrayList<Class>();
 		char[] dc = descriptor.toCharArray();
 		int arrayDimentions = 0;
 		while ( index < dc.length ) {
@@ -81,11 +81,11 @@ public final class Classfile {
 			if ( c == '[' ) {
 				arrayDimentions++;
 			} else {
-				Type ref = null;
+				Class ref = null;
 				if ( c == 'L' ) {
 					int end = descriptor.indexOf( ';', index );
 					String name = descriptor.substring( index, end );
-					ref = Type.type( name, arrayDimentions );
+					ref = Class.type( name, arrayDimentions );
 					index = end + 1;
 				} else {
 					ref = PRIMITIVES[c - 'A'];
@@ -94,7 +94,7 @@ public final class Classfile {
 				arrayDimentions = 0;
 			}
 		}
-		return names.toArray( new Type[names.size()] );
+		return names.toArray( new Class[names.size()] );
 	}
 
 	private static enum TypeCode {

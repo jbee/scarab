@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
 import se.jbee.cls.ref.Field;
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.ref.Class;
 
 public class FieldNode
 		implements Node<Field> {
@@ -9,7 +9,7 @@ public class FieldNode
 	public final Field field;
 	public final ClassNode declaringClass;
 	public final ClassNode type;
-	public final Edges<Type, ClassNode> accessedBy = new Edges<Type, ClassNode>();
+	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
 
 	FieldNode( ClassGraph graph, Field field ) {
 		super();

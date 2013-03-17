@@ -1,13 +1,13 @@
 package se.jbee.cls.sca;
 
-import se.jbee.cls.ref.Class;
+import se.jbee.cls.ref.ClassSignature;
 
 public interface TypeFilter {
 
 	static final TypeFilter ALL = new TypeFilter() {
 
 		@Override
-		public boolean process( Class type ) {
+		public boolean process( ClassSignature type ) {
 			return true;
 		}
 
@@ -20,5 +20,5 @@ public interface TypeFilter {
 	//TODO extract to a separate interface so both can be combined better 
 	boolean process( Archive archive );
 
-	boolean process( Class type );
+	boolean process( ClassSignature type );
 }

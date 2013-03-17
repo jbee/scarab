@@ -73,7 +73,7 @@ public final class Package {
 		return name == DEFAULT.name;
 	}
 
-	public Type packageType( String simpleName ) {
-		return Type.type( name + "/" + simpleName );
+	public Class packageType( String simpleName ) {
+		return Class.cls( name + "/" + simpleName );
 	}
 }

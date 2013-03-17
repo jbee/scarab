@@ -22,7 +22,7 @@ public interface Usages {
 	Items<Field> fields();
 
 	/**
-	 * @return types of the accessed fields and/or called methods.
+	 * @return classes of the accessed fields and/or called methods.
 	 */
-	Items<Type> types();
+	Items<Class> classes();
 }

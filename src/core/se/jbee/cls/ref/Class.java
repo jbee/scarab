@@ -2,26 +2,54 @@ package se.jbee.cls.ref;
 
 public final class Class {
 
-	public static Class cls( Modifiers modifiers, Type type, Type superclass, Type[] interfaces ) {
-		return new Class( modifiers, type, superclass, interfaces );
+	public static final Class OBJECT = cls( "java/lang/Object" );
+
+	public static final Class NONE = new Class( 0, "" );
+
+	public static Class cls( String name ) {
+		return type( name, 0 );
 	}
 
-	public final Modifiers modifiers;
-	public final Type type;
-	public final Type superclass;
-	public final Type[] interfaces;
+	public static Class type( String name, int arrayDimentions ) {
+		return name == null || name.isEmpty()
+			? Class.NONE
+			: new Class( arrayDimentions, name );
+	}
 
-	private Class( Modifiers modifiers, Type type, Type superclass, Type[] interfaces ) {
+	public final int arrayDimensions;
+	/**
+	 * The type name as used within the JVM. Example:
+	 * 
+	 * <pre>
+	 * java / lang / Object
+	 * </pre>
+	 */
+	public final String name;
+
+	private Class( int arrayDimentions, String name ) {
 		super();
-		this.modifiers = modifiers;
-		this.type = type;
-		this.superclass = superclass;
-		this.interfaces = interfaces;
+		this.arrayDimensions = arrayDimentions;
+		this.name = name.intern();
+	}
+
+	public Package pkg() {
+		int idx = name.lastIndexOf( '/' );
+		return idx < 0
+			? Package.DEFAULT
+			: Package.pkg( name.substring( 0, idx ) );
+	}
+
+	public String canonicalName() {
+		return name.replace( '/', '.' );
+	}
+
+	public String simpleName() {
+		return name.substring( name.lastIndexOf( '/' ) + 1 );
 	}
 
 	@Override
 	public int hashCode() {
-		return type.hashCode();
+		return name.hashCode();
 	}
 
 	@Override
@@ -30,11 +58,33 @@ public final class Class {
 	}
 
 	public boolean equalTo( Class other ) {
-		return type.equalTo( other.type );
+		return name == other.name;
+	}
+
+	public boolean isNone() {
+		return name == NONE.name;
+	}
+
+	public boolean isArray() {
+		return arrayDimensions > 0;
+	}
+
+	public boolean isAnonymous() {
+		return name.lastIndexOf( '$' ) > 0;
+	}
+
+	public Class elementClass() {
+		return isArray()
+			? new Class( 0, name )
+			: this;
 	}
 
 	@Override
 	public String toString() {
-		return modifiers + " " + type;
+		String res = canonicalName();
+		for ( int i = 0; i < arrayDimensions; i++ ) {
+			res += "[]";
+		}
+		return res;
 	}
 }

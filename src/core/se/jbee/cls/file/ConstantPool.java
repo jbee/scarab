@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 import se.jbee.cls.Items;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Usages;
 
 public final class ConstantPool
@@ -142,7 +142,7 @@ public final class ConstantPool
 		return utf8[index1( index )];
 	}
 
-	public Type type( int index ) {
+	public Class type( int index ) {
 		if ( tags[index] != ConstantTag.CLASS ) {
 			throw new NoSuchElementException( "" );
 		}
@@ -191,19 +191,19 @@ public final class ConstantPool
 	}
 
 	@Override
-	public Items<Type> types() {
+	public Items<Class> classes() {
 		return new TypeIterator( this );
 	}
 
 	private static final class TypeIterator
-			extends ConstantPoolIterator<Type> {
+			extends ConstantPoolIterator<Class> {
 
 		public TypeIterator( ConstantPool cp ) {
 			super( cp, ConstantTag.CLASS );
 		}
 
 		@Override
-		Type reference( ConstantPool cp, int index ) {
+		Class reference( ConstantPool cp, int index ) {
 			return cp.type( index );
 		}
 	}

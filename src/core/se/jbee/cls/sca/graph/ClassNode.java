@@ -1,46 +1,44 @@
 package se.jbee.cls.sca.graph;
 
 import se.jbee.cls.ref.Class;
+import se.jbee.cls.ref.ClassSignature;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
-import se.jbee.cls.ref.Type;
 
 public final class ClassNode
-		implements Node<Type> {
+		implements Node<Class> {
 
 	private final ClassGraph graph;
-	public final Type type;
-	private Class cls;
+	public final Class cls;
 	private ClassNode superclass;
 	//TODO add parameter refs
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
-	public final Edges<Type, ClassNode> subclasses = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> interfaces = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> implementations = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> references = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> referencedBy = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> callsTypes = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> calledBy = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> accessesTypes = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> accessedBy = new Edges<Type, ClassNode>();
+	public final Edges<Class, ClassNode> subclasses = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> interfaces = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> implementations = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> references = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> referencedBy = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> callsTypes = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> calledBy = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> accessesTypes = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
 
-	ClassNode( ClassGraph graph, Type type ) {
+	ClassNode( ClassGraph graph, Class type ) {
 		super();
 		this.graph = graph;
-		this.type = type;
+		this.cls = type;
 		graph.pkg( type.pkg() ).types.add( this );
 	}
 
-	void is( Class cls ) {
-		if ( !cls.type.equalTo( type ) ) {
+	void has( ClassSignature signature ) {
+		if ( !signature.cls.equalTo( cls ) ) {
 			throw new IllegalArgumentException();
 		}
-		this.cls = cls;
-		ClassNode sc = graph.cls( cls.superclass );
+		ClassNode sc = graph.cls( signature.superclass );
 		this.superclass = sc;
 		sc.subclasses.add( this );
-		for ( Type t : cls.interfaces ) {
+		for ( Class t : signature.interfaces ) {
 			ClassNode other = graph.cls( t );
 			other.implementations.add( this );
 			interfaces.add( other );
@@ -77,28 +75,28 @@ public final class ClassNode
 		f.accessedBy.add( this );
 	}
 
-	public void references( Type... types ) {
-		for ( Type t : types ) {
+	public void references( Class... types ) {
+		for ( Class t : types ) {
 			references( t );
 		}
 	}
 
-	public void references( Type type ) {
+	public void references( Class type ) {
 		ClassNode other = graph.cls( type );
 		other.referencedBy.add( this );
 		references.add( other );
-		packageReferences( this.type, type );
+		packageReferences( this.cls, type );
 	}
 
-	private void packageReferences( Type type, Type other ) {
+	private void packageReferences( Class type, Class other ) {
 		PackageNode pkg = graph.pkg( type.pkg() );
 		PackageNode otherPkg = graph.pkg( other.pkg() );
 		pkg.references( otherPkg );
 	}
 
 	@Override
-	public Type id() {
-		return type;
+	public Class id() {
+		return cls;
 	}
 
 	@Override
@@ -107,16 +105,16 @@ public final class ClassNode
 	}
 
 	public boolean equalTo( ClassNode other ) {
-		return type.equalTo( other.type );
+		return cls.equalTo( other.cls );
 	}
 
 	@Override
 	public int hashCode() {
-		return type.hashCode();
+		return cls.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return type.toString();
+		return cls.toString();
 	}
 }
