@@ -12,14 +12,17 @@ public final class ClassNode
 	public final Type type;
 	private Class cls;
 	private ClassNode superclass;
+	//TODO add parameter refs
+	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
+	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
 	public final Edges<Type, ClassNode> subclasses = new Edges<Type, ClassNode>();
 	public final Edges<Type, ClassNode> interfaces = new Edges<Type, ClassNode>();
 	public final Edges<Type, ClassNode> implementations = new Edges<Type, ClassNode>();
 	public final Edges<Type, ClassNode> references = new Edges<Type, ClassNode>();
 	public final Edges<Type, ClassNode> referencedBy = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> calls = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> callsTypes = new Edges<Type, ClassNode>();
 	public final Edges<Type, ClassNode> calledBy = new Edges<Type, ClassNode>();
-	public final Edges<Type, ClassNode> accesses = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> accessesTypes = new Edges<Type, ClassNode>();
 	public final Edges<Type, ClassNode> accessedBy = new Edges<Type, ClassNode>();
 
 	ClassNode( ClassGraph graph, Type type ) {
@@ -49,20 +52,29 @@ public final class ClassNode
 	}
 
 	public void calls( Method method ) {
+		// type level
 		ClassNode other = graph.cls( method.declaringClass );
 		other.calledBy.add( this );
-		calls.add( other );
+		callsTypes.add( other );
 		references( method.declaringClass );
 		references( method.returnType );
 		references( method.parameterTypes );
+		// method level
+		MethodNode m = graph.method( method );
+		m.calledBy.add( this );
+		calls.add( m );
 	}
 
 	public void accesses( Field field ) {
+		// type level
 		references( field.type );
 		references( field.declaringClass );
 		ClassNode other = graph.cls( field.declaringClass );
 		other.accessedBy.add( this );
-		accesses.add( other );
+		accessesTypes.add( other );
+		// field level
+		FieldNode f = graph.field( field );
+		f.accessedBy.add( this );
 	}
 
 	public void references( Type... types ) {

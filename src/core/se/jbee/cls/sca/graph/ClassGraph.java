@@ -1,7 +1,5 @@
 package se.jbee.cls.sca.graph;
 
-import java.util.IdentityHashMap;
-
 import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
@@ -13,8 +11,10 @@ import se.jbee.cls.sca.JarProcessor;
 public final class ClassGraph
 		implements JarProcessor {
 
-	private final IdentityHashMap<String, ClassNode> classes = new IdentityHashMap<String, ClassNode>();
-	private final IdentityHashMap<String, PackageNode> packages = new IdentityHashMap<String, PackageNode>();
+	private final Edges<Type, ClassNode> classes = new Edges<Type, ClassNode>();
+	private final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
+	private final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
+	private final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 
 	@Override
 	public void process( Class cls, Usages usages ) {
@@ -35,21 +35,37 @@ public final class ClassGraph
 	}
 
 	public ClassNode cls( Type type ) {
-		final String key = type.name;
-		ClassNode node = classes.get( key );
+		ClassNode node = classes.node( type );
 		if ( node == null ) {
 			node = new ClassNode( this, type );
-			classes.put( key, node );
+			classes.add( node );
 		}
 		return node;
 	}
 
 	public PackageNode pkg( Package pkg ) {
-		final String key = pkg.name;
-		PackageNode node = packages.get( key );
+		PackageNode node = packages.node( pkg );
 		if ( node == null ) {
 			node = new PackageNode( this, pkg );
-			packages.put( key, node );
+			packages.add( node );
+		}
+		return node;
+	}
+
+	public MethodNode method( Method method ) {
+		MethodNode node = methods.node( method );
+		if ( node == null ) {
+			node = new MethodNode( this, method );
+			methods.add( node );
+		}
+		return node;
+	}
+
+	public FieldNode field( Field field ) {
+		FieldNode node = fields.node( field );
+		if ( node == null ) {
+			node = new FieldNode( this, field );
+			fields.add( node );
 		}
 		return node;
 	}

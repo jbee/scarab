@@ -4,7 +4,7 @@ public enum Modifier {
 
 	PUBLIC( 0x0001 ),
 	FINAL( 0x0010 ),
-	SUPER( 0x0020 ), //	Besondere Behandlung für Methoden der Superklasse beim Aufruf über invokespecial.
+	SUPER( 0x0020 ),
 	/**
 	 * Will always occur together with {@link #ABSTRACT}
 	 */
