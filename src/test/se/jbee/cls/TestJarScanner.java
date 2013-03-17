@@ -23,6 +23,8 @@ import se.jbee.cls.sca.TypeFilter;
 import se.jbee.cls.sca.TypeFilters;
 import se.jbee.cls.sca.analyse.FieldAccessCountProcessor;
 import se.jbee.cls.sca.analyse.TypeGraphProcessor;
+import se.jbee.cls.sca.graph.ClassNode;
+import se.jbee.cls.sca.graph.Graph;
 
 public class TestJarScanner {
 
@@ -58,6 +60,14 @@ public class TestJarScanner {
 				p.println( d );
 			}
 		}
+	}
+
+	@Test
+	public void testScanGraph() {
+		Graph g = new Graph();
+		scanTestJar( TypeFilter.ALL, g );
+		ClassNode obj = g.cls( Type.type( "java/lang/Object" ) );
+		System.out.println( obj );
 	}
 
 	private void scanTestJar( TypeFilter filter, JarProcessor out ) {
