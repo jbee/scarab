@@ -28,6 +28,18 @@ public class PackageNode
 		}
 	}
 
+	public boolean references( Package other ) {
+		return references.contains( other );
+	}
+
+	public boolean contains( Type type ) {
+		return types.contains( type );
+	}
+
+	public boolean contains( Package pkg ) {
+		return subPackages.contains( pkg );
+	}
+
 	@Override
 	public Package id() {
 		return pkg;

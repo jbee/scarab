@@ -25,14 +25,14 @@ public class TestJarScanner {
 		Package root = Package.pkg( "se/jbee/inject" );
 		PackageNode jbee = g.pkg( root.parent() );
 		assertEquals( 1, jbee.subPackages.size() );
-		assertTrue( jbee.subPackages.contains( root ) );
+		assertTrue( jbee.contains( root ) );
 		PackageNode inject = jbee.subPackages.node( root );
 		assertEquals( 5, inject.subPackages.size() );
 		Package bind = Package.pkg( "se/jbee/inject/bind" );
-		assertFalse( inject.references.contains( bind ) );
-		assertTrue( g.pkg( bind ).references.contains( root ) );
-		assertTrue( inject.types.contains( root.type( "Type" ) ) );
-		assertFalse( inject.types.contains( root.type( "Foo" ) ) );
+		assertFalse( inject.references( bind ) );
+		assertTrue( g.pkg( bind ).references( root ) );
+		assertTrue( inject.contains( root.packageType( "Type" ) ) );
+		assertFalse( inject.contains( root.packageType( "Foo" ) ) );
 	}
 
 	private void scanTestJar( TypeFilter filter, JarProcessor out ) {
