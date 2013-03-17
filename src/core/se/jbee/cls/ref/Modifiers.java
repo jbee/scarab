@@ -2,6 +2,12 @@ package se.jbee.cls.ref;
 
 public final class Modifiers {
 
+	/**
+	 * A special null object having none of the usual JVM ACC flags but instead a own flag so it can
+	 * be distinguished from the others.
+	 */
+	public static final Modifiers NONE = new Modifiers( 1 << 9 );
+
 	public static Modifiers modifiers( int accFlags ) {
 		return new Modifiers( accFlags );
 	}
@@ -46,7 +52,11 @@ public final class Modifiers {
 	}
 
 	public boolean isClass() {
-		return !isInterface() && !isEnum() && !isAnnotation();
+		return !isInterface() && !isEnum() && !isAnnotation() && !isNone();
+	}
+
+	public boolean isNone() {
+		return accFlags == NONE.accFlags;
 	}
 
 	@Override

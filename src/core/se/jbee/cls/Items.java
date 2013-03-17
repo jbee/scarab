@@ -1,4 +1,4 @@
-package se.jbee.jar;
+package se.jbee.cls;
 
 
 public interface Items<T>

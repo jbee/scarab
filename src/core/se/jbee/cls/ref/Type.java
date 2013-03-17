@@ -34,7 +34,14 @@ public final class Type {
 	}
 
 	public final int arrayDimensions;
-	private final String name;
+	/**
+	 * The type name as used within the JVM. Example:
+	 * 
+	 * <pre>
+	 * java / lang / Object
+	 * </pre>
+	 */
+	public final String name;
 
 	private Type( int arrayDimentions, String name ) {
 		super();

@@ -18,10 +18,12 @@ public class JarScanner {
 	private static final Pattern ARCHIVES = Pattern.compile( "\\.(?:zip|jar|war|ear)$" );
 
 	private final JarProcessor out;
+	private final TypeFilter filter;
 
-	public JarScanner( JarProcessor out ) {
+	public JarScanner( JarProcessor out, TypeFilter filter ) {
 		super();
 		this.out = out;
+		this.filter = filter;
 	}
 
 	public void scan( String file )
@@ -40,7 +42,7 @@ public class JarScanner {
 				String name = entry.getName();
 				if ( isClassFile( name ) ) {
 					scan( zip.getInputStream( entry ) );
-				} else if ( isArchiveFile( name ) && out.filter().process( archive( name ) ) ) {
+				} else if ( isArchiveFile( name ) && filter.process( archive( name ) ) ) {
 					ZipInputStream in = new ZipInputStream( zip.getInputStream( entry ) );
 					entry = in.getNextEntry();
 					while ( entry != null ) {
@@ -58,7 +60,7 @@ public class JarScanner {
 
 	private void scan( InputStream classInputStream )
 			throws IOException {
-		Classfile.readClassfile( new ClassInputStream( classInputStream ), out );
+		Classfile.readClassfile( new ClassInputStream( classInputStream ), filter, out );
 	}
 
 	static boolean isClassFile( String name ) {

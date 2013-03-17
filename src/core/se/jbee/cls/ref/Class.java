@@ -1,19 +1,22 @@
 package se.jbee.cls.ref;
 
-
 public final class Class {
 
-	public static Class cls( Modifiers modifiers, Type type ) {
-		return new Class( type, modifiers );
+	public static Class cls( Modifiers modifiers, Type type, Type superclass, Type[] interfaces ) {
+		return new Class( modifiers, type, superclass, interfaces );
 	}
 
-	public final Type type;
 	public final Modifiers modifiers;
+	public final Type type;
+	public final Type superclass;
+	public final Type[] interfaces;
 
-	private Class( Type type, Modifiers modifiers ) {
+	private Class( Modifiers modifiers, Type type, Type superclass, Type[] interfaces ) {
 		super();
-		this.type = type;
 		this.modifiers = modifiers;
+		this.type = type;
+		this.superclass = superclass;
+		this.interfaces = interfaces;
 	}
 
 	@Override

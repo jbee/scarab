@@ -8,6 +8,7 @@ import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Modifiers;
 import se.jbee.cls.ref.Type;
 import se.jbee.cls.sca.JarProcessor;
+import se.jbee.cls.sca.TypeFilter;
 
 public final class Classfile {
 
@@ -30,7 +31,7 @@ public final class Classfile {
 	 * @throws IOException
 	 *             in case of reading errors or invalid class file.
 	 */
-	public static void readClassfile( ClassInputStream in, JarProcessor out )
+	public static void readClassfile( ClassInputStream in, TypeFilter filter, JarProcessor out )
 			throws IOException {
 		if ( in.int32bit() != MAGIC_NUMBER ) {
 			throw new IOException( "Not a class file: Expected Magic number 0xcafebabe." );
@@ -40,12 +41,12 @@ public final class Classfile {
 		ConstantPool cp = ConstantPool.read( in );
 
 		Modifiers access = Modifiers.modifiers( in.uint16bit() );
-		Class type = Class.cls( access, type( cp.name0( in.uint16bit() ) ) );
-		if ( out.filter().process( type ) ) {
-			Type superclass = type( cp.name0( in.uint16bit() ) );
-			int interfaceCount = in.uint16bit();
-			Type[] superinterfaces = readInterfaces( in, cp, interfaceCount );
-			out.process( type, superclass, superinterfaces, cp );
+		Type type = type( cp.name0( in.uint16bit() ) );
+		Type superclass = type( cp.name0( in.uint16bit() ) );
+		Type[] interfaces = readInterfaces( in, cp, in.uint16bit() );
+		Class cls = Class.cls( access, type, superclass, interfaces );
+		if ( filter.process( cls ) ) {
+			out.process( cls, cp );
 			//int fieldCount = stream.readUnsignedShort();
 		}
 	}

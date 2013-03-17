@@ -9,7 +9,6 @@ import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Usages;
 import se.jbee.cls.sca.JarProcessor;
-import se.jbee.cls.sca.TypeFilter;
 
 public class TypeGraphProcessor
 		implements JarProcessor {
@@ -22,19 +21,14 @@ public class TypeGraphProcessor
 	}
 
 	@Override
-	public TypeFilter filter() {
-		return TypeFilter.ALL;
-	}
-
-	@Override
-	public void process( Class type, Type superclass, Type[] interfaces, Usages usages ) {
+	public void process( Class cls, Usages usages ) {
 		Set<Type> set = new HashSet<Type>();
-		set.add( superclass );
-		set.addAll( Arrays.asList( interfaces ) );
+		set.add( cls.superclass );
+		set.addAll( Arrays.asList( cls.interfaces ) );
 		for ( Type t : usages.types() ) {
 			set.add( t );
 		}
-		typeUsages.put( type, set );
+		typeUsages.put( cls, set );
 	}
 
 }

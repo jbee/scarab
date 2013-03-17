@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import se.jbee.cls.Items;
 import se.jbee.cls.ref.Field;
-import se.jbee.cls.ref.Items;
 import se.jbee.cls.ref.Method;
 import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Usages;

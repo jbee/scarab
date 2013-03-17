@@ -29,15 +29,15 @@ public class TestJarScanner {
 	@Test ( timeout = 1000 )
 	public void testScan() {
 		TypeFilter filter = TypeFilters.modifiers( Modifiers.modifiers( Modifier.ABSTRACT ) );
-		JarProcessor out = new FieldAccessCountProcessor( filter, System.out );
-		scanTestJar( out );
+		JarProcessor out = new FieldAccessCountProcessor( System.out );
+		scanTestJar( filter, out );
 	}
 
 	@Test
 	public void testScanTypeGraph() {
 		Map<Class, Set<Type>> typeUsages = new HashMap<Class, Set<Type>>();
 		JarProcessor out = new TypeGraphProcessor( typeUsages );
-		scanTestJar( out );
+		scanTestJar( TypeFilter.ALL, out );
 		Map<Package, Set<Package>> packageDeps = new HashMap<Package, Set<Package>>();
 		for ( Entry<Class, Set<Type>> e : typeUsages.entrySet() ) {
 			Package pkg = e.getKey().type.pkg();
@@ -60,9 +60,9 @@ public class TestJarScanner {
 		}
 	}
 
-	private void scanTestJar( JarProcessor out ) {
+	private void scanTestJar( TypeFilter filter, JarProcessor out ) {
 		try {
-			new JarScanner( out ).scan( "/home/jan/spring-2.5.6.jar" );
+			new JarScanner( out, filter ).scan( "/home/jan/spring-2.5.6.jar" );
 		} catch ( IOException e ) {
 			e.printStackTrace();
 			fail( "Exception occured: " + e.getMessage() );
