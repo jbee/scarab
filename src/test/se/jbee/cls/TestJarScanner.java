@@ -31,6 +31,8 @@ public class TestJarScanner {
 		Package bind = Package.pkg( "se/jbee/inject/bind" );
 		assertFalse( inject.references.contains( bind ) );
 		assertTrue( g.pkg( bind ).references.contains( root ) );
+		assertTrue( inject.types.contains( root.type( "Type" ) ) );
+		assertFalse( inject.types.contains( root.type( "Foo" ) ) );
 	}
 
 	private void scanTestJar( TypeFilter filter, JarProcessor out ) {

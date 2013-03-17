@@ -26,6 +26,7 @@ public final class ClassNode
 		super();
 		this.graph = graph;
 		this.type = type;
+		graph.pkg( type.pkg() ).types.add( this );
 	}
 
 	void is( Class cls ) {

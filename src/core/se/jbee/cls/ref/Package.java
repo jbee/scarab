@@ -72,4 +72,8 @@ public final class Package {
 	public boolean isDefault() {
 		return name == DEFAULT.name;
 	}
+
+	public Type type( String simpleName ) {
+		return Type.type( name + "/" + simpleName );
+	}
 }

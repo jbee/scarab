@@ -1,6 +1,7 @@
 package se.jbee.cls.sca.graph;
 
 import se.jbee.cls.ref.Package;
+import se.jbee.cls.ref.Type;
 
 public class PackageNode
 		implements Node<Package> {
@@ -8,6 +9,7 @@ public class PackageNode
 	private final ClassGraph graph;
 	public final Package pkg;
 	public final PackageNode parent;
+	public final Edges<Type, ClassNode> types = new Edges<Type, ClassNode>();
 	public final Edges<Package, PackageNode> subPackages = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> references = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> referencedBy = new Edges<Package, PackageNode>();
@@ -43,6 +45,10 @@ public class PackageNode
 			other.parent.connectedFrom.add( parent );
 			parent.connects( other.parent );
 		}
+	}
+
+	public boolean connectedTo( Package pgk ) {
+		return connects.contains( pgk );
 	}
 
 	@Override
