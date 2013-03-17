@@ -21,10 +21,27 @@ public final class Package {
 		return name != DEFAULT.name;
 	}
 
+	public int levels() {
+		if ( !hasParent() ) {
+			return 0;
+		}
+		int c = 0;
+		int i = name.indexOf( '/', 0 );
+		while ( i > 0 ) {
+			c++;
+			i = name.indexOf( '/', i + 1 );
+		}
+		return c + 1;
+	}
+
 	public Package parent() {
-		return !hasParent()
-			? this
-			: pkg( name.substring( 0, name.lastIndexOf( '/' ) ) );
+		if ( !hasParent() ) {
+			return this;
+		}
+		int idx = name.lastIndexOf( '/' );
+		return idx < 0
+			? DEFAULT
+			: pkg( name.substring( 0, idx ) );
 	}
 
 	@Override

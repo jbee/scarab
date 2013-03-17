@@ -6,29 +6,32 @@ import se.jbee.cls.ref.Method;
 import se.jbee.cls.ref.Type;
 
 public final class ClassNode
-		implements Node {
+		implements Node<Type> {
 
-	private final Graph graph;
+	private final ClassGraph graph;
 	public final Type type;
 	private Class cls;
 	private ClassNode superclass;
-	private final Edges<ClassNode> subclasses = new Edges<ClassNode>();
-	private final Edges<ClassNode> interfaces = new Edges<ClassNode>();
-	private final Edges<ClassNode> implementations = new Edges<ClassNode>();
-	private final Edges<ClassNode> references = new Edges<ClassNode>();
-	private final Edges<ClassNode> referencedBy = new Edges<ClassNode>();
-	private final Edges<ClassNode> calls = new Edges<ClassNode>();
-	private final Edges<ClassNode> calledBy = new Edges<ClassNode>();
-	private final Edges<ClassNode> accesses = new Edges<ClassNode>();
-	private final Edges<ClassNode> accessedBy = new Edges<ClassNode>();
+	public final Edges<Type, ClassNode> subclasses = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> interfaces = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> implementations = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> references = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> referencedBy = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> calls = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> calledBy = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> accesses = new Edges<Type, ClassNode>();
+	public final Edges<Type, ClassNode> accessedBy = new Edges<Type, ClassNode>();
 
-	ClassNode( Graph graph, Type type ) {
+	ClassNode( ClassGraph graph, Type type ) {
 		super();
 		this.graph = graph;
 		this.type = type;
 	}
 
-	void complete( Class cls ) {
+	void is( Class cls ) {
+		if ( !cls.type.equalTo( type ) ) {
+			throw new IllegalArgumentException();
+		}
 		this.cls = cls;
 		ClassNode sc = graph.cls( cls.superclass );
 		this.superclass = sc;
@@ -48,28 +51,41 @@ public final class ClassNode
 		ClassNode other = graph.cls( method.declaringClass );
 		other.calledBy.add( this );
 		calls.add( other );
+		references( method.declaringClass );
 		references( method.returnType );
-		for ( Type p : method.parameterTypes ) {
-			references( p );
-		}
+		references( method.parameterTypes );
 	}
 
 	public void accesses( Field field ) {
 		references( field.type );
+		references( field.declaringClass );
 		ClassNode other = graph.cls( field.declaringClass );
 		other.accessedBy.add( this );
 		accesses.add( other );
+	}
+
+	public void references( Type... types ) {
+		for ( Type t : types ) {
+			references( t );
+		}
 	}
 
 	public void references( Type type ) {
 		ClassNode other = graph.cls( type );
 		other.referencedBy.add( this );
 		references.add( other );
+		packageReferences( this.type, type );
+	}
+
+	private void packageReferences( Type type, Type other ) {
+		PackageNode pkg = graph.pkg( type.pkg() );
+		PackageNode otherPkg = graph.pkg( other.pkg() );
+		pkg.references( otherPkg );
 	}
 
 	@Override
-	public String id() {
-		return type.name;
+	public Type id() {
+		return type;
 	}
 
 	@Override

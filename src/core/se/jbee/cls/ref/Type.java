@@ -21,6 +21,8 @@ package se.jbee.cls.ref;
  */
 public final class Type {
 
+	public static final Type OBJECT = type( "java/lang/Object" );
+
 	public static final Type NONE = new Type( 0, "" );
 
 	public static Type type( String name ) {

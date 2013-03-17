@@ -1,13 +1,18 @@
 package se.jbee.cls.sca.graph;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
+import java.util.Set;
 
-public final class Edges<T extends Node> {
+public final class Edges<K, T extends Node<K>> {
 
-	private final IdentityHashMap<String, T> nodes = new IdentityHashMap<String, T>();
+	private final HashMap<K, T> nodes = new HashMap<K, T>();
 
-	public boolean contains( T node ) {
-		return nodes.containsKey( node.id() );
+	public boolean contains( K key ) {
+		return nodes.containsKey( key );
+	}
+
+	public Set<K> nodeIds() {
+		return nodes.keySet();
 	}
 
 	void add( T node ) {
@@ -16,6 +21,14 @@ public final class Edges<T extends Node> {
 
 	@Override
 	public String toString() {
-		return nodes.toString();
+		return nodes.values().toString();
+	}
+
+	public int size() {
+		return nodes.size();
+	}
+
+	public T node( K key ) {
+		return nodes.get( key );
 	}
 }

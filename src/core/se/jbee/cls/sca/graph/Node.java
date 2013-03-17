@@ -1,6 +1,6 @@
 package se.jbee.cls.sca.graph;
 
-public interface Node {
+public interface Node<T> {
 
-	String id();
+	T id();
 }

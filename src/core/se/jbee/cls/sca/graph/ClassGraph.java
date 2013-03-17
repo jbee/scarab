@@ -10,7 +10,7 @@ import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Usages;
 import se.jbee.cls.sca.JarProcessor;
 
-public final class Graph
+public final class ClassGraph
 		implements JarProcessor {
 
 	private final IdentityHashMap<String, ClassNode> classes = new IdentityHashMap<String, ClassNode>();
@@ -19,7 +19,7 @@ public final class Graph
 	@Override
 	public void process( Class cls, Usages usages ) {
 		ClassNode node = cls( cls.type );
-		node.complete( cls );
+		node.is( cls );
 		for ( Method m : usages.methods() ) {
 			node.calls( m );
 		}
