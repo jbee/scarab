@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import se.jbee.cls.Items;
+import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
-import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Usages;
 
 public final class ConstantPool
@@ -142,11 +142,15 @@ public final class ConstantPool
 		return utf8[index1( index )];
 	}
 
+	public String utf( int index ) {
+		return utf8[index];
+	}
+
 	public Class cls( int index ) {
 		if ( tags[index] != ConstantTag.CLASS ) {
 			throw new NoSuchElementException( "" );
 		}
-		return Classfile.type( utf0( index ) );
+		return Classfile.cls( utf0( index ) );
 	}
 
 	public Method method( int index ) {
@@ -158,10 +162,10 @@ public final class ConstantPool
 		String name = utf0( i1 );
 		String type = utf1( i1 );
 		int endOfParameters = type.indexOf( ')' );
-		return Method.method( Classfile.type( declaringClass ),
+		return Method.method( Classfile.cls( declaringClass ),
 				tags[index] == ConstantTag.INTERFACE_METHOD_REF,
-				Classfile.type( type.substring( endOfParameters + 1 ) ), name,
-				Classfile.types( type.substring( 1, endOfParameters ) ) );
+				Classfile.cls( type.substring( endOfParameters + 1 ) ), name,
+				Classfile.classes( type.substring( 1, endOfParameters ) ) );
 	}
 
 	public Field field( int index ) {
@@ -172,7 +176,7 @@ public final class ConstantPool
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
 		String type = utf1( i1 );
-		return Field.field( Classfile.type( declaringClass ), Classfile.type( type ), name );
+		return Field.field( Classfile.cls( declaringClass ), Classfile.cls( type ), name );
 	}
 
 	@Override

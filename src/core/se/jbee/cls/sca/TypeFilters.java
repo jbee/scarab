@@ -1,6 +1,6 @@
 package se.jbee.cls.sca;
 
-import se.jbee.cls.ref.ClassSignature;
+import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Modifiers;
 
 public class TypeFilters {
@@ -25,7 +25,7 @@ public class TypeFilters {
 		}
 
 		@Override
-		public boolean process( ClassSignature type ) {
+		public boolean process( Type type ) {
 			return type.modifiers.all( mandatory );
 		}
 

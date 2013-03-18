@@ -1,9 +1,11 @@
 package se.jbee.cls.ref;
 
-public final class ClassSignature {
+public final class Type {
 
-	public static ClassSignature classSignature( Modifiers modifiers, Class type, Class superclass, Class[] interfaces ) {
-		return new ClassSignature( modifiers, type, superclass, interfaces );
+	//OPEN if this is just used from within the CP the usages and own methods and fields could be added here
+
+	public static Type type( Modifiers modifiers, Class type, Class superclass, Class[] interfaces ) {
+		return new Type( modifiers, type, superclass, interfaces );
 	}
 
 	public final Modifiers modifiers;
@@ -11,7 +13,7 @@ public final class ClassSignature {
 	public final Class superclass;
 	public final Class[] interfaces;
 
-	private ClassSignature( Modifiers modifiers, Class type, Class superclass, Class[] interfaces ) {
+	private Type( Modifiers modifiers, Class type, Class superclass, Class[] interfaces ) {
 		super();
 		this.modifiers = modifiers;
 		this.cls = type;
@@ -26,10 +28,10 @@ public final class ClassSignature {
 
 	@Override
 	public boolean equals( Object obj ) {
-		return obj instanceof ClassSignature && equalTo( (ClassSignature) obj );
+		return obj instanceof Type && equalTo( (Type) obj );
 	}
 
-	public boolean equalTo( ClassSignature other ) {
+	public boolean equalTo( Type other ) {
 		return cls.equalTo( other.cls );
 	}
 

@@ -4,11 +4,7 @@ import se.jbee.cls.ref.Modifier.ModifierMode;
 
 public final class Modifiers {
 
-	/**
-	 * A special null object having none of the usual JVM ACC flags but instead a own flag so it can
-	 * be distinguished from the others.
-	 */
-	public static final Modifiers NONE = new Modifiers( ModifierMode.CLASS, 1 << 9 );
+	public static final Modifiers NONE = new Modifiers( ModifierMode.UNKNOWN, 0 );
 
 	public static Modifiers classModifiers( int accFlags ) {
 		return modifiers( ModifierMode.CLASS, accFlags );
@@ -72,11 +68,15 @@ public final class Modifiers {
 	}
 
 	public boolean isNone() {
-		return accFlags == NONE.accFlags;
+		return mode == ModifierMode.UNKNOWN;
 	}
 
 	@Override
 	public String toString() {
+		if ( isNone() ) {
+			return "?";
+		}
+		//TODO this is for class mode
 		String extending = isAbstract()
 			? isInterface()
 				? ""

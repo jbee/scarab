@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
 import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.ClassSignature;
+import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
 
@@ -31,7 +31,7 @@ public final class ClassNode
 		graph.pkg( type.pkg() ).types.add( this );
 	}
 
-	void has( ClassSignature signature ) {
+	void has( Type signature ) {
 		if ( !signature.cls.equalTo( cls ) ) {
 			throw new IllegalArgumentException();
 		}

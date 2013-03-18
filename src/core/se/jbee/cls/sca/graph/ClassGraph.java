@@ -1,6 +1,6 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.ClassSignature;
+import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
 import se.jbee.cls.ref.Package;
@@ -17,9 +17,9 @@ public final class ClassGraph
 	private final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 
 	@Override
-	public void process( ClassSignature signature, Usages usages ) {
-		ClassNode node = cls( signature.cls );
-		node.has( signature );
+	public void process( Type type, Usages usages ) {
+		ClassNode node = cls( type.cls );
+		node.has( type );
 		for ( Method m : usages.methods() ) {
 			node.calls( m );
 		}

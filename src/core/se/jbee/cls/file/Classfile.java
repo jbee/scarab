@@ -1,14 +1,14 @@
 package se.jbee.cls.file;
 
-import static se.jbee.cls.ref.ClassSignature.classSignature;
+import static se.jbee.cls.ref.Type.type;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.ClassSignature;
 import se.jbee.cls.ref.Modifiers;
+import se.jbee.cls.ref.Type;
 import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.TypeFilter;
 
@@ -43,12 +43,12 @@ public final class Classfile {
 		ConstantPool cp = ConstantPool.read( in );
 
 		Modifiers modifiers = Modifiers.classModifiers( in.uint16bit() );
-		Class type = type( cp.utf0( in.uint16bit() ) );
-		Class superclass = type( cp.utf0( in.uint16bit() ) );
+		Class cls = cls( cp.utf0( in.uint16bit() ) );
+		Class superclass = cls( cp.utf0( in.uint16bit() ) );
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
-		ClassSignature cls = classSignature( modifiers, type, superclass, interfaces );
-		if ( filter.process( cls ) ) {
-			out.process( cls, cp );
+		Type type = type( modifiers, cls, superclass, interfaces );
+		if ( filter.process( type ) ) {
+			out.process( type, cp );
 			readFieldOrMethod( in, cp );
 			readFieldOrMethod( in, cp );
 			readAttributes( in, cp );
@@ -60,8 +60,8 @@ public final class Classfile {
 		int count = in.uint16bit();
 		for ( int i = 0; i < count; i++ ) {
 			int flags = in.uint16bit();
-			String name = cp.utf0( in.uint16bit() );
-			String descriptor = cp.utf0( in.uint16bit() );
+			String name = cp.utf( in.uint16bit() );
+			String descriptor = cp.utf( in.uint16bit() );
 			readAttributes( in, cp );
 		}
 	}
@@ -76,7 +76,7 @@ public final class Classfile {
 
 	private static void readAttribute( ConstantPool cp, ClassInputStream in )
 			throws IOException {
-		String name = cp.utf0( in.uint16bit() );
+		String name = cp.utf( in.uint16bit() );
 		int length = in.int32bit();
 		in.skipBytes( length );
 	}
@@ -86,22 +86,22 @@ public final class Classfile {
 			throws IOException {
 		Class[] superinterfaces = new Class[interfaceCount];
 		for ( int i = 0; i < interfaceCount; i++ ) {
-			superinterfaces[i] = type( cp.utf0( stream.uint16bit() ) );
+			superinterfaces[i] = cls( cp.utf0( stream.uint16bit() ) );
 		}
 		return superinterfaces;
 	}
 
-	public static Class type( String name ) {
+	public static Class cls( String name ) {
 		if ( name == null || name.isEmpty() ) {
 			return Class.NONE;
 		}
 		if ( !Character.isLowerCase( name.charAt( 0 ) ) && name.endsWith( ";" ) ) {
-			return types( name )[0];
+			return classes( name )[0];
 		}
 		return Class.cls( name );
 	}
 
-	public static Class[] types( String descriptor ) {
+	public static Class[] classes( String descriptor ) {
 		int index = 0;
 		List<Class> names = new ArrayList<Class>();
 		char[] dc = descriptor.toCharArray();

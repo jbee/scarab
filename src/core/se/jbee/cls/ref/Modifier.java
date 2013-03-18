@@ -84,6 +84,7 @@ public enum Modifier {
 	public static enum ModifierMode {
 		CLASS,
 		FIELD,
-		METHOD
+		METHOD,
+		UNKNOWN
 	}
 }
