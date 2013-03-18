@@ -134,19 +134,19 @@ public final class ConstantPool
 		return indexes[index][1];
 	}
 
-	public String name0( int index ) {
+	public String utf0( int index ) {
 		return utf8[index0( index )];
 	}
 
-	public String name1( int index ) {
+	public String utf1( int index ) {
 		return utf8[index1( index )];
 	}
 
-	public Class type( int index ) {
+	public Class cls( int index ) {
 		if ( tags[index] != ConstantTag.CLASS ) {
 			throw new NoSuchElementException( "" );
 		}
-		return Classfile.type( name0( index ) );
+		return Classfile.type( utf0( index ) );
 	}
 
 	public Method method( int index ) {
@@ -154,9 +154,9 @@ public final class ConstantPool
 			throw new NoSuchElementException( "" );
 		}
 		final int i1 = index1( index );
-		String declaringClass = name0( index0( index ) );
-		String name = name0( i1 );
-		String type = name1( i1 );
+		String declaringClass = utf0( index0( index ) );
+		String name = utf0( i1 );
+		String type = utf1( i1 );
 		int endOfParameters = type.indexOf( ')' );
 		return Method.method( Classfile.type( declaringClass ),
 				tags[index] == ConstantTag.INTERFACE_METHOD_REF,
@@ -169,9 +169,9 @@ public final class ConstantPool
 			throw new NoSuchElementException( "" );
 		}
 		final int i1 = index1( index );
-		String declaringClass = name0( index0( index ) );
-		String name = name0( i1 );
-		String type = name1( i1 );
+		String declaringClass = utf0( index0( index ) );
+		String name = utf0( i1 );
+		String type = utf1( i1 );
 		return Field.field( Classfile.type( declaringClass ), Classfile.type( type ), name );
 	}
 
@@ -204,7 +204,7 @@ public final class ConstantPool
 
 		@Override
 		Class reference( ConstantPool cp, int index ) {
-			return cp.type( index );
+			return cp.cls( index );
 		}
 	}
 

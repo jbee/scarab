@@ -50,4 +50,9 @@ public final class ClassInputStream {
 		return in.readDouble();
 	}
 
+	public void skipBytes( int n )
+			throws IOException {
+		in.skipBytes( n );
+	}
+
 }

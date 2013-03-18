@@ -1,5 +1,10 @@
 package se.jbee.cls.ref;
 
+/**
+ * Type level modifiers.
+ * 
+ * @author Jan Bernitt (jan@jbee.se)
+ */
 public enum Modifier {
 
 	PUBLIC( 0x0001 ),

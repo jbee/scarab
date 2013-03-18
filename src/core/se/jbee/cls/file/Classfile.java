@@ -1,12 +1,14 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.ref.ClassSignature.classSignature;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.ClassSignature;
 import se.jbee.cls.ref.Modifiers;
-import se.jbee.cls.ref.Class;
 import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.TypeFilter;
 
@@ -18,7 +20,7 @@ public final class Classfile {
 
 	static {
 		for ( TypeCode c : TypeCode.values() ) {
-			PRIMITIVES[c.name().charAt( 0 ) - 'A'] = Class.type( c.name, 0 );
+			PRIMITIVES[c.name().charAt( 0 ) - 'A'] = Class.cls( c.name, 0 );
 		}
 	}
 
@@ -41,14 +43,42 @@ public final class Classfile {
 		ConstantPool cp = ConstantPool.read( in );
 
 		Modifiers access = Modifiers.modifiers( in.uint16bit() );
-		Class type = type( cp.name0( in.uint16bit() ) );
-		Class superclass = type( cp.name0( in.uint16bit() ) );
+		Class type = type( cp.utf0( in.uint16bit() ) );
+		Class superclass = type( cp.utf0( in.uint16bit() ) );
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
-		ClassSignature cls = ClassSignature.classSignature( access, type, superclass, interfaces );
+		ClassSignature cls = classSignature( access, type, superclass, interfaces );
 		if ( filter.process( cls ) ) {
 			out.process( cls, cp );
-			//int fieldCount = stream.readUnsignedShort();
+			readFieldOrMethod( in, cp );
+			readFieldOrMethod( in, cp );
+			readAttributes( in, cp );
 		}
+	}
+
+	private static void readFieldOrMethod( ClassInputStream in, ConstantPool cp )
+			throws IOException {
+		int count = in.uint16bit();
+		for ( int i = 0; i < count; i++ ) {
+			int flags = in.uint16bit();
+			String name = cp.utf0( in.uint16bit() );
+			String descriptor = cp.utf0( in.uint16bit() );
+			readAttributes( in, cp );
+		}
+	}
+
+	private static void readAttributes( ClassInputStream in, ConstantPool cp )
+			throws IOException {
+		int attributeCount = in.uint16bit();
+		for ( int a = 0; a < attributeCount; a++ ) {
+			readAttribute( cp, in );
+		}
+	}
+
+	private static void readAttribute( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		String name = cp.utf0( in.uint16bit() );
+		int length = in.int32bit();
+		in.skipBytes( length );
 	}
 
 	private static Class[] readInterfaces( ClassInputStream stream, ConstantPool cp,
@@ -56,7 +86,7 @@ public final class Classfile {
 			throws IOException {
 		Class[] superinterfaces = new Class[interfaceCount];
 		for ( int i = 0; i < interfaceCount; i++ ) {
-			superinterfaces[i] = type( cp.name0( stream.uint16bit() ) );
+			superinterfaces[i] = type( cp.utf0( stream.uint16bit() ) );
 		}
 		return superinterfaces;
 	}
@@ -85,7 +115,7 @@ public final class Classfile {
 				if ( c == 'L' ) {
 					int end = descriptor.indexOf( ';', index );
 					String name = descriptor.substring( index, end );
-					ref = Class.type( name, arrayDimentions );
+					ref = Class.cls( name, arrayDimentions );
 					index = end + 1;
 				} else {
 					ref = PRIMITIVES[c - 'A'];

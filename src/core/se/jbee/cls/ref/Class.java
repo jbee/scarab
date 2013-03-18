@@ -7,10 +7,10 @@ public final class Class {
 	public static final Class NONE = new Class( 0, "" );
 
 	public static Class cls( String name ) {
-		return type( name, 0 );
+		return cls( name, 0 );
 	}
 
-	public static Class type( String name, int arrayDimentions ) {
+	public static Class cls( String name, int arrayDimentions ) {
 		return name == null || name.isEmpty()
 			? Class.NONE
 			: new Class( arrayDimentions, name );
