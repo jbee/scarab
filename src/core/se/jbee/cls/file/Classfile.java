@@ -42,11 +42,11 @@ public final class Classfile {
 		in.uint16bit(); // major version
 		ConstantPool cp = ConstantPool.read( in );
 
-		Modifiers access = Modifiers.modifiers( in.uint16bit() );
+		Modifiers modifiers = Modifiers.classModifiers( in.uint16bit() );
 		Class type = type( cp.utf0( in.uint16bit() ) );
 		Class superclass = type( cp.utf0( in.uint16bit() ) );
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
-		ClassSignature cls = classSignature( access, type, superclass, interfaces );
+		ClassSignature cls = classSignature( modifiers, type, superclass, interfaces );
 		if ( filter.process( cls ) ) {
 			out.process( cls, cp );
 			readFieldOrMethod( in, cp );

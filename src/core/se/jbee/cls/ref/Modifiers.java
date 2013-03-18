@@ -1,29 +1,45 @@
 package se.jbee.cls.ref;
 
+import se.jbee.cls.ref.Modifier.ModifierMode;
+
 public final class Modifiers {
 
 	/**
 	 * A special null object having none of the usual JVM ACC flags but instead a own flag so it can
 	 * be distinguished from the others.
 	 */
-	public static final Modifiers NONE = new Modifiers( 1 << 9 );
+	public static final Modifiers NONE = new Modifiers( ModifierMode.CLASS, 1 << 9 );
 
-	public static Modifiers modifiers( int accFlags ) {
-		return new Modifiers( accFlags );
+	public static Modifiers classModifiers( int accFlags ) {
+		return modifiers( ModifierMode.CLASS, accFlags );
 	}
 
-	public static Modifiers modifiers( Modifier... modifiers ) {
+	public static Modifiers fieldModifiers( int accFlags ) {
+		return modifiers( ModifierMode.FIELD, accFlags );
+	}
+
+	public static Modifiers methodModifiers( int accFlags ) {
+		return modifiers( ModifierMode.METHOD, accFlags );
+	}
+
+	private static Modifiers modifiers( ModifierMode mode, int accFlags ) {
+		return new Modifiers( mode, accFlags );
+	}
+
+	public static Modifiers modifiers( ModifierMode mode, Modifier... modifiers ) {
 		int flags = 0;
 		for ( Modifier m : modifiers ) {
 			flags |= m.accFlag;
 		}
-		return new Modifiers( flags );
+		return new Modifiers( mode, flags );
 	}
 
+	public final ModifierMode mode;
 	private final int accFlags;
 
-	private Modifiers( int accFlags ) {
+	private Modifiers( ModifierMode mode, int accFlags ) {
 		super();
+		this.mode = mode;
 		this.accFlags = accFlags;
 	}
 
