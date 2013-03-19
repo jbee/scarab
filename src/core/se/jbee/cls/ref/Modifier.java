@@ -47,8 +47,11 @@ public enum Modifier {
 
 	/**
 	 * Class: An interface class. Will always occur together with {@link #ABSTRACT}
+	 * 
+	 * Method: OBS! As a method flag this is not part of JVN spec. It is used to mark that a method
+	 * is a interface method.
 	 */
-	INTERFACE( 0x0200, CLASS ),
+	INTERFACE( 0x0200, CLASS, METHOD ),
 	/**
 	 * Class: A abstract class or interface
 	 */

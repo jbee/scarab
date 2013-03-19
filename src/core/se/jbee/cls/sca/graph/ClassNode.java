@@ -1,9 +1,9 @@
 package se.jbee.cls.sca.graph;
 
 import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Type;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
+import se.jbee.cls.ref.Type;
 
 public final class ClassNode
 		implements Node<Class> {
@@ -28,7 +28,7 @@ public final class ClassNode
 		super();
 		this.graph = graph;
 		this.cls = type;
-		graph.pkg( type.pkg() ).types.add( this );
+		graph.pkg( type.pkg() ).classes.add( this );
 	}
 
 	void has( Type signature ) {

@@ -6,25 +6,25 @@ import se.jbee.cls.Append;
 
 public final class Method {
 
-	public static Method method( Class declaringClass, boolean inInterface, Class returnType,
+	public static Method method( Class declaringClass, Modifiers modifiers, Class returnType,
 			String name, Class... parameterTypes ) {
-		return new Method( declaringClass, inInterface, returnType, name, parameterTypes );
+		return new Method( declaringClass, modifiers, returnType, name, parameterTypes );
 	}
 
+	public final Modifiers modifiers;
 	public final Class declaringClass;
-	public final boolean inInterface;
 	public final Class returnType;
 	public final String name;
 	public final Class[] parameterTypes;
 
-	private Method( Class declaringClass, boolean inInterface, Class returnType, String name,
+	private Method( Class declaringClass, Modifiers modifiers, Class returnType, String name,
 			Class[] parameterTypes ) {
 		super();
+		this.modifiers = modifiers;
 		this.declaringClass = declaringClass;
 		this.returnType = returnType;
 		this.name = name;
 		this.parameterTypes = parameterTypes;
-		this.inInterface = inInterface;
 	}
 
 	@Override

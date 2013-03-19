@@ -2,11 +2,13 @@ package se.jbee.cls;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.jbee.cls.ref.Package;
@@ -21,7 +23,7 @@ public class TestJarScanner {
 	@Test
 	public void testScanGraph() {
 		ClassGraph g = new ClassGraph();
-		scanTestJar( TypeFilter.ALL, g );
+		scanJar( "/home/jan/project/silk/dist/silk-di-0.4.3.jar", TypeFilter.ALL, g );
 		Package root = Package.pkg( "se/jbee/inject" );
 		PackageNode jbee = g.pkg( root.parent() );
 		assertEquals( 1, jbee.subPackages.size() );
@@ -35,8 +37,15 @@ public class TestJarScanner {
 		assertFalse( inject.contains( root.packageType( "Foo" ) ) );
 	}
 
-	private void scanTestJar( TypeFilter filter, JarProcessor out ) {
-		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
+	@Test
+	@Ignore
+	public void testScanLargerGraph() {
+		ClassGraph g = new ClassGraph();
+		scanJar( "/home/jan/spring-2.5.6.jar", TypeFilter.ALL, g );
+		assertNotNull( g );
+	}
+
+	private void scanJar( String file, TypeFilter filter, JarProcessor out ) {
 		try {
 			new JarScanner( out, filter ).scan( file );
 		} catch ( IOException e ) {

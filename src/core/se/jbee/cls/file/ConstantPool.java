@@ -8,26 +8,30 @@ import se.jbee.cls.Items;
 import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
+import se.jbee.cls.ref.Modifiers;
 import se.jbee.cls.ref.Usages;
 
 public final class ConstantPool
 		implements Usages {
 
 	private static final int TAG_COUNT = ConstantTag.values().length;
-	private static final ConstantTag[] TAGS_CODE_ORDER = new ConstantTag[13];
+	/**
+	 * The tags as defined by the JVM spec.
+	 */
+	private static final ConstantTag[] JVM_TAGS = new ConstantTag[13];
 
 	static {
-		TAGS_CODE_ORDER[1] = ConstantTag.UTF8;
-		TAGS_CODE_ORDER[3] = ConstantTag.INTEGER;
-		TAGS_CODE_ORDER[4] = ConstantTag.FLOAT;
-		TAGS_CODE_ORDER[5] = ConstantTag.LONG;
-		TAGS_CODE_ORDER[6] = ConstantTag.DOUBLE;
-		TAGS_CODE_ORDER[7] = ConstantTag.CLASS;
-		TAGS_CODE_ORDER[8] = ConstantTag.STRING;
-		TAGS_CODE_ORDER[9] = ConstantTag.FIELD_REF;
-		TAGS_CODE_ORDER[10] = ConstantTag.METHOD_REF;
-		TAGS_CODE_ORDER[11] = ConstantTag.INTERFACE_METHOD_REF;
-		TAGS_CODE_ORDER[12] = ConstantTag.NAME_AND_TYPE;
+		JVM_TAGS[1] = ConstantTag.UTF8;
+		JVM_TAGS[3] = ConstantTag.INTEGER;
+		JVM_TAGS[4] = ConstantTag.FLOAT;
+		JVM_TAGS[5] = ConstantTag.LONG;
+		JVM_TAGS[6] = ConstantTag.DOUBLE;
+		JVM_TAGS[7] = ConstantTag.CLASS;
+		JVM_TAGS[8] = ConstantTag.STRING;
+		JVM_TAGS[9] = ConstantTag.FIELD_REF;
+		JVM_TAGS[10] = ConstantTag.METHOD_REF;
+		JVM_TAGS[11] = ConstantTag.INTERFACE_METHOD_REF;
+		JVM_TAGS[12] = ConstantTag.NAME_AND_TYPE;
 	}
 
 	private static final ConstantPool SHARED = new ConstantPool( 1024 );
@@ -89,7 +93,7 @@ public final class ConstantPool
 			throws IOException {
 		for ( int i = 1; i < length; ) {
 			boolean occupy2 = false;
-			final ConstantTag tag = TAGS_CODE_ORDER[in.uint8bit()];
+			final ConstantTag tag = JVM_TAGS[in.uint8bit()];
 			final int tagIndex = tag.ordinal();
 			switch ( tag ) {
 				case CLASS:
@@ -187,7 +191,9 @@ public final class ConstantPool
 		String type = utf1( i1 );
 		int endOfParameters = type.indexOf( ')' );
 		return Method.method( Classfile.cls( declaringClass ),
-				tags[index] == ConstantTag.INTERFACE_METHOD_REF,
+				tags[index] == ConstantTag.INTERFACE_METHOD_REF
+					? Modifiers.UNKNOWN
+					: Modifiers.UNKNOWN_INTERFACE_METHOD,
 				Classfile.cls( type.substring( endOfParameters + 1 ) ), name,
 				Classfile.classes( type.substring( 1, endOfParameters ) ) );
 	}

@@ -4,7 +4,9 @@ import se.jbee.cls.ref.Modifier.ModifierMode;
 
 public final class Modifiers {
 
-	public static final Modifiers NONE = new Modifiers( ModifierMode.UNKNOWN, 0 );
+	public static final Modifiers UNKNOWN = modifiers( ModifierMode.UNKNOWN, 0 );
+	public static final Modifiers UNKNOWN_INTERFACE_METHOD = modifiers( ModifierMode.UNKNOWN,
+			Modifier.INTERFACE );
 
 	public static Modifiers classModifiers( int accFlags ) {
 		return modifiers( ModifierMode.CLASS, accFlags );
@@ -64,16 +66,16 @@ public final class Modifiers {
 	}
 
 	public boolean isClass() {
-		return !isInterface() && !isEnum() && !isAnnotation() && !isNone();
+		return !isInterface() && !isEnum() && !isAnnotation() && !isUnknown();
 	}
 
-	public boolean isNone() {
+	public boolean isUnknown() {
 		return mode == ModifierMode.UNKNOWN;
 	}
 
 	@Override
 	public String toString() {
-		if ( isNone() ) {
+		if ( isUnknown() ) {
 			return "?";
 		}
 		//TODO this is for class mode

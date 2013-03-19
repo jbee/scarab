@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Package;
 import se.jbee.cls.ref.Class;
+import se.jbee.cls.ref.Package;
 
 public class PackageNode
 		implements Node<Package> {
@@ -9,7 +9,7 @@ public class PackageNode
 	private final ClassGraph graph;
 	public final Package pkg;
 	public final PackageNode parent;
-	public final Edges<Class, ClassNode> types = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
 	public final Edges<Package, PackageNode> subPackages = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> references = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> referencedBy = new Edges<Package, PackageNode>();
@@ -33,7 +33,7 @@ public class PackageNode
 	}
 
 	public boolean contains( Class type ) {
-		return types.contains( type );
+		return classes.contains( type );
 	}
 
 	public boolean contains( Package pkg ) {
@@ -80,5 +80,9 @@ public class PackageNode
 	@Override
 	public String toString() {
 		return pkg.toString();
+	}
+
+	public ClassNode cls( Class cls ) {
+		return classes.node( cls );
 	}
 }
