@@ -1,5 +1,7 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.file.MethodDeclaration.methodDeclaration;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -188,14 +190,12 @@ public final class ConstantPool
 		final int i1 = index1( index );
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
-		String type = utf1( i1 );
-		int endOfParameters = type.indexOf( ')' );
-		return Method.method( Classfile.cls( declaringClass ),
-				tags[index] == ConstantTag.INTERFACE_METHOD_REF
-					? Modifiers.UNKNOWN
-					: Modifiers.UNKNOWN_INTERFACE_METHOD,
-				Classfile.cls( type.substring( endOfParameters + 1 ) ), name,
-				Classfile.classes( type.substring( 1, endOfParameters ) ) );
+		MethodDeclaration declaration = methodDeclaration( utf1( i1 ) );
+		final Modifiers modifiers = tags[index] == ConstantTag.INTERFACE_METHOD_REF
+			? Modifiers.UNKNOWN
+			: Modifiers.UNKNOWN_INTERFACE_METHOD;
+		return Method.method( Classfile.cls( declaringClass ), modifiers, declaration.returnType(),
+				name, declaration.parameterTypes() );
 	}
 
 	public Field field( int index ) {
