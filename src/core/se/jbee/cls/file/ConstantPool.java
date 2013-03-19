@@ -13,7 +13,22 @@ import se.jbee.cls.ref.Usages;
 public final class ConstantPool
 		implements Usages {
 
-	private static final ConstantTag[] TAGS = ConstantTag.values();
+	private static final int TAG_COUNT = ConstantTag.values().length;
+	private static final ConstantTag[] TAGS_CODE_ORDER = new ConstantTag[13];
+
+	static {
+		TAGS_CODE_ORDER[1] = ConstantTag.UTF8;
+		TAGS_CODE_ORDER[3] = ConstantTag.INTEGER;
+		TAGS_CODE_ORDER[4] = ConstantTag.FLOAT;
+		TAGS_CODE_ORDER[5] = ConstantTag.LONG;
+		TAGS_CODE_ORDER[6] = ConstantTag.DOUBLE;
+		TAGS_CODE_ORDER[7] = ConstantTag.CLASS;
+		TAGS_CODE_ORDER[8] = ConstantTag.STRING;
+		TAGS_CODE_ORDER[9] = ConstantTag.FIELD_REF;
+		TAGS_CODE_ORDER[10] = ConstantTag.METHOD_REF;
+		TAGS_CODE_ORDER[11] = ConstantTag.INTERFACE_METHOD_REF;
+		TAGS_CODE_ORDER[12] = ConstantTag.NAME_AND_TYPE;
+	}
 
 	private static final ConstantPool SHARED = new ConstantPool( 1024 );
 
@@ -21,16 +36,14 @@ public final class ConstantPool
 			throws IOException {
 		final int length = in.uint16bit();
 		ConstantPool cp = length < SHARED.length
-			? new ConstantPool( length, SHARED.tags, SHARED.utf8, SHARED.indexes )
+			? new ConstantPool( length, SHARED.tags, SHARED.utf8, SHARED.indexes, SHARED.tagIndexes )
 			: new ConstantPool( length );
 		cp.init( in );
 		return cp;
 	}
 
 	public static enum ConstantTag {
-		_0,
 		UTF8, //= 1
-		_2,
 		INTEGER, //= 3
 		FLOAT, //= 4
 		LONG, //= 5
@@ -44,8 +57,9 @@ public final class ConstantPool
 		;
 
 		public boolean isMethod() {
-			return this == METHOD_REF || this == ConstantTag.INTERFACE_METHOD_REF;
+			return this == METHOD_REF || this == INTERFACE_METHOD_REF;
 		}
+
 	}
 
 	private final int length;
@@ -53,26 +67,30 @@ public final class ConstantPool
 	private final String[] utf8;
 	private final int[][] indexes;
 	private final int[] tagCounts;
+	private final int[][] tagIndexes;
 
-	private ConstantPool( int length, ConstantTag[] tags, String[] utf8, int[][] indexes ) {
+	private ConstantPool( int length, ConstantTag[] tags, String[] utf8, int[][] indexes,
+			int[][] tagIndexes ) {
 		super();
 		this.length = length;
 		this.tags = tags;
 		this.utf8 = utf8;
 		this.indexes = indexes;
-		this.tagCounts = new int[TAGS.length];
+		this.tagIndexes = tagIndexes;
+		this.tagCounts = new int[TAG_COUNT];
 	}
 
 	private ConstantPool( int length ) {
-		this( length, new ConstantTag[length], new String[length], new int[length][2] );
+		this( length, new ConstantTag[length], new String[length], new int[length][2],
+				new int[length][TAG_COUNT] );
 	}
 
 	private void init( ClassInputStream in )
 			throws IOException {
 		for ( int i = 1; i < length; ) {
 			boolean occupy2 = false;
-			final ConstantTag tag = TAGS[in.uint8bit()];
-			tagCounts[tag.ordinal()]++;
+			final ConstantTag tag = TAGS_CODE_ORDER[in.uint8bit()];
+			final int tagIndex = tag.ordinal();
 			switch ( tag ) {
 				case CLASS:
 					indexes[i][0] = in.uint16bit(); // name index
@@ -107,6 +125,8 @@ public final class ConstantPool
 				default:
 					throw new UnsupportedOperationException( "This tag is not known: " + tag );
 			}
+			tagIndexes[tagCounts[tagIndex]][tag.ordinal()] = i;
+			tagCounts[tagIndex]++;
 			tags[i++] = tag;
 			if ( occupy2 ) { // double and long constants are two entries
 				tags[i++] = tag;
@@ -116,6 +136,10 @@ public final class ConstantPool
 
 	public int count( ConstantTag tag ) {
 		return tagCounts[tag.ordinal()];
+	}
+
+	int index( ConstantTag tag, int nr ) {
+		return tagIndexes[nr][tag.ordinal()];
 	}
 
 	public int length() {
@@ -249,39 +273,27 @@ public final class ConstantPool
 			super();
 			this.cp = cp;
 			this.tag = tag;
-			nextIndex();
 		}
 
 		@Override
-		public int count() {
+		public final int count() {
 			return cp.count( tag );
 		}
 
 		@Override
-		public boolean hasNext() {
-			return index < cp.length() && cp.tag( index ) == tag;
+		public final boolean hasNext() {
+			return index < count();
 		}
 
 		@Override
-		public T next() {
+		public final T next() {
 			if ( !hasNext() ) {
 				throw new NoSuchElementException();
 			}
-			T m = reference( cp, index++ );
-			nextIndex();
-			return m;
+			return reference( cp, cp.index( tag, index++ ) );
 		}
 
 		abstract T reference( ConstantPool cp, int index );
-
-		private void nextIndex() {
-			if ( index == 0 && count() == 0 ) {
-				return;
-			}
-			while ( index < cp.length() && cp.tag( index ) != tag ) {
-				index++;
-			}
-		}
 
 		@Override
 		public void remove() {
@@ -290,6 +302,9 @@ public final class ConstantPool
 
 		@Override
 		public Iterator<T> iterator() {
+			if ( index > 0 ) {
+				throw new IllegalStateException( "Not supported!" );
+			}
 			return this;
 		}
 
