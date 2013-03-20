@@ -3,6 +3,7 @@ package se.jbee.cls.sca.graph;
 import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
+import se.jbee.cls.ref.References;
 import se.jbee.cls.ref.Type;
 
 public final class ClassNode
@@ -11,6 +12,9 @@ public final class ClassNode
 	private final ClassGraph graph;
 	public final Class cls;
 	private ClassNode superclass;
+	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
+	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
+
 	//TODO add parameter refs
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
@@ -31,17 +35,36 @@ public final class ClassNode
 		graph.pkg( type.pkg() ).classes.add( this );
 	}
 
-	void has( Type signature ) {
-		if ( !signature.cls.equalTo( cls ) ) {
+	void definitionIs( Type type ) {
+		if ( !type.cls.equalTo( cls ) ) {
 			throw new IllegalArgumentException();
 		}
-		ClassNode sc = graph.cls( signature.superclass );
+		ClassNode sc = graph.cls( type.superclass );
 		this.superclass = sc;
 		sc.subclasses.add( this );
-		for ( Class t : signature.interfaces ) {
+		for ( Class t : type.interfaces ) {
 			ClassNode other = graph.cls( t );
 			other.implementations.add( this );
 			interfaces.add( other );
+		}
+		final References refs = type.references;
+		for ( Method m : refs.calledMethods() ) {
+			calls( m );
+		}
+		for ( Method m : refs.calledInterfaceMethods() ) {
+			calls( m );
+		}
+		for ( Field f : refs.accessedFields() ) {
+			accesses( f );
+		}
+		for ( Class t : refs.referencedClasses() ) {
+			references( t );
+		}
+		for ( Field f : type.declarations.declaredFields() ) {
+			declares( f );
+		}
+		for ( Method m : type.declarations.declaredMethods() ) {
+			declares( m );
 		}
 	}
 
@@ -49,7 +72,15 @@ public final class ClassNode
 		return superclass;
 	}
 
-	public void calls( Method method ) {
+	private void declares( Method method ) {
+
+	}
+
+	private void declares( Field field ) {
+
+	}
+
+	private void calls( Method method ) {
 		// type level
 		ClassNode other = graph.cls( method.declaringClass );
 		other.calledBy.add( this );
@@ -63,7 +94,7 @@ public final class ClassNode
 		calls.add( m );
 	}
 
-	public void accesses( Field field ) {
+	private void accesses( Field field ) {
 		// type level
 		references( field.type );
 		references( field.declaringClass );
@@ -75,13 +106,13 @@ public final class ClassNode
 		f.accessedBy.add( this );
 	}
 
-	public void references( Class... types ) {
+	private void references( Class... types ) {
 		for ( Class t : types ) {
 			references( t );
 		}
 	}
 
-	public void references( Class type ) {
+	private void references( Class type ) {
 		ClassNode other = graph.cls( type );
 		other.referencedBy.add( this );
 		references.add( other );

@@ -4,7 +4,6 @@ import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
 import se.jbee.cls.ref.Package;
-import se.jbee.cls.ref.References;
 import se.jbee.cls.ref.Type;
 import se.jbee.cls.sca.JarProcessor;
 
@@ -18,21 +17,7 @@ public final class ClassGraph
 
 	@Override
 	public void process( Type type ) {
-		ClassNode node = cls( type.cls );
-		node.has( type );
-		final References refs = type.references;
-		for ( Method m : refs.calledMethods() ) {
-			node.calls( m );
-		}
-		for ( Method m : refs.calledInterfaceMethods() ) {
-			node.calls( m );
-		}
-		for ( Field f : refs.accessedFields() ) {
-			node.accesses( f );
-		}
-		for ( Class t : refs.referencedClasses() ) {
-			node.references( t );
-		}
+		cls( type.cls ).definitionIs( type );
 	}
 
 	public ClassNode cls( Class type ) {

@@ -79,10 +79,6 @@ public final class DeclarationPool
 		in.skipBytes( length );
 	}
 
-	public int count() {
-		return methodCount;
-	}
-
 	public Method method( int index ) {
 		MethodDeclaration d = methodDeclaration( cp.utf( methodsMND[index][2] ) );
 		return Method.method( declaringClass, methodModifiers( methodsMND[index][0] ),
@@ -97,19 +93,19 @@ public final class DeclarationPool
 
 	@Override
 	public Items<Method> declaredMethods() {
-		return new MethodIterator( this );
+		return new MethodIterator( this, methodCount );
 	}
 
 	@Override
 	public Items<Field> declaredFields() {
-		return new FieldIterator( this );
+		return new FieldIterator( this, fieldCount );
 	}
 
 	private static final class FieldIterator
 			extends DeclarationPoolIterator<Field> {
 
-		FieldIterator( DeclarationPool dp ) {
-			super( dp );
+		FieldIterator( DeclarationPool dp, int count ) {
+			super( dp, count );
 		}
 
 		@Override
@@ -122,8 +118,8 @@ public final class DeclarationPool
 	private static final class MethodIterator
 			extends DeclarationPoolIterator<Method> {
 
-		MethodIterator( DeclarationPool dp ) {
-			super( dp );
+		MethodIterator( DeclarationPool dp, int count ) {
+			super( dp, count );
 		}
 
 		@Override
@@ -137,11 +133,13 @@ public final class DeclarationPool
 			implements Iterator<T>, Items<T> {
 
 		private final DeclarationPool dp;
+		private final int count;
 		private int index = 0;
 
-		DeclarationPoolIterator( DeclarationPool dp ) {
+		DeclarationPoolIterator( DeclarationPool dp, int count ) {
 			super();
 			this.dp = dp;
+			this.count = count;
 		}
 
 		@Override
@@ -151,12 +149,12 @@ public final class DeclarationPool
 
 		@Override
 		public final int count() {
-			return dp.count();
+			return count;
 		}
 
 		@Override
 		public final boolean hasNext() {
-			return index < count();
+			return index < count;
 		}
 
 		@Override
