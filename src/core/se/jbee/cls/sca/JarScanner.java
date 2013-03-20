@@ -60,7 +60,7 @@ public class JarScanner {
 
 	private void scan( InputStream classInputStream )
 			throws IOException {
-		Classfile.readClassfile( new ClassInputStream( classInputStream ), filter, out );
+		Classfile.readClassfile( new ClassInputStream( classInputStream ), out );
 	}
 
 	static boolean isClassFile( String name ) {

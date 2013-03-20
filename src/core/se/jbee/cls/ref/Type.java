@@ -2,23 +2,27 @@ package se.jbee.cls.ref;
 
 public final class Type {
 
-	//OPEN if this is just used from within the CP the usages and own methods and fields could be added here
-
-	public static Type type( Modifiers modifiers, Class type, Class superclass, Class[] interfaces ) {
-		return new Type( modifiers, type, superclass, interfaces );
+	public static Type type( Modifiers modifiers, Class cls, Class superclass, Class[] interfaces,
+			Declarations declarations, References references ) {
+		return new Type( modifiers, cls, superclass, interfaces, declarations, references );
 	}
 
 	public final Modifiers modifiers;
 	public final Class cls;
 	public final Class superclass;
 	public final Class[] interfaces;
+	public final Declarations declarations;
+	public final References references;
 
-	private Type( Modifiers modifiers, Class type, Class superclass, Class[] interfaces ) {
+	private Type( Modifiers modifiers, Class cls, Class superclass, Class[] interfaces,
+			Declarations declarations, References references ) {
 		super();
 		this.modifiers = modifiers;
-		this.cls = type;
+		this.cls = cls;
 		this.superclass = superclass;
 		this.interfaces = interfaces;
+		this.declarations = declarations;
+		this.references = references;
 	}
 
 	@Override

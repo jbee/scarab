@@ -11,10 +11,10 @@ import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
 import se.jbee.cls.ref.Modifiers;
-import se.jbee.cls.ref.Usages;
+import se.jbee.cls.ref.References;
 
 public final class ConstantPool
-		implements Usages {
+		implements References {
 
 	private static final int TAG_COUNT = ConstantTag.values().length;
 	/**
@@ -205,27 +205,28 @@ public final class ConstantPool
 		final int i1 = index1( index );
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
-		String type = utf1( i1 );
-		return Field.field( Classfile.cls( declaringClass ), Classfile.cls( type ), name );
+		FieldDeclaration declaration = FieldDeclaration.fieldDeclaration( utf1( i1 ) );
+		return Field.field( Classfile.cls( declaringClass ), Modifiers.UNKNOWN, declaration.type(),
+				name );
 	}
 
 	@Override
-	public Items<Method> methods() {
+	public Items<Method> calledMethods() {
 		return new MethodIterator( this, ConstantTag.METHOD_REF );
 	}
 
 	@Override
-	public Items<Method> interfaceMethods() {
+	public Items<Method> calledInterfaceMethods() {
 		return new MethodIterator( this, ConstantTag.INTERFACE_METHOD_REF );
 	}
 
 	@Override
-	public Items<Field> fields() {
+	public Items<Field> accessedFields() {
 		return new FieldIterator( this );
 	}
 
 	@Override
-	public Items<Class> classes() {
+	public Items<Class> referencedClasses() {
 		return new TypeIterator( this );
 	}
 

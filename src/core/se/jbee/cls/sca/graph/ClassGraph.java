@@ -1,11 +1,11 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Method;
 import se.jbee.cls.ref.Package;
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Usages;
+import se.jbee.cls.ref.References;
+import se.jbee.cls.ref.Type;
 import se.jbee.cls.sca.JarProcessor;
 
 public final class ClassGraph
@@ -17,19 +17,20 @@ public final class ClassGraph
 	private final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 
 	@Override
-	public void process( Type type, Usages usages ) {
+	public void process( Type type ) {
 		ClassNode node = cls( type.cls );
 		node.has( type );
-		for ( Method m : usages.methods() ) {
+		final References refs = type.references;
+		for ( Method m : refs.calledMethods() ) {
 			node.calls( m );
 		}
-		for ( Method m : usages.interfaceMethods() ) {
+		for ( Method m : refs.calledInterfaceMethods() ) {
 			node.calls( m );
 		}
-		for ( Field f : usages.fields() ) {
+		for ( Field f : refs.accessedFields() ) {
 			node.accesses( f );
 		}
-		for ( Class t : usages.classes() ) {
+		for ( Class t : refs.referencedClasses() ) {
 			node.references( t );
 		}
 	}

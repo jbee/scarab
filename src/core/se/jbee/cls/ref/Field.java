@@ -2,17 +2,19 @@ package se.jbee.cls.ref;
 
 public final class Field {
 
-	public static Field field( Class declaringClass, Class type, String name ) {
-		return new Field( declaringClass, type, name );
+	public static Field field( Class declaringClass, Modifiers modifiers, Class type, String name ) {
+		return new Field( declaringClass, modifiers, type, name );
 	}
 
 	public final Class declaringClass;
+	public final Modifiers modifiers;
 	public final Class type;
 	public final String name;
 
-	private Field( Class declaringClass, Class type, String name ) {
+	private Field( Class declaringClass, Modifiers modifiers, Class type, String name ) {
 		super();
 		this.declaringClass = declaringClass;
+		this.modifiers = modifiers;
 		this.type = type;
 		this.name = name.intern();
 	}

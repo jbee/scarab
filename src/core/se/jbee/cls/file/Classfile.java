@@ -10,7 +10,6 @@ import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Modifiers;
 import se.jbee.cls.ref.Type;
 import se.jbee.cls.sca.JarProcessor;
-import se.jbee.cls.sca.TypeFilter;
 
 public final class Classfile {
 
@@ -33,7 +32,7 @@ public final class Classfile {
 	 * @throws IOException
 	 *             in case of reading errors or invalid class file.
 	 */
-	public static void readClassfile( ClassInputStream in, TypeFilter filter, JarProcessor out )
+	public static void readClassfile( ClassInputStream in, JarProcessor out )
 			throws IOException {
 		if ( in.int32bit() != MAGIC_NUMBER ) {
 			throw new IOException( "Not a class file: Expected Magic number 0xcafebabe." );
@@ -46,39 +45,9 @@ public final class Classfile {
 		Class cls = cls( cp.utf0( in.uint16bit() ) );
 		Class superclass = cls( cp.utf0( in.uint16bit() ) );
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
-		Type type = type( modifiers, cls, superclass, interfaces );
-		if ( filter.process( type ) ) {
-			out.process( type, cp );
-			readFieldOrMethod( in, cp );
-			readFieldOrMethod( in, cp );
-			readAttributes( in, cp );
-		}
-	}
-
-	private static void readFieldOrMethod( ClassInputStream in, ConstantPool cp )
-			throws IOException {
-		int count = in.uint16bit();
-		for ( int i = 0; i < count; i++ ) {
-			int flags = in.uint16bit();
-			String name = cp.utf( in.uint16bit() );
-			String descriptor = cp.utf( in.uint16bit() );
-			readAttributes( in, cp );
-		}
-	}
-
-	private static void readAttributes( ClassInputStream in, ConstantPool cp )
-			throws IOException {
-		int attributeCount = in.uint16bit();
-		for ( int a = 0; a < attributeCount; a++ ) {
-			readAttribute( cp, in );
-		}
-	}
-
-	private static void readAttribute( ConstantPool cp, ClassInputStream in )
-			throws IOException {
-		String name = cp.utf( in.uint16bit() );
-		int length = in.int32bit();
-		in.skipBytes( length );
+		DeclarationPool dp = DeclarationPool.read( in, cls, cp );
+		Type type = type( modifiers, cls, superclass, interfaces, dp, cp );
+		out.process( type );
 	}
 
 	private static Class[] readInterfaces( ClassInputStream stream, ConstantPool cp,
