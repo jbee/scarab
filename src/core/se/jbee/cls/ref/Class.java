@@ -73,6 +73,10 @@ public final class Class {
 		return name.lastIndexOf( '$' ) > 0;
 	}
 
+	public boolean isObject() {
+		return equalTo( Class.OBJECT );
+	}
+
 	public Class elementClass() {
 		return isArray()
 			? new Class( 0, name )

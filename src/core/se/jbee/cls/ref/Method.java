@@ -43,6 +43,12 @@ public final class Method {
 				&& Arrays.equals( parameterTypes, other.parameterTypes );
 	}
 
+	public Method declaredBy( Class declaringClass ) {
+		return this.declaringClass.equalTo( declaringClass )
+			? this
+			: new Method( declaringClass, modifiers, returnType, name, parameterTypes );
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();

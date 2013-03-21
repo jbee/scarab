@@ -64,7 +64,7 @@ public final class Classfile {
 		if ( name == null || name.isEmpty() ) {
 			return Class.NONE;
 		}
-		if ( !Character.isLowerCase( name.charAt( 0 ) ) && name.endsWith( ";" ) ) {
+		if ( !Character.isLowerCase( name.charAt( 0 ) ) && !name.endsWith( ";" ) ) {
 			return classes( name )[0];
 		}
 		return Class.cls( name );

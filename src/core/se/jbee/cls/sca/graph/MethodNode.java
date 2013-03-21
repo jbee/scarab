@@ -32,12 +32,29 @@ public class MethodNode
 		return method;
 	}
 
+	@Override
+	public String toString() {
+		return method.toString();
+	}
+
 	public void declaredAs( Method method ) {
 		this.method = method;
 	}
 
 	public ClassNode parameter( int index ) {
 		return parameters[index];
+	}
+
+	public boolean isOverridden() {
+		if ( declaringClass.cls.isObject() || declaringClass.cls.isNone() ) {
+			return false;
+		}
+		for ( ClassNode i : declaringClass.interfaces ) {
+			if ( i.methods.contains( method.declaredBy( i.cls ) ) ) {
+				return true;
+			}
+		}
+		return declaringClass.superclass().declaringClass( method ) != null;
 	}
 
 }

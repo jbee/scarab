@@ -27,4 +27,9 @@ public class FieldNode
 		this.field = field;
 	}
 
+	@Override
+	public String toString() {
+		return field.toString();
+	}
+
 }

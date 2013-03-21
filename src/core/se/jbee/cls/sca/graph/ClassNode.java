@@ -14,8 +14,6 @@ public final class ClassNode
 	private ClassNode superclass;
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
-
-	//TODO add parameter refs
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
 	public final Edges<Class, ClassNode> subclasses = new Edges<Class, ClassNode>();
@@ -62,10 +60,10 @@ public final class ClassNode
 			references( t );
 		}
 		for ( Field f : type.declarations.declaredFields() ) {
-			declares( f );
+			declaredAs( f );
 		}
 		for ( Method m : type.declarations.declaredMethods() ) {
-			declares( m );
+			declaredAs( m );
 		}
 	}
 
@@ -73,13 +71,23 @@ public final class ClassNode
 		return superclass;
 	}
 
-	private void declares( Method method ) {
+	public ClassNode declaringClass( Method method ) {
+		MethodNode node = methods.node( method.declaredBy( cls ) );
+		if ( node != null ) {
+			return this;
+		}
+		return cls.isObject() || superclass.cls.isObject()
+			? null
+			: superclass.declaringClass( method );
+	}
+
+	private void declaredAs( Method method ) {
 		MethodNode m = graph.method( method );
 		m.declaredAs( method );
 		methods.add( m );
 	}
 
-	private void declares( Field field ) {
+	private void declaredAs( Field field ) {
 		FieldNode f = graph.field( field );
 		f.declaredAs( field );
 		fields.add( f );

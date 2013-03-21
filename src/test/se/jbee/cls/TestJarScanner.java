@@ -42,6 +42,10 @@ public class TestJarScanner {
 		assertTrue( fieldType.method.modifiers.isStatic() );
 		assertEquals( 1, fieldType.parameterTypes.size() );
 		assertEquals( "Field", fieldType.parameter( 0 ).cls.simpleName() );
+		MethodNode isAssignableTo = type.method( "isAssignableTo" );
+		assertTrue( isAssignableTo.isOverridden() );
+		ClassNode binder = g.pkg( bind ).cls( bind.classWithSimpleName( "Binder" ) );
+		assertTrue( binder.subclasses.size() > 0 );
 	}
 
 	@Test
