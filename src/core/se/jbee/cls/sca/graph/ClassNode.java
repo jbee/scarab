@@ -10,7 +10,7 @@ public final class ClassNode
 		implements Node<Class> {
 
 	private final ClassGraph graph;
-	public final Class cls;
+	public Class cls;
 	private ClassNode superclass;
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
@@ -28,17 +28,18 @@ public final class ClassNode
 	public final Edges<Class, ClassNode> accessesTypes = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
 
-	ClassNode( ClassGraph graph, Class type ) {
+	ClassNode( ClassGraph graph, Class cls ) {
 		super();
 		this.graph = graph;
-		this.cls = type;
-		graph.pkg( type.pkg() ).classes.add( this );
+		this.cls = cls;
+		graph.pkg( cls.pkg() ).classes.add( this );
 	}
 
-	void definitionIs( Type type ) {
+	void declaredAs( Type type ) {
 		if ( !type.cls.equalTo( cls ) ) {
 			throw new IllegalArgumentException();
 		}
+		this.cls = type.cls;
 		ClassNode sc = graph.cls( type.superclass );
 		this.superclass = sc;
 		sc.subclasses.add( this );
@@ -73,11 +74,15 @@ public final class ClassNode
 	}
 
 	private void declares( Method method ) {
-
+		MethodNode m = graph.method( method );
+		m.declaredAs( method );
+		methods.add( m );
 	}
 
 	private void declares( Field field ) {
-
+		FieldNode f = graph.field( field );
+		f.declaredAs( field );
+		fields.add( f );
 	}
 
 	private void calls( Method method ) {
@@ -147,5 +152,14 @@ public final class ClassNode
 	@Override
 	public String toString() {
 		return cls.toString();
+	}
+
+	public MethodNode method( String name ) {
+		for ( MethodNode m : methods ) {
+			if ( m.method.name.equals( name ) ) {
+				return m;
+			}
+		}
+		throw new NoSuchMethodError( name );
 	}
 }

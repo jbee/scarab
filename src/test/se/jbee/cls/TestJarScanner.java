@@ -16,6 +16,8 @@ import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.JarScanner;
 import se.jbee.cls.sca.TypeFilter;
 import se.jbee.cls.sca.graph.ClassGraph;
+import se.jbee.cls.sca.graph.ClassNode;
+import se.jbee.cls.sca.graph.MethodNode;
 import se.jbee.cls.sca.graph.PackageNode;
 
 public class TestJarScanner {
@@ -33,8 +35,13 @@ public class TestJarScanner {
 		Package bind = Package.pkg( "se/jbee/inject/bind" );
 		assertFalse( inject.references( bind ) );
 		assertTrue( g.pkg( bind ).references( root ) );
-		assertTrue( inject.contains( root.packageType( "Type" ) ) );
-		assertFalse( inject.contains( root.packageType( "Foo" ) ) );
+		assertTrue( inject.contains( root.classWithSimpleName( "Type" ) ) );
+		assertFalse( inject.contains( root.classWithSimpleName( "Foo" ) ) );
+		ClassNode type = inject.cls( root.classWithSimpleName( "Type" ) );
+		MethodNode fieldType = type.method( "fieldType" );
+		assertTrue( fieldType.method.modifiers.isStatic() );
+		assertEquals( 1, fieldType.parameterTypes.size() );
+		assertEquals( "Field", fieldType.parameter( 0 ).cls.simpleName() );
 	}
 
 	@Test

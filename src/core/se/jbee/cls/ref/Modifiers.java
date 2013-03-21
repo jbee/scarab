@@ -69,6 +69,10 @@ public final class Modifiers {
 		return !isInterface() && !isEnum() && !isAnnotation() && !isUnknown();
 	}
 
+	public boolean isStatic() {
+		return has( Modifier.STATIC );
+	}
+
 	public boolean isUnknown() {
 		return mode == ModifierMode.UNKNOWN;
 	}
@@ -99,4 +103,5 @@ public final class Modifiers {
 	public boolean all( Modifiers other ) {
 		return ( accFlags & other.accFlags ) == other.accFlags;
 	}
+
 }

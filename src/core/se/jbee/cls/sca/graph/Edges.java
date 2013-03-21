@@ -1,9 +1,11 @@
 package se.jbee.cls.sca.graph;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
-public final class Edges<K, T extends Node<K>> {
+public final class Edges<K, T extends Node<K>>
+		implements Iterable<T> {
 
 	private final HashMap<K, T> nodes = new HashMap<K, T>();
 
@@ -30,5 +32,10 @@ public final class Edges<K, T extends Node<K>> {
 
 	public T node( K key ) {
 		return nodes.get( key );
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return nodes.values().iterator();
 	}
 }

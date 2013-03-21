@@ -1,12 +1,12 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Field;
 import se.jbee.cls.ref.Class;
+import se.jbee.cls.ref.Field;
 
 public class FieldNode
 		implements Node<Field> {
 
-	public final Field field;
+	public Field field;
 	public final ClassNode declaringClass;
 	public final ClassNode type;
 	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
@@ -21,6 +21,10 @@ public class FieldNode
 	@Override
 	public Field id() {
 		return field;
+	}
+
+	public void declaredAs( Field field ) {
+		this.field = field;
 	}
 
 }

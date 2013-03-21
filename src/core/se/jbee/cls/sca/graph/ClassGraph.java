@@ -17,7 +17,7 @@ public final class ClassGraph
 
 	@Override
 	public void process( Type type ) {
-		cls( type.cls ).definitionIs( type );
+		cls( type.cls ).declaredAs( type );
 	}
 
 	public ClassNode cls( Class type ) {
