@@ -46,7 +46,7 @@ public class PackageNode
 		return key;
 	}
 
-	public void references( PackageNode other ) {
+	void references( PackageNode other ) {
 		references.add( other );
 		other.referencedBy.add( this );
 		connects( other );

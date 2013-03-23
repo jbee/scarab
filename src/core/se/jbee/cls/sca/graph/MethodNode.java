@@ -37,7 +37,7 @@ public class MethodNode
 		return key.toString();
 	}
 
-	public void declaredAs( Method method ) {
+	void declaredAs( Method method ) {
 		this.key = method;
 	}
 

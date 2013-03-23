@@ -23,7 +23,7 @@ public class FieldNode
 		return key;
 	}
 
-	public void declaredAs( Field field ) {
+	void declaredAs( Field field ) {
 		this.key = field;
 	}
 
