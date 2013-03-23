@@ -11,13 +11,13 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import se.jbee.cls.graph.ClassGraph;
+import se.jbee.cls.graph.ClassNode;
+import se.jbee.cls.graph.MethodNode;
+import se.jbee.cls.graph.PackageNode;
 import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.JarScanner;
 import se.jbee.cls.sca.TypeFilter;
-import se.jbee.cls.sca.graph.ClassGraph;
-import se.jbee.cls.sca.graph.ClassNode;
-import se.jbee.cls.sca.graph.MethodNode;
-import se.jbee.cls.sca.graph.PackageNode;
 
 public class TestJarScanner {
 

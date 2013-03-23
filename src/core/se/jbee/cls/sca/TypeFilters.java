@@ -1,5 +1,6 @@
 package se.jbee.cls.sca;
 
+import se.jbee.cls.Archive;
 import se.jbee.cls.Modifiers;
 import se.jbee.cls.Type;
 

@@ -1,4 +1,4 @@
-package se.jbee.cls.sca.graph;
+package se.jbee.cls.graph;
 
 public interface Node<T> {
 

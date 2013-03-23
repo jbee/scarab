@@ -2,7 +2,6 @@ package se.jbee.cls;
 
 import java.util.Arrays;
 
-
 public final class Method {
 
 	public static Method method( Class declaringClass, Modifiers modifiers, Class returnType,
@@ -53,8 +52,17 @@ public final class Method {
 		StringBuilder b = new StringBuilder();
 		b.append( declaringClass + "#" + returnType + " " + name + "(" );
 		Object[] values = parameterTypes;
-		Append.commaSeparated( b, values );
+		commaSeparated( b, values );
 		b.append( ')' );
 		return b.toString();
+	}
+
+	private static void commaSeparated( StringBuilder b, Object... values ) {
+		if ( values.length > 0 ) {
+			for ( int i = 0; i < values.length; i++ ) {
+				b.append( values[i] ).append( ", " );
+			}
+			b.setLength( b.length() - 2 );
+		}
 	}
 }

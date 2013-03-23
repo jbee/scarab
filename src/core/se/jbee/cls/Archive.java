@@ -1,6 +1,8 @@
-package se.jbee.cls.sca;
+package se.jbee.cls;
 
-public class Archive {
+public final class Archive {
+
+	public static final Archive NONE = new Archive( "" );
 
 	public static Archive archive( String file ) {
 		return new Archive( file );

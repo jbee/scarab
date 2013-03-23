@@ -1,4 +1,4 @@
-package se.jbee.cls.sca.graph;
+package se.jbee.cls.graph;
 
 import se.jbee.cls.Class;
 import se.jbee.cls.Field;

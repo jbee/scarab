@@ -1,6 +1,6 @@
 package se.jbee.cls.sca;
 
-import static se.jbee.cls.sca.Archive.archive;
+import static se.jbee.cls.Archive.archive;
 
 import java.io.IOException;
 import java.io.InputStream;
