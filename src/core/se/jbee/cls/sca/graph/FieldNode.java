@@ -3,7 +3,7 @@ package se.jbee.cls.sca.graph;
 import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Field;
 
-public class FieldNode
+public final class FieldNode
 		implements Node<Field> {
 
 	private Field key;

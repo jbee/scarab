@@ -14,6 +14,7 @@ public final class ClassGraph
 	private final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
 	private final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
 	private final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
+	private final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
 
 	@Override
 	public void process( Type type ) {
@@ -43,6 +44,16 @@ public final class ClassGraph
 		if ( node == null ) {
 			node = new MethodNode( this, method );
 			methods.add( node );
+		}
+		return node;
+	}
+
+	public OverrideNode override( Method method ) {
+		method = method.declaredBy( Class.NONE );
+		OverrideNode node = overrides.node( method );
+		if ( node == null ) {
+			node = new OverrideNode( this, method );
+			overrides.add( node );
 		}
 		return node;
 	}

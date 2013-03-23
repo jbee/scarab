@@ -3,7 +3,7 @@ package se.jbee.cls.sca.graph;
 import se.jbee.cls.ref.Class;
 import se.jbee.cls.ref.Method;
 
-public class MethodNode
+public final class MethodNode
 		implements Node<Method> {
 
 	private Method key;
@@ -11,6 +11,7 @@ public class MethodNode
 	public final ClassNode returnType;
 	public final Edges<Class, ClassNode> parameterTypes = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> calledBy = new Edges<Class, ClassNode>();
+	public final OverrideNode overrides;
 	private final ClassNode[] parameters;
 
 	MethodNode( ClassGraph graph, Method method ) {
@@ -18,6 +19,8 @@ public class MethodNode
 		this.key = method;
 		this.declaringClass = graph.cls( method.declaringClass );
 		this.returnType = graph.cls( method.returnType );
+		this.overrides = graph.override( method );
+		this.overrides.declaredBy( this );
 		this.parameters = new ClassNode[method.parameterTypes.length];
 		int i = 0;
 		for ( Class p : method.parameterTypes ) {
@@ -46,15 +49,7 @@ public class MethodNode
 	}
 
 	public boolean isOverridden() {
-		if ( declaringClass.id().isObject() || declaringClass.id().isNone() ) {
-			return false;
-		}
-		for ( ClassNode i : declaringClass.interfaces ) {
-			if ( i.methods.contains( key.declaredBy( i.id() ) ) ) {
-				return true;
-			}
-		}
-		return declaringClass.superclass().declaringClass( key ) != null;
+		return overrides.isOverridden( this );
 	}
 
 }
