@@ -4,6 +4,7 @@ import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Field;
 import se.jbee.cls.Method;
+import se.jbee.cls.Modifiers;
 import se.jbee.cls.References;
 import se.jbee.cls.Type;
 
@@ -14,11 +15,13 @@ public final class ClassNode
 	private Class key;
 	private ClassNode superclass;
 	private ArchiveNode archive;
+	private Modifiers modifiers;
 	public final PackageNode pkg;
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
+	//TODO inner classes
 	public final Edges<Class, ClassNode> subclasses = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> interfaces = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> implementations = new Edges<Class, ClassNode>();
@@ -36,6 +39,7 @@ public final class ClassNode
 		this.pkg = graph.pkg( cls.pkg() );
 		this.pkg.classes.add( this );
 		this.archive = graph.archive( Archive.RUNTIME );
+		this.modifiers = Modifiers.UNKNOWN;
 	}
 
 	void declaredAs( Type type ) {
@@ -43,6 +47,7 @@ public final class ClassNode
 			throw new IllegalArgumentException();
 		}
 		this.key = type.cls;
+		this.modifiers = type.modifiers;
 		this.archive = graph.archive( type.archive );
 		this.archive.contains( this );
 		ClassNode sc = graph.cls( type.superclass );
@@ -72,6 +77,10 @@ public final class ClassNode
 		for ( Method m : type.declarations.declaredMethods() ) {
 			declaredAs( m );
 		}
+	}
+
+	public Modifiers modifiers() {
+		return modifiers;
 	}
 
 	public ArchiveNode archive() {

@@ -1,0 +1,75 @@
+.border {
+	border: 4px solid white;
+}
+.border.project {
+	border-color: #90b8e8;
+}
+.border.folder {
+	border-color: #f8d888;
+}
+.border.project:hover {
+	border-color: #8890c8;
+}
+.border.package {
+	border-color: #d0a880;
+}
+.border.package:hover {
+	border-color: #b08050;
+}
+.border.class {
+	border-color: #78b088;
+}
+.border.class:hover {
+	border-color: #70a878;
+}
+.border.interface {
+	border-color: #a094c8;
+}
+.border.interface:hover {
+	border-color: #8880c0;
+}
+.border.enum {
+	border-color: #b89a78;
+}
+.border.enum:hover {
+	border-color: #a0783c;
+}
+
+.bg.project {
+	background-color: #90b8e8;
+}
+.bg.folder {
+	background-color: #f8d888;
+}
+.bg.project:hover {
+	background-color: #8890c8;
+}
+.bg.package {
+	background-color: #d0a880;
+}
+.bg.package:hover {
+	background-color: #b08050;
+}
+.bg.class {
+	background-color: #78b088;
+}
+.bg.class:hover {
+	background-color: #70a878;
+}
+.bg.interface {
+	background-color: #a094c8;
+}
+.bg.interface:hover {
+	background-color: #8880c0;
+}
+.bg.enum {
+	background-color: #b89a78;
+}
+.bg.enum:hover {
+	background-color: #a0783c;
+}
+
+
+
+
+
