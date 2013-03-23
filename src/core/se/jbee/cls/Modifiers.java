@@ -1,6 +1,6 @@
-package se.jbee.cls.ref;
+package se.jbee.cls;
 
-import se.jbee.cls.ref.Modifier.ModifierMode;
+import se.jbee.cls.Modifier.ModifierMode;
 
 public final class Modifiers {
 

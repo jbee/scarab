@@ -1,4 +1,4 @@
-package se.jbee.cls.ref;
+package se.jbee.cls;
 
 public final class Package {
 

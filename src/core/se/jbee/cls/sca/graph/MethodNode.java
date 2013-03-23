@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Method;
+import se.jbee.cls.Class;
+import se.jbee.cls.Method;
 
 public final class MethodNode
 		implements Node<Method> {

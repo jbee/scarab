@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Field;
+import se.jbee.cls.Class;
+import se.jbee.cls.Field;
 
 public final class FieldNode
 		implements Node<Field> {

@@ -1,8 +1,8 @@
-package se.jbee.cls.ref;
+package se.jbee.cls;
 
-import static se.jbee.cls.ref.Modifier.ModifierMode.CLASS;
-import static se.jbee.cls.ref.Modifier.ModifierMode.FIELD;
-import static se.jbee.cls.ref.Modifier.ModifierMode.METHOD;
+import static se.jbee.cls.Modifier.ModifierMode.CLASS;
+import static se.jbee.cls.Modifier.ModifierMode.FIELD;
+import static se.jbee.cls.Modifier.ModifierMode.METHOD;
 
 import java.util.EnumSet;
 

@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import se.jbee.cls.Class;
+import se.jbee.cls.Field;
 import se.jbee.cls.Items;
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Field;
-import se.jbee.cls.ref.Method;
-import se.jbee.cls.ref.Modifiers;
-import se.jbee.cls.ref.References;
+import se.jbee.cls.Method;
+import se.jbee.cls.Modifiers;
+import se.jbee.cls.References;
 
 public final class ConstantPool
 		implements References {

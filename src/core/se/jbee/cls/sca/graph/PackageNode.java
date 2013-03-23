@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Package;
+import se.jbee.cls.Class;
+import se.jbee.cls.Package;
 
 public final class PackageNode
 		implements Node<Package> {

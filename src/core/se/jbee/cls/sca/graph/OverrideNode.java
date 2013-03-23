@@ -1,7 +1,7 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Method;
+import se.jbee.cls.Class;
+import se.jbee.cls.Method;
 
 /**
  * This type of node represents a {@link Method} without taking its declaring {@link Class} into

@@ -1,10 +1,10 @@
 package se.jbee.cls.sca.graph;
 
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Field;
-import se.jbee.cls.ref.Method;
-import se.jbee.cls.ref.References;
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.Class;
+import se.jbee.cls.Field;
+import se.jbee.cls.Method;
+import se.jbee.cls.References;
+import se.jbee.cls.Type;
 
 public final class ClassNode
 		implements Node<Class> {

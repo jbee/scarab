@@ -1,6 +1,5 @@
-package se.jbee.cls.ref;
+package se.jbee.cls;
 
-import se.jbee.cls.Items;
 
 public interface Declarations {
 

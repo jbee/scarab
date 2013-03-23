@@ -11,7 +11,6 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import se.jbee.cls.ref.Package;
 import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.JarScanner;
 import se.jbee.cls.sca.TypeFilter;

@@ -1,14 +1,14 @@
 package se.jbee.cls.file;
 
-import static se.jbee.cls.ref.Type.type;
+import static se.jbee.cls.Type.type;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Modifiers;
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.Class;
+import se.jbee.cls.Modifiers;
+import se.jbee.cls.Type;
 import se.jbee.cls.sca.JarProcessor;
 
 public final class Classfile {

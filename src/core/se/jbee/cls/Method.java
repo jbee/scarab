@@ -1,8 +1,7 @@
-package se.jbee.cls.ref;
+package se.jbee.cls;
 
 import java.util.Arrays;
 
-import se.jbee.cls.Append;
 
 public final class Method {
 

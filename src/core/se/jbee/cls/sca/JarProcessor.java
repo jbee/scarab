@@ -1,6 +1,6 @@
 package se.jbee.cls.sca;
 
-import se.jbee.cls.ref.Type;
+import se.jbee.cls.Type;
 
 public interface JarProcessor {
 

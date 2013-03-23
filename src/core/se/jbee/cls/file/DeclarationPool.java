@@ -1,18 +1,18 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.Modifiers.fieldModifiers;
+import static se.jbee.cls.Modifiers.methodModifiers;
 import static se.jbee.cls.file.MethodDeclaration.methodDeclaration;
-import static se.jbee.cls.ref.Modifiers.fieldModifiers;
-import static se.jbee.cls.ref.Modifiers.methodModifiers;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import se.jbee.cls.Class;
+import se.jbee.cls.Declarations;
+import se.jbee.cls.Field;
 import se.jbee.cls.Items;
-import se.jbee.cls.ref.Class;
-import se.jbee.cls.ref.Declarations;
-import se.jbee.cls.ref.Field;
-import se.jbee.cls.ref.Method;
+import se.jbee.cls.Method;
 
 public final class DeclarationPool
 		implements Declarations {

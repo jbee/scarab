@@ -1,6 +1,6 @@
 package se.jbee.cls.file;
 
-import se.jbee.cls.ref.Class;
+import se.jbee.cls.Class;
 
 public final class MethodDeclaration {
 

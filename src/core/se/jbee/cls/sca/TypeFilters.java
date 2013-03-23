@@ -1,7 +1,7 @@
 package se.jbee.cls.sca;
 
-import se.jbee.cls.ref.Type;
-import se.jbee.cls.ref.Modifiers;
+import se.jbee.cls.Modifiers;
+import se.jbee.cls.Type;
 
 public class TypeFilters {
 
