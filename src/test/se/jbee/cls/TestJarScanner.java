@@ -17,7 +17,6 @@ import se.jbee.cls.graph.ClassGraph;
 import se.jbee.cls.graph.ClassNode;
 import se.jbee.cls.graph.MethodNode;
 import se.jbee.cls.graph.PackageNode;
-import se.jbee.cls.sca.JarProcessor;
 import se.jbee.cls.sca.JarScanner;
 import se.jbee.cls.sca.TypeFilter;
 
@@ -63,7 +62,7 @@ public class TestJarScanner {
 		assertNotNull( g );
 	}
 
-	private void scanJar( String file, TypeFilter filter, JarProcessor out ) {
+	private void scanJar( String file, TypeFilter filter, ClassProcessor out ) {
 		try {
 			new JarScanner( out, filter ).scan( file );
 		} catch ( IOException e ) {

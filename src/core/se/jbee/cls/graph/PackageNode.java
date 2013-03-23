@@ -86,4 +86,8 @@ public final class PackageNode
 	public ClassNode cls( Class cls ) {
 		return classes.node( cls );
 	}
+
+	public String name() {
+		return key.name;
+	}
 }

@@ -44,7 +44,11 @@ public final class Class {
 	}
 
 	public String simpleName() {
-		return name.substring( name.lastIndexOf( '/' ) + 1 );
+		int idx = name.lastIndexOf( '$' );
+		if ( idx < 0 || idx + 2 == name.length() ) {
+			idx = name.lastIndexOf( '/' );
+		}
+		return name.substring( idx + 1 );
 	}
 
 	@Override

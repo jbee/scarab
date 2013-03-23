@@ -38,4 +38,8 @@ public final class Edges<K, T extends Node<K>>
 	public Iterator<T> iterator() {
 		return nodes.values().iterator();
 	}
+
+	public boolean isEmpty() {
+		return nodes.isEmpty();
+	}
 }

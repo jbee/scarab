@@ -11,6 +11,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import se.jbee.cls.Archive;
+import se.jbee.cls.ClassProcessor;
 import se.jbee.cls.file.ClassInputStream;
 import se.jbee.cls.file.Classfile;
 
@@ -18,10 +19,10 @@ public class JarScanner {
 
 	private static final Pattern ARCHIVES = Pattern.compile( "\\.(?:zip|jar|war|ear)$" );
 
-	private final JarProcessor out;
+	private final ClassProcessor out;
 	private final TypeFilter filter;
 
-	public JarScanner( JarProcessor out, TypeFilter filter ) {
+	public JarScanner( ClassProcessor out, TypeFilter filter ) {
 		super();
 		this.out = out;
 		this.filter = filter;

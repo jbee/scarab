@@ -3,13 +3,13 @@ package se.jbee.cls.graph;
 import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Field;
+import se.jbee.cls.ClassProcessor;
 import se.jbee.cls.Method;
 import se.jbee.cls.Package;
 import se.jbee.cls.Type;
-import se.jbee.cls.sca.JarProcessor;
 
 public final class ClassGraph
-		implements JarProcessor {
+		implements ClassProcessor {
 
 	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
 	public final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();

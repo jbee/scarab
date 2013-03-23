@@ -8,9 +8,9 @@ import java.util.List;
 
 import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
+import se.jbee.cls.ClassProcessor;
 import se.jbee.cls.Modifiers;
 import se.jbee.cls.Type;
-import se.jbee.cls.sca.JarProcessor;
 
 public final class Classfile {
 
@@ -33,7 +33,7 @@ public final class Classfile {
 	 * @throws IOException
 	 *             in case of reading errors or invalid class file.
 	 */
-	public static void readClassfile( Archive archive, ClassInputStream in, JarProcessor out )
+	public static void readClassfile( Archive archive, ClassInputStream in, ClassProcessor out )
 			throws IOException {
 		if ( in.int32bit() != MAGIC_NUMBER ) {
 			throw new IOException( "Not a class file: Expected Magic number 0xcafebabe." );
