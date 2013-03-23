@@ -1,5 +1,6 @@
 package se.jbee.cls.graph;
 
+import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Field;
 import se.jbee.cls.Method;
@@ -12,6 +13,8 @@ public final class ClassNode
 	private final ClassGraph graph;
 	private Class key;
 	private ClassNode superclass;
+	private ArchiveNode archive;
+	public final PackageNode pkg;
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
@@ -30,7 +33,9 @@ public final class ClassNode
 		super();
 		this.graph = graph;
 		this.key = cls;
-		graph.pkg( cls.pkg() ).classes.add( this );
+		this.pkg = graph.pkg( cls.pkg() );
+		this.pkg.classes.add( this );
+		this.archive = graph.archive( Archive.RUNTIME );
 	}
 
 	void declaredAs( Type type ) {
@@ -38,6 +43,8 @@ public final class ClassNode
 			throw new IllegalArgumentException();
 		}
 		this.key = type.cls;
+		this.archive = graph.archive( type.archive );
+		this.archive.contains( this );
 		ClassNode sc = graph.cls( type.superclass );
 		this.superclass = sc;
 		sc.subclasses.add( this );
@@ -65,6 +72,10 @@ public final class ClassNode
 		for ( Method m : type.declarations.declaredMethods() ) {
 			declaredAs( m );
 		}
+	}
+
+	public ArchiveNode archive() {
+		return archive;
 	}
 
 	public ClassNode superclass() {

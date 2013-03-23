@@ -1,5 +1,6 @@
 package se.jbee.cls.graph;
 
+import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Field;
 import se.jbee.cls.Method;
@@ -10,15 +11,25 @@ import se.jbee.cls.sca.JarProcessor;
 public final class ClassGraph
 		implements JarProcessor {
 
-	private final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
-	private final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
-	private final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
-	private final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
-	private final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
+	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
+	public final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
+	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
+	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
+	public final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
+	public final Edges<Archive, ArchiveNode> archives = new Edges<Archive, ArchiveNode>();
 
 	@Override
 	public void process( Type type ) {
 		cls( type.cls ).declaredAs( type );
+	}
+
+	public ArchiveNode archive( Archive archive ) {
+		ArchiveNode node = archives.node( archive );
+		if ( node == null ) {
+			node = new ArchiveNode( this, archive );
+			archives.add( node );
+		}
+		return node;
 	}
 
 	public ClassNode cls( Class type ) {

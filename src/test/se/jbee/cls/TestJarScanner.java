@@ -5,12 +5,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static se.jbee.cls.Archive.archive;
 
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
+import se.jbee.cls.graph.ArchiveNode;
 import se.jbee.cls.graph.ClassGraph;
 import se.jbee.cls.graph.ClassNode;
 import se.jbee.cls.graph.MethodNode;
@@ -24,7 +26,8 @@ public class TestJarScanner {
 	@Test
 	public void testScanGraph() {
 		ClassGraph g = new ClassGraph();
-		scanJar( "/home/jan/project/silk/dist/silk-di-0.4.3.jar", TypeFilter.ALL, g );
+		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
+		scanJar( file, TypeFilter.ALL, g );
 		Package root = Package.pkg( "se/jbee/inject" );
 		PackageNode jbee = g.pkg( root.parent() );
 		assertEquals( 1, jbee.subPackages.size() );
@@ -45,6 +48,11 @@ public class TestJarScanner {
 		assertTrue( isAssignableTo.isOverridden() );
 		ClassNode binder = g.pkg( bind ).cls( bind.classWithSimpleName( "Binder" ) );
 		assertTrue( binder.subclasses.size() > 0 );
+		assertEquals( 2, g.archives.size() );
+		assertEquals( archive( file ), type.archive().id() );
+		ArchiveNode silk = g.archive( archive( file ) );
+		assertTrue( silk.classes.contains( Class.cls( "se/jbee/inject/Packages" ) ) );
+		assertTrue( silk.packages.contains( Package.pkg( "se/jbee/inject/util" ) ) );
 	}
 
 	@Test

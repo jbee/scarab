@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Modifiers;
 import se.jbee.cls.Type;
@@ -32,7 +33,7 @@ public final class Classfile {
 	 * @throws IOException
 	 *             in case of reading errors or invalid class file.
 	 */
-	public static void readClassfile( ClassInputStream in, JarProcessor out )
+	public static void readClassfile( Archive archive, ClassInputStream in, JarProcessor out )
 			throws IOException {
 		if ( in.int32bit() != MAGIC_NUMBER ) {
 			throw new IOException( "Not a class file: Expected Magic number 0xcafebabe." );
@@ -46,7 +47,7 @@ public final class Classfile {
 		Class superclass = cls( cp.utf0( in.uint16bit() ) );
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
 		DeclarationPool dp = DeclarationPool.read( in, cls, cp );
-		Type type = type( modifiers, cls, superclass, interfaces, dp, cp );
+		Type type = type( archive, modifiers, cls, superclass, interfaces, dp, cp );
 		out.process( type );
 	}
 
