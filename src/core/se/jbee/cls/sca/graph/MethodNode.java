@@ -6,7 +6,7 @@ import se.jbee.cls.ref.Method;
 public class MethodNode
 		implements Node<Method> {
 
-	public Method method;
+	private Method key;
 	public final ClassNode declaringClass;
 	public final ClassNode returnType;
 	public final Edges<Class, ClassNode> parameterTypes = new Edges<Class, ClassNode>();
@@ -15,7 +15,7 @@ public class MethodNode
 
 	MethodNode( ClassGraph graph, Method method ) {
 		super();
-		this.method = method;
+		this.key = method;
 		this.declaringClass = graph.cls( method.declaringClass );
 		this.returnType = graph.cls( method.returnType );
 		this.parameters = new ClassNode[method.parameterTypes.length];
@@ -29,16 +29,16 @@ public class MethodNode
 
 	@Override
 	public Method id() {
-		return method;
+		return key;
 	}
 
 	@Override
 	public String toString() {
-		return method.toString();
+		return key.toString();
 	}
 
 	public void declaredAs( Method method ) {
-		this.method = method;
+		this.key = method;
 	}
 
 	public ClassNode parameter( int index ) {
@@ -46,15 +46,15 @@ public class MethodNode
 	}
 
 	public boolean isOverridden() {
-		if ( declaringClass.cls.isObject() || declaringClass.cls.isNone() ) {
+		if ( declaringClass.id().isObject() || declaringClass.id().isNone() ) {
 			return false;
 		}
 		for ( ClassNode i : declaringClass.interfaces ) {
-			if ( i.methods.contains( method.declaredBy( i.cls ) ) ) {
+			if ( i.methods.contains( key.declaredBy( i.id() ) ) ) {
 				return true;
 			}
 		}
-		return declaringClass.superclass().declaringClass( method ) != null;
+		return declaringClass.superclass().declaringClass( key ) != null;
 	}
 
 }

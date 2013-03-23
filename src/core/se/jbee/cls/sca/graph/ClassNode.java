@@ -10,7 +10,7 @@ public final class ClassNode
 		implements Node<Class> {
 
 	private final ClassGraph graph;
-	public Class cls;
+	private Class key;
 	private ClassNode superclass;
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
@@ -29,15 +29,15 @@ public final class ClassNode
 	ClassNode( ClassGraph graph, Class cls ) {
 		super();
 		this.graph = graph;
-		this.cls = cls;
+		this.key = cls;
 		graph.pkg( cls.pkg() ).classes.add( this );
 	}
 
 	void declaredAs( Type type ) {
-		if ( !type.cls.equalTo( cls ) ) {
+		if ( !type.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();
 		}
-		this.cls = type.cls;
+		this.key = type.cls;
 		ClassNode sc = graph.cls( type.superclass );
 		this.superclass = sc;
 		sc.subclasses.add( this );
@@ -72,11 +72,11 @@ public final class ClassNode
 	}
 
 	public ClassNode declaringClass( Method method ) {
-		MethodNode node = methods.node( method.declaredBy( cls ) );
+		MethodNode node = methods.node( method.declaredBy( key ) );
 		if ( node != null ) {
 			return this;
 		}
-		return cls.isObject() || superclass.cls.isObject()
+		return key.isObject() || superclass.key.isObject()
 			? null
 			: superclass.declaringClass( method );
 	}
@@ -129,7 +129,7 @@ public final class ClassNode
 		ClassNode other = graph.cls( type );
 		other.referencedBy.add( this );
 		references.add( other );
-		packageReferences( this.cls, type );
+		packageReferences( this.key, type );
 	}
 
 	private void packageReferences( Class type, Class other ) {
@@ -140,7 +140,7 @@ public final class ClassNode
 
 	@Override
 	public Class id() {
-		return cls;
+		return key;
 	}
 
 	@Override
@@ -149,22 +149,22 @@ public final class ClassNode
 	}
 
 	public boolean equalTo( ClassNode other ) {
-		return cls.equalTo( other.cls );
+		return key.equalTo( other.key );
 	}
 
 	@Override
 	public int hashCode() {
-		return cls.hashCode();
+		return key.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return cls.toString();
+		return key.toString();
 	}
 
 	public MethodNode method( String name ) {
 		for ( MethodNode m : methods ) {
-			if ( m.method.name.equals( name ) ) {
+			if ( m.id().name.equals( name ) ) {
 				return m;
 			}
 		}

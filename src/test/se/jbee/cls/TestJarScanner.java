@@ -39,9 +39,9 @@ public class TestJarScanner {
 		assertFalse( inject.contains( root.classWithSimpleName( "Foo" ) ) );
 		ClassNode type = inject.cls( root.classWithSimpleName( "Type" ) );
 		MethodNode fieldType = type.method( "fieldType" );
-		assertTrue( fieldType.method.modifiers.isStatic() );
+		assertTrue( fieldType.id().modifiers.isStatic() );
 		assertEquals( 1, fieldType.parameterTypes.size() );
-		assertEquals( "Field", fieldType.parameter( 0 ).cls.simpleName() );
+		assertEquals( "Field", fieldType.parameter( 0 ).id().simpleName() );
 		MethodNode isAssignableTo = type.method( "isAssignableTo" );
 		assertTrue( isAssignableTo.isOverridden() );
 		ClassNode binder = g.pkg( bind ).cls( bind.classWithSimpleName( "Binder" ) );

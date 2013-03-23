@@ -6,8 +6,9 @@ import se.jbee.cls.ref.Package;
 public class PackageNode
 		implements Node<Package> {
 
+	@SuppressWarnings ( "unused" )
 	private final ClassGraph graph;
-	public final Package pkg;
+	private final Package key;
 	public final PackageNode parent;
 	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
 	public final Edges<Package, PackageNode> subPackages = new Edges<Package, PackageNode>();
@@ -19,7 +20,7 @@ public class PackageNode
 	PackageNode( ClassGraph graph, Package pkg ) {
 		super();
 		this.graph = graph;
-		this.pkg = pkg;
+		this.key = pkg;
 		this.parent = pkg.hasParent()
 			? graph.pkg( pkg.parent() )
 			: null;
@@ -42,7 +43,7 @@ public class PackageNode
 
 	@Override
 	public Package id() {
-		return pkg;
+		return key;
 	}
 
 	public void references( PackageNode other ) {
@@ -52,7 +53,7 @@ public class PackageNode
 	}
 
 	private void connects( PackageNode other ) {
-		if ( pkg.levels() > 2 && other.parent != null ) {
+		if ( key.levels() > 2 && other.parent != null ) {
 			parent.connects.add( other.parent );
 			other.parent.connectedFrom.add( parent );
 			parent.connects( other.parent );
@@ -65,7 +66,7 @@ public class PackageNode
 
 	@Override
 	public int hashCode() {
-		return pkg.hashCode();
+		return key.hashCode();
 	}
 
 	@Override
@@ -74,12 +75,12 @@ public class PackageNode
 	}
 
 	public boolean equalTo( PackageNode other ) {
-		return pkg.equalTo( other.pkg );
+		return key.equalTo( other.key );
 	}
 
 	@Override
 	public String toString() {
-		return pkg.toString();
+		return key.toString();
 	}
 
 	public ClassNode cls( Class cls ) {

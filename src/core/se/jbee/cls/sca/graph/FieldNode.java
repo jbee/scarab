@@ -6,30 +6,30 @@ import se.jbee.cls.ref.Field;
 public class FieldNode
 		implements Node<Field> {
 
-	public Field field;
+	private Field key;
 	public final ClassNode declaringClass;
 	public final ClassNode type;
 	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
 
 	FieldNode( ClassGraph graph, Field field ) {
 		super();
-		this.field = field;
+		this.key = field;
 		this.declaringClass = graph.cls( field.declaringClass );
 		this.type = graph.cls( field.type );
 	}
 
 	@Override
 	public Field id() {
-		return field;
+		return key;
 	}
 
 	public void declaredAs( Field field ) {
-		this.field = field;
+		this.key = field;
 	}
 
 	@Override
 	public String toString() {
-		return field.toString();
+		return key.toString();
 	}
 
 }
