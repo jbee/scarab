@@ -21,17 +21,25 @@ form {
   line-height: 12px;
   overflow: hidden;
   position: absolute;
-  text-indent: 2px;
+}
+.label {
+  padding: 2px;
+}
+.label span {
+	float: right;
+	font-weight: bold;
 }
 
 </style>
 <link href="scarab.css" rel="stylesheet" media="all" type="text/css">
 <form>
-  <label><input type="radio" name="mode" value="c_references" checked> # references</label>
-  <label><input type="radio" name="mode" value="c_referencedBy" checked> # referenced by</label>
-  <label><input type="radio" name="mode" value="c_method" checked> # methods</label>
-  <label><input type="radio" name="mode" value="c_field" checked> # fields</label>
-  <label><input type="radio" name="mode" value="count"> Count</label>
+  <select name="mode">
+  	<option value="c_references">outgoing references</option>
+  	<option value="c_referencedBy">incoming references</option>
+  	<option value="c_method">number of methods</option>
+  	<option value="c_field">number of fields</option>
+  	<option value="count">1:1</option>
+  </select>
 </form>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
@@ -70,7 +78,7 @@ d3.json("data.json", function(error, root) {
 
 //      .style("background", function(d) { return d.children ? color(d.name) : null; })
 
-  d3.selectAll("input").on("change", function change() {
+  d3.selectAll("select").on("change", function change() {
     var mode = this.value;
     var value = (mode === "count")
     	? function() { return 1; }
@@ -84,6 +92,9 @@ d3.json("data.json", function(error, root) {
 });
 
 function position() {
+  this.each(function(d) {
+  	this.innerHTML = "<div class='label'>"+ d.name + "<span>"+d.value+"</span></div>";
+  });
   this.style("left", function(d) { 
   		return d.type == null ? (d.x + border ) + "px" : d.x + "px"; 
   	})
