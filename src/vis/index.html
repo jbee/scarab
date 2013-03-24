@@ -22,6 +22,9 @@ form {
   overflow: hidden;
   position: absolute;
 }
+.node.border {
+  overflow: visible;
+}
 .label {
   padding: 2px;
 }
@@ -38,7 +41,7 @@ form {
   	<option value="c_referencedBy">incoming references</option>
   	<option value="c_method">number of methods</option>
   	<option value="c_field">number of fields</option>
-  	<option value="count">1:1</option>
+  	<option value="count" selected="selected">1:1</option>
   </select>
 </form>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -50,13 +53,13 @@ var margin = {top: 40, right: 10, bottom: 0, left: 10},
 
 var color = d3.scale.category20c();
 
-var border = 5;
+var border = 6;
 
 var treemap = d3.layout.treemap()
     .size([width, height])
     .sticky(true)
     .padding(border*2)
-    .value(function(d) { return d.c_method; });
+    .value(function(d) { return 1; });
 
 var div = d3.select("body").append("div")
     .attr("class", "project border")
@@ -73,8 +76,7 @@ d3.json("data.json", function(error, root) {
       .data(treemap.nodes)
       .enter().append("div")
       .attr("class", function(d) { return d.type == null ? "node border package" : "node bg "+d.type; })
-      .call(position)
-      .text(function(d) { return d.children ? null : d.name; });
+      .call(position);
 
 //      .style("background", function(d) { return d.children ? color(d.name) : null; })
 
@@ -92,9 +94,7 @@ d3.json("data.json", function(error, root) {
 });
 
 function position() {
-  this.each(function(d) {
-  	this.innerHTML = "<div class='label'>"+ d.name + "<span>"+d.value+"</span></div>";
-  });
+  this.each(label);
   this.style("left", function(d) { 
   		return d.type == null ? (d.x + border ) + "px" : d.x + "px"; 
   	})
@@ -107,6 +107,10 @@ function position() {
       .style("height", function(d) { 
       	return d.type == null ? Math.max(0, d.dy - border*4 +1) + "px" : Math.max(0, d.dy - 1) + "px"; 
       });
+}
+
+function label(d) {
+  	this.innerHTML = "<div class='label'>"+ d.name + "<span>"+d.value+"</span></div>";
 }
 
 </script>

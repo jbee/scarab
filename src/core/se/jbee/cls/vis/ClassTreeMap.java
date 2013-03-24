@@ -47,7 +47,7 @@ public class ClassTreeMap {
 				out.print( "\t\t{\"name\": \"" + c.id().simpleName() + "\"," );
 				out.print( "\"type\": \"" + c.modifiers() + "\", " );
 				out.print( "\"c_method\": " + c.methods.size() + ", " );
-				out.print( "\"c_field\": " + c.fields.size() + ", " );
+				out.print( "\"c_field\": " + c.instanceFields.size() + ", " );
 				out.print( "\"c_references\": " + c.references.size() + ", " );
 				out.print( "\"c_referencedBy\": " + c.referencedBy.size() );
 				out.print( '}' );

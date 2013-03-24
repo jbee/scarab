@@ -18,6 +18,8 @@ public final class ClassNode
 	private Modifiers modifiers;
 	public final PackageNode pkg;
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
+	public final Edges<Field, FieldNode> instanceFields = new Edges<Field, FieldNode>();
+	//TODO static fields in a own list
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
@@ -25,6 +27,7 @@ public final class ClassNode
 	public final Edges<Class, ClassNode> subclasses = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> interfaces = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> implementations = new Edges<Class, ClassNode>();
+	//TODO distinguish between same parent package and others 
 	public final Edges<Class, ClassNode> references = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> referencedBy = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> callsTypes = new Edges<Class, ClassNode>();
@@ -111,6 +114,9 @@ public final class ClassNode
 		FieldNode f = graph.field( field );
 		f.declaredAs( field );
 		fields.add( f );
+		if ( f.isInstanceField() ) {
+			instanceFields.add( f );
+		}
 	}
 
 	private void calls( Method method ) {

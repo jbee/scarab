@@ -1,5 +1,23 @@
 .border {
-	border: 5px solid white;
+	border: 6px solid white;
+}
+.border > .label {
+	position: relative;
+	top: -10px;
+	left: 8px;
+	z-index: 100;
+	overflow: visible;
+	display: inline;
+	background-color: white;
+	font-size: 12px;
+	line-height: 12px;
+	padding: 0 3px 0 19px;
+	font-weight: bold;
+	color: #444;
+}
+.border.package > .label {
+	background-image: url("package.gif");
+	background-repeat: no-repeat;
 }
 .border.project {
 	border-color: #90b8e8;

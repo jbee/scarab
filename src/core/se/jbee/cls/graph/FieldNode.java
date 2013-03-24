@@ -27,6 +27,18 @@ public final class FieldNode
 		this.key = field;
 	}
 
+	public boolean isInstanceField() {
+		return !key.modifiers.isStatic();
+	}
+
+	public boolean isClassField() {
+		return key.modifiers.isStatic() && !key.modifiers.isFinal();
+	}
+
+	public boolean isConstantField() {
+		return key.modifiers.isStatic() && key.modifiers.isFinal();
+	}
+
 	@Override
 	public String toString() {
 		return key.toString();

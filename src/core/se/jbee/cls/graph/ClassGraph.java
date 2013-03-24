@@ -2,8 +2,8 @@ package se.jbee.cls.graph;
 
 import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
-import se.jbee.cls.Field;
 import se.jbee.cls.ClassProcessor;
+import se.jbee.cls.Field;
 import se.jbee.cls.Method;
 import se.jbee.cls.Package;
 import se.jbee.cls.Type;
@@ -17,6 +17,8 @@ public final class ClassGraph
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
 	public final Edges<Archive, ArchiveNode> archives = new Edges<Archive, ArchiveNode>();
+
+	//TODO give each created node a serial number unique within this graph
 
 	@Override
 	public void process( Type type ) {

@@ -88,6 +88,6 @@ public final class PackageNode
 	}
 
 	public String name() {
-		return key.name;
+		return key.canonicalName();
 	}
 }
