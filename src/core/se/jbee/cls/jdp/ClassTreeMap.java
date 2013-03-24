@@ -1,4 +1,4 @@
-package se.jbee.cls.vis;
+package se.jbee.cls.jdp;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,12 +62,14 @@ public class ClassTreeMap {
 			throws IOException {
 		ClassGraph g = new ClassGraph();
 		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
-		String json = "/home/jan/project/scarab/src/vis/data.json";
+		String json = "/home/jan/project/scarab/src/vis/data.js";
 		new JarScanner( g, TypeFilter.ALL ).scan( file );
 		FileOutputStream out2 = new FileOutputStream( json );
 		try {
+			out2.write( "var data = ".getBytes() );
 			ClassTreeMap map = new ClassTreeMap( new PrintStream( out2 ) );
 			map.generate( g.pkg( Package.pkg( "se/jbee/inject" ) ) );
+			out2.write( ";".getBytes() );
 		} finally {
 			out2.close();
 		}

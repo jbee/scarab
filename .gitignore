@@ -6,3 +6,6 @@
 *.ear
 
 *~
+
+lib
+target

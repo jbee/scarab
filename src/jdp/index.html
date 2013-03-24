@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+  position: relative;
+  width: 960px;
+}
+
+h1 {
+	font-family: 'Druid Serif', serif;
+	font-size: 48px;
+	margin: 0;
+	padding: 0;
+}
+
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.node {
+  border: solid 1px white;
+  font: 10px sans-serif;
+  line-height: 12px;
+  overflow: hidden;
+  position: absolute;
+}
+.node.border {
+  overflow: visible;
+}
+.label {
+  padding: 2px;
+}
+.label span {
+	float: right;
+	font-weight: bold;
+}
+
+</style>
+<link href="javadocplus.css" rel="stylesheet" media="all" type="text/css">
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="javadocplus.js"></script>
+<script src="data.js"></script>
+</head>
+<body>
+	<form>
+	  <select name="mode">
+	  	<option value="c_references">outgoing references</option>
+	  	<option value="c_referencedBy">incoming references</option>
+	  	<option value="c_method">number of methods</option>
+	  	<option value="c_field">number of fields</option>
+	  	<option value="count" selected="selected">1:1</option>
+	  </select>
+	</form>
+	<h1>Head</h1>	
+	<script>
+		jdp.packageMap(data);
+	</script>
+</body>
