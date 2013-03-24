@@ -28,7 +28,7 @@ var jdp = {
 		  var node = div.datum(data).selectAll(".node")
 		      .data(treemap.nodes)
 		      .enter().append("div")
-		      .attr("class", function(d) { return d.type == null ? "node border package" : "node bg "+d.type; })
+		      .attr("class", function(d) { return d.type == null ? "node border package" : "node bg "+d.type+" "+d.nature; })
 			  .on("click", function click(d) {
 				jdp.packageMap(d.parent);
 			  })
@@ -65,7 +65,11 @@ var jdp = {
 		}
 		
 		function label(d) {
-			d3.select(this).html("<div class='label'>"+ d.name + "<span>"+d.value+"</span></div>");
+			var text = d.name;
+			if (d.type == null && d.parent != null) {
+				text = text.substring(text.lastIndexOf('.'));
+			}
+			d3.select(this).html("<div class='label'>"+ text + "<span>"+d.value+"</span></div>");
 		}		
 	}
 };

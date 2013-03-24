@@ -65,4 +65,8 @@ public final class Method {
 			b.setLength( b.length() - 2 );
 		}
 	}
+
+	public boolean isConstructor() {
+		return name.charAt( 0 ) == '<'; //init>
+	}
 }

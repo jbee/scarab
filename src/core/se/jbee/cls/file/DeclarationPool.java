@@ -17,7 +17,7 @@ import se.jbee.cls.Method;
 public final class DeclarationPool
 		implements Declarations {
 
-	public static final int[][] SHARED_FIELD_INDEXES = new int[128][3];
+	public static final int[][] SHARED_FIELD_INDEXES = new int[256][3];
 	public static final int[][] SHARED_METHOD_INDEXES = new int[512][3];
 
 	public static DeclarationPool read( ClassInputStream in, Class declaringClass, ConstantPool cp )

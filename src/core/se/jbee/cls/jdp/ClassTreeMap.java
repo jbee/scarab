@@ -11,6 +11,11 @@ import se.jbee.cls.graph.PackageNode;
 import se.jbee.cls.sca.JarScanner;
 import se.jbee.cls.sca.TypeFilter;
 
+/**
+ * Used as an example to experiment with d3.js treemap to visualize package structure.
+ * 
+ * @author Jan Bernitt (jan@jbee.se)
+ */
 public class ClassTreeMap {
 
 	private final PrintStream out;
@@ -45,7 +50,11 @@ public class ClassTreeMap {
 					out.println( "," );
 				}
 				out.print( "\t\t{\"name\": \"" + c.id().simpleName() + "\"," );
-				out.print( "\"type\": \"" + c.modifiers() + "\", " );
+				out.print( "\"type\": \""
+						+ c.modifiers().toString().replace( "@interface", "annotation" ) + "\", " );
+				out.print( "\"nature\": \"" + ( c.isUitl()
+					? "util"
+					: "" ) + "\", " );
 				out.print( "\"c_method\": " + c.methods.size() + ", " );
 				out.print( "\"c_field\": " + c.instanceFields.size() + ", " );
 				out.print( "\"c_references\": " + c.references.size() + ", " );
@@ -60,15 +69,20 @@ public class ClassTreeMap {
 
 	public static void main( String[] args )
 			throws IOException {
-		ClassGraph g = new ClassGraph();
 		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
-		String json = "/home/jan/project/scarab/src/vis/data.js";
+		Package pkg = Package.pkg( "se/jbee/inject" );
+		if ( false ) {
+			file = "/home/jan/spring-2.5.6.jar";
+			pkg = Package.pkg( "org/springframework" );
+		}
+		String json = "/home/jan/project/scarab/src/jdp/data.js";
+		ClassGraph g = new ClassGraph();
 		new JarScanner( g, TypeFilter.ALL ).scan( file );
 		FileOutputStream out2 = new FileOutputStream( json );
 		try {
 			out2.write( "var data = ".getBytes() );
 			ClassTreeMap map = new ClassTreeMap( new PrintStream( out2 ) );
-			map.generate( g.pkg( Package.pkg( "se/jbee/inject" ) ) );
+			map.generate( g.pkg( pkg ) );
 			out2.write( ";".getBytes() );
 		} finally {
 			out2.close();

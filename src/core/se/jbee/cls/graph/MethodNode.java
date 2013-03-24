@@ -52,4 +52,16 @@ public final class MethodNode
 		return overrides.isOverridden( this );
 	}
 
+	public boolean isInstanceMethod() {
+		return !key.modifiers.isStatic() && !isInitMethod();
+	}
+
+	public boolean isStaticMethod() {
+		return key.modifiers.isStatic() && !isInitMethod();
+	}
+
+	public boolean isInitMethod() {
+		return key.isConstructor();
+	}
+
 }
