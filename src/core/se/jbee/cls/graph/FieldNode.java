@@ -7,13 +7,15 @@ public final class FieldNode
 		implements Node<Field> {
 
 	private Field key;
+	public final int serial;
 	public final ClassNode declaringClass;
 	public final ClassNode type;
 	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
 
-	FieldNode( ClassGraph graph, Field field ) {
+	FieldNode( ClassGraph graph, Field field, int serial ) {
 		super();
 		this.key = field;
+		this.serial = serial;
 		this.declaringClass = graph.cls( field.declaringClass );
 		this.type = graph.cls( field.type );
 	}

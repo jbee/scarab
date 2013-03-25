@@ -12,6 +12,7 @@ public final class ClassNode
 		implements Node<Class> {
 
 	private final ClassGraph graph;
+	public final int serial;
 	private Class key;
 	private ClassNode superclass;
 	private ArchiveNode archive;
@@ -29,8 +30,8 @@ public final class ClassNode
 	public final Edges<Method, MethodNode> staticMethods = new Edges<Method, MethodNode>();
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 
-	//TODO inner classes
 	public final Edges<Class, ClassNode> subclasses = new Edges<Class, ClassNode>();
+	public final Edges<Class, ClassNode> innerClasses = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> interfaces = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> implementations = new Edges<Class, ClassNode>();
 	//TODO distinguish between same parent package and others (dependencies)
@@ -41,14 +42,18 @@ public final class ClassNode
 	public final Edges<Class, ClassNode> accessesTypes = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> accessedBy = new Edges<Class, ClassNode>();
 
-	ClassNode( ClassGraph graph, Class cls ) {
+	ClassNode( ClassGraph graph, Class cls, int serial ) {
 		super();
 		this.graph = graph;
+		this.serial = serial;
 		this.key = cls;
 		this.pkg = graph.pkg( cls.pkg() );
 		this.pkg.classes.add( this );
 		this.archive = graph.archive( Archive.RUNTIME );
 		this.modifiers = Modifiers.UNKNOWN;
+		if ( cls.isInner() ) {
+			graph.cls( cls.outerClass() ).innerClasses.add( this );
+		}
 	}
 
 	void declaredAs( Type type ) {

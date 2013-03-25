@@ -44,6 +44,10 @@ public final class Package {
 			: pkg( name.substring( 0, idx ) );
 	}
 
+	public boolean isSubpackage( Package other ) {
+		return other.name.startsWith( name + "." );
+	}
+
 	@Override
 	public boolean equals( Object obj ) {
 		return obj instanceof Package && equalTo( (Package) obj );
@@ -73,7 +77,7 @@ public final class Package {
 		return name == DEFAULT.name;
 	}
 
-	public Class classWithSimpleName( String simpleName ) {
+	public Class memberClass( String simpleName ) {
 		return Class.cls( name + "/" + simpleName );
 	}
 }

@@ -1,5 +1,7 @@
 package se.jbee.cls.jdp;
 
+import static se.jbee.cls.Packages.packages;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -70,19 +72,19 @@ public class ClassTreeMap {
 	public static void main( String[] args )
 			throws IOException {
 		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
-		Package pkg = Package.pkg( "se/jbee/inject" );
+		Package root = Package.pkg( "se/jbee/inject" );
 		if ( false ) {
 			file = "/home/jan/spring-2.5.6.jar";
-			pkg = Package.pkg( "org/springframework" );
+			root = Package.pkg( "org/springframework" );
 		}
 		String json = "/home/jan/project/scarab/src/jdp/data.js";
-		ClassGraph g = new ClassGraph();
+		ClassGraph g = new ClassGraph( packages( root ) );
 		new JarScanner( g, TypeFilter.ALL ).scan( file );
 		FileOutputStream out2 = new FileOutputStream( json );
 		try {
 			out2.write( "var data = ".getBytes() );
 			ClassTreeMap map = new ClassTreeMap( new PrintStream( out2 ) );
-			map.generate( g.pkg( pkg ) );
+			map.generate( g.pkg( root ) );
 			out2.write( ";".getBytes() );
 		} finally {
 			out2.close();

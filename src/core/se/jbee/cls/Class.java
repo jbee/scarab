@@ -81,6 +81,16 @@ public final class Class {
 		return equalTo( Class.OBJECT );
 	}
 
+	public boolean isInner() {
+		return name.indexOf( '$' ) > 0;
+	}
+
+	public Class outerClass() {
+		return isInner()
+			? cls( name.substring( 0, name.indexOf( '$' ) ) )
+			: this;
+	}
+
 	public Class elementClass() {
 		return isArray()
 			? new Class( 0, name )

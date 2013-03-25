@@ -8,9 +8,9 @@ import java.util.List;
 
 import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
-import se.jbee.cls.ClassProcessor;
 import se.jbee.cls.Modifiers;
 import se.jbee.cls.Type;
+import se.jbee.cls.sca.ClassProcessor;
 
 public final class Classfile {
 

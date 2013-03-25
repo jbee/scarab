@@ -9,6 +9,7 @@ public final class PackageNode
 	@SuppressWarnings ( "unused" )
 	private final ClassGraph graph;
 	private final Package key;
+	public final int serial;
 	public final PackageNode parent;
 	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
 	public final Edges<Package, PackageNode> subPackages = new Edges<Package, PackageNode>();
@@ -17,10 +18,11 @@ public final class PackageNode
 	public final Edges<Package, PackageNode> connects = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> connectedFrom = new Edges<Package, PackageNode>();
 
-	PackageNode( ClassGraph graph, Package pkg ) {
+	PackageNode( ClassGraph graph, Package pkg, int serial ) {
 		super();
 		this.graph = graph;
 		this.key = pkg;
+		this.serial = serial;
 		this.parent = pkg.hasParent()
 			? graph.pkg( pkg.parent() )
 			: null;

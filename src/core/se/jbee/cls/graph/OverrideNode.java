@@ -16,14 +16,16 @@ public final class OverrideNode
 
 	private final ClassGraph graph;
 	private final Method key;
+	public final int serial;
 
 	public final Edges<Class, ClassNode> implementedBy = new Edges<Class, ClassNode>();
 	public final Edges<Method, MethodNode> implementations = new Edges<Method, MethodNode>();
 
-	OverrideNode( ClassGraph graph, Method method ) {
+	OverrideNode( ClassGraph graph, Method method, int serial ) {
 		super();
 		this.graph = graph;
 		this.key = method;
+		this.serial = serial;
 	}
 
 	void declaredBy( MethodNode node ) {

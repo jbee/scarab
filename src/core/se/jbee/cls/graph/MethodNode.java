@@ -7,6 +7,7 @@ public final class MethodNode
 		implements Node<Method> {
 
 	private Method key;
+	public final int serial;
 	public final ClassNode declaringClass;
 	public final ClassNode returnType;
 	public final Edges<Class, ClassNode> parameterTypes = new Edges<Class, ClassNode>();
@@ -14,9 +15,10 @@ public final class MethodNode
 	public final OverrideNode overrides;
 	private final ClassNode[] parameters;
 
-	MethodNode( ClassGraph graph, Method method ) {
+	MethodNode( ClassGraph graph, Method method, int serial ) {
 		super();
 		this.key = method;
+		this.serial = serial;
 		this.declaringClass = graph.cls( method.declaringClass );
 		this.returnType = graph.cls( method.returnType );
 		this.overrides = graph.override( method );
