@@ -6,7 +6,7 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Method;
 import se.jbee.cls.Modifiers;
 import se.jbee.cls.References;
-import se.jbee.cls.Type;
+import se.jbee.cls.ClassDeclaration;
 
 public final class ClassNode
 		implements Node<Class> {
@@ -54,7 +54,7 @@ public final class ClassNode
 		}
 	}
 
-	void declaredAs( Type type ) {
+	void declaredAs( ClassDeclaration type ) {
 		if ( !type.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();
 		}

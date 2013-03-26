@@ -1,6 +1,14 @@
 package se.jbee.cls;
 
+import java.util.regex.Pattern;
+
 public final class Archive {
+
+	private static final Pattern ARCHIVES = Pattern.compile( "\\.(?:zip|jar|war|ear)$" );
+
+	public static boolean isArchiveFile( String name ) {
+		return ARCHIVES.matcher( name ).find();
+	}
 
 	public static final Archive NONE = new Archive( "" );
 	public static final Archive RUNTIME = new Archive( "(runtime)" );

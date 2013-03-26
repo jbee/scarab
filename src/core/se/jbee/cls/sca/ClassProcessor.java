@@ -1,9 +1,9 @@
 package se.jbee.cls.sca;
 
-import se.jbee.cls.Type;
+import se.jbee.cls.ClassDeclaration;
 
 
 public interface ClassProcessor {
 
-	void process( Type type );
+	void process( ClassDeclaration cls );
 }

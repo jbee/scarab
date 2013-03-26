@@ -1,14 +1,14 @@
 package se.jbee.cls.file;
 
-import static se.jbee.cls.Type.type;
-import static se.jbee.cls.file.ClassDeclaration.classDeclaration;
+import static se.jbee.cls.ClassDeclaration.classDeclaration;
+import static se.jbee.cls.file.ClassDescriptor.classDescriptor;
 
 import java.io.IOException;
 
 import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Modifiers;
-import se.jbee.cls.Type;
+import se.jbee.cls.ClassDeclaration;
 import se.jbee.cls.sca.ClassProcessor;
 
 public final class Classfile {
@@ -34,11 +34,11 @@ public final class Classfile {
 		ConstantPool cp = ConstantPool.read( in );
 
 		Modifiers modifiers = Modifiers.classModifiers( in.uint16bit() );
-		Class cls = classDeclaration( cp.utf0( in.uint16bit() ) ).cls( modifiers );
-		Class superclass = classDeclaration( cp.utf0( in.uint16bit() ) ).cls();
+		Class cls = classDescriptor( cp.utf0( in.uint16bit() ) ).cls( modifiers );
+		Class superclass = classDescriptor( cp.utf0( in.uint16bit() ) ).cls();
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
 		DeclarationPool dp = DeclarationPool.read( in, cls, cp );
-		Type type = type( archive, cls, superclass, interfaces, dp, cp );
+		ClassDeclaration type = classDeclaration( archive, cls, superclass, interfaces, dp, cp );
 		out.process( type );
 	}
 
@@ -47,7 +47,7 @@ public final class Classfile {
 			throws IOException {
 		Class[] superinterfaces = new Class[interfaceCount];
 		for ( int i = 0; i < interfaceCount; i++ ) {
-			superinterfaces[i] = classDeclaration( cp.utf0( stream.uint16bit() ) ).cls(
+			superinterfaces[i] = classDescriptor( cp.utf0( stream.uint16bit() ) ).cls(
 					Modifiers.UNKNOWN_INTERFACE );
 		}
 		return superinterfaces;

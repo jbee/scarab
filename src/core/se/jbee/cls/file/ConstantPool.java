@@ -1,7 +1,7 @@
 package se.jbee.cls.file;
 
-import static se.jbee.cls.file.ClassDeclaration.classDeclaration;
-import static se.jbee.cls.file.MethodDeclaration.methodDeclaration;
+import static se.jbee.cls.file.ClassDescriptor.classDescriptor;
+import static se.jbee.cls.file.MethodDescriptor.methodDescriptor;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -181,7 +181,7 @@ public final class ConstantPool
 		if ( tags[index] != ConstantTag.CLASS ) {
 			throw new NoSuchElementException( "" );
 		}
-		return classDeclaration( utf0( index ) ).cls();
+		return classDescriptor( utf0( index ) ).cls();
 	}
 
 	public Method method( int index ) {
@@ -191,7 +191,7 @@ public final class ConstantPool
 		final int i1 = index1( index );
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
-		MethodDeclaration declaration = methodDeclaration( utf1( i1 ) );
+		MethodDescriptor declaration = methodDescriptor( utf1( i1 ) );
 		final boolean interfaceMethod = tags[index] == ConstantTag.INTERFACE_METHOD_REF;
 		final Modifiers modifiers = interfaceMethod
 			? Modifiers.UNKNOWN_CLASS_METHOD
@@ -199,7 +199,7 @@ public final class ConstantPool
 		final Modifiers declaringModifiers = interfaceMethod
 			? Modifiers.UNKNOWN_INTERFACE
 			: Modifiers.UNKNOWN_CLASS;
-		return Method.method( classDeclaration( declaringClass ).cls( declaringModifiers ),
+		return Method.method( classDescriptor( declaringClass ).cls( declaringModifiers ),
 				modifiers, declaration.returnType(), name, declaration.parameterTypes() );
 	}
 
@@ -210,8 +210,8 @@ public final class ConstantPool
 		final int i1 = index1( index );
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
-		FieldDeclaration declaration = FieldDeclaration.fieldDeclaration( utf1( i1 ) );
-		return Field.field( classDeclaration( declaringClass ).cls(), Modifiers.UNKNOWN_FIELD,
+		FieldDescriptor declaration = FieldDescriptor.fieldDescriptor( utf1( i1 ) );
+		return Field.field( classDescriptor( declaringClass ).cls(), Modifiers.UNKNOWN_FIELD,
 				declaration.type(), name );
 	}
 

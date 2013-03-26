@@ -6,7 +6,7 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Method;
 import se.jbee.cls.Package;
 import se.jbee.cls.Packages;
-import se.jbee.cls.Type;
+import se.jbee.cls.ClassDeclaration;
 import se.jbee.cls.sca.ClassProcessor;
 
 public final class ClassGraph
@@ -29,8 +29,8 @@ public final class ClassGraph
 	}
 
 	@Override
-	public void process( Type type ) {
-		cls( type.cls ).declaredAs( type );
+	public void process( ClassDeclaration cls ) {
+		cls( cls.cls ).declaredAs( cls );
 	}
 
 	public ArchiveNode archive( Archive archive ) {

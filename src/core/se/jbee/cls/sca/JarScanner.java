@@ -5,7 +5,6 @@ import static se.jbee.cls.Archive.archive;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -16,12 +15,10 @@ import se.jbee.cls.file.Classfile;
 
 public class JarScanner {
 
-	private static final Pattern ARCHIVES = Pattern.compile( "\\.(?:zip|jar|war|ear)$" );
-
 	private final ClassProcessor out;
-	private final TypeFilter filter;
+	private final ArchiveFilter filter;
 
-	public JarScanner( ClassProcessor out, TypeFilter filter ) {
+	public JarScanner( ClassProcessor out, ArchiveFilter filter ) {
 		super();
 		this.out = out;
 		this.filter = filter;
@@ -29,7 +26,7 @@ public class JarScanner {
 
 	public void scan( String file )
 			throws IOException {
-		if ( isArchiveFile( file ) ) {
+		if ( Archive.isArchiveFile( file ) ) {
 			scan( new ZipFile( file ) );
 		}
 	}
@@ -44,7 +41,7 @@ public class JarScanner {
 				String name = entry.getName();
 				if ( isClassFile( name ) ) {
 					scan( archive, zip.getInputStream( entry ) );
-				} else if ( isArchiveFile( name ) && filter.process( archive( name ) ) ) {
+				} else if ( Archive.isArchiveFile( name ) && filter.process( archive( name ) ) ) {
 					ZipInputStream in = new ZipInputStream( zip.getInputStream( entry ) );
 					entry = in.getNextEntry();
 					while ( entry != null ) {
@@ -67,10 +64,6 @@ public class JarScanner {
 
 	static boolean isClassFile( String name ) {
 		return name.endsWith( ".class" );
-	}
-
-	static boolean isArchiveFile( String name ) {
-		return ARCHIVES.matcher( name ).find();
 	}
 
 }

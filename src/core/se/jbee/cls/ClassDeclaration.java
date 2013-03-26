@@ -1,10 +1,10 @@
 package se.jbee.cls;
 
-public final class Type {
+public final class ClassDeclaration {
 
-	public static Type type( Archive archive, Class cls, Class superclass, Class[] interfaces,
+	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass, Class[] interfaces,
 			Declarations declarations, References references ) {
-		return new Type( archive, cls, superclass, interfaces, declarations, references );
+		return new ClassDeclaration( archive, cls, superclass, interfaces, declarations, references );
 	}
 
 	public final Archive archive;
@@ -14,7 +14,7 @@ public final class Type {
 	public final Declarations declarations;
 	public final References references;
 
-	private Type( Archive archive, Class cls, Class superclass, Class[] interfaces,
+	private ClassDeclaration( Archive archive, Class cls, Class superclass, Class[] interfaces,
 			Declarations declarations, References references ) {
 		super();
 		this.archive = archive;
@@ -32,10 +32,10 @@ public final class Type {
 
 	@Override
 	public boolean equals( Object obj ) {
-		return obj instanceof Type && equalTo( (Type) obj );
+		return obj instanceof ClassDeclaration && equalTo( (ClassDeclaration) obj );
 	}
 
-	public boolean equalTo( Type other ) {
+	public boolean equalTo( ClassDeclaration other ) {
 		return cls.equalTo( other.cls );
 	}
 

@@ -2,7 +2,7 @@ package se.jbee.cls.file;
 
 import static se.jbee.cls.Modifiers.fieldModifiers;
 import static se.jbee.cls.Modifiers.methodModifiers;
-import static se.jbee.cls.file.MethodDeclaration.methodDeclaration;
+import static se.jbee.cls.file.MethodDescriptor.methodDescriptor;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -80,13 +80,13 @@ public final class DeclarationPool
 	}
 
 	public Method method( int index ) {
-		MethodDeclaration d = methodDeclaration( cp.utf( methodsMND[index][2] ) );
+		MethodDescriptor d = methodDescriptor( cp.utf( methodsMND[index][2] ) );
 		return Method.method( declaringClass, methodModifiers( methodsMND[index][0] ),
 				d.returnType(), cp.utf( methodsMND[index][1] ), d.parameterTypes() );
 	}
 
 	public Field field( int index ) {
-		FieldDeclaration d = FieldDeclaration.fieldDeclaration( cp.utf( fieldsMND[index][2] ) );
+		FieldDescriptor d = FieldDescriptor.fieldDescriptor( cp.utf( fieldsMND[index][2] ) );
 		return Field.field( declaringClass, fieldModifiers( fieldsMND[index][0] ), d.type(),
 				cp.utf( fieldsMND[index][1] ) );
 	}

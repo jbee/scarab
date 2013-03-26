@@ -20,7 +20,7 @@ import se.jbee.cls.graph.MethodNode;
 import se.jbee.cls.graph.PackageNode;
 import se.jbee.cls.sca.ClassProcessor;
 import se.jbee.cls.sca.JarScanner;
-import se.jbee.cls.sca.TypeFilter;
+import se.jbee.cls.sca.ArchiveFilter;
 
 public class TestJarScanner {
 
@@ -29,7 +29,7 @@ public class TestJarScanner {
 		Package root = Package.pkg( "se/jbee/inject" );
 		ClassGraph g = new ClassGraph( packages( root ) );
 		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
-		scanJar( file, TypeFilter.ALL, g );
+		scanJar( file, ArchiveFilter.ALL, g );
 		PackageNode jbee = g.pkg( root.parent() );
 		assertEquals( 1, jbee.subPackages.size() );
 		assertTrue( jbee.contains( root ) );
@@ -61,11 +61,11 @@ public class TestJarScanner {
 	public void testScanLargerGraph() {
 		Package root = Package.pkg( "org/springframework" );
 		ClassGraph g = new ClassGraph( packages( root ) );
-		scanJar( "/home/jan/spring-2.5.6.jar", TypeFilter.ALL, g );
+		scanJar( "/home/jan/spring-2.5.6.jar", ArchiveFilter.ALL, g );
 		assertNotNull( g );
 	}
 
-	private void scanJar( String file, TypeFilter filter, ClassProcessor out ) {
+	private void scanJar( String file, ArchiveFilter filter, ClassProcessor out ) {
 		try {
 			new JarScanner( out, filter ).scan( file );
 		} catch ( IOException e ) {

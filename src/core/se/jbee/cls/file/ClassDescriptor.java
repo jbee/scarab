@@ -6,7 +6,7 @@ import java.util.List;
 import se.jbee.cls.Class;
 import se.jbee.cls.Modifiers;
 
-public final class ClassDeclaration {
+public final class ClassDescriptor {
 
 	private static enum TypeCode {
 		B( byte.class ),
@@ -37,15 +37,15 @@ public final class ClassDeclaration {
 		}
 	}
 
-	public static ClassDeclaration classDeclaration( String declaration ) {
-		return new ClassDeclaration( declaration );
+	public static ClassDescriptor classDescriptor( String descriptor ) {
+		return new ClassDescriptor( descriptor );
 	}
 
-	private final String declaration;
+	private final String descriptor;
 
-	private ClassDeclaration( String declaration ) {
+	private ClassDescriptor( String descriptor ) {
 		super();
-		this.declaration = declaration;
+		this.descriptor = descriptor;
 	}
 
 	public Class cls() {
@@ -53,19 +53,19 @@ public final class ClassDeclaration {
 	}
 
 	public Class cls( Modifiers modifiers ) {
-		if ( declaration == null || declaration.isEmpty() ) {
+		if ( descriptor == null || descriptor.isEmpty() ) {
 			return Class.NONE;
 		}
-		if ( !Character.isLowerCase( declaration.charAt( 0 ) ) && !declaration.endsWith( ";" ) ) {
+		if ( !Character.isLowerCase( descriptor.charAt( 0 ) ) && !descriptor.endsWith( ";" ) ) {
 			return classes()[0];
 		}
-		return Class.cls( modifiers, declaration );
+		return Class.cls( modifiers, descriptor );
 	}
 
 	public Class[] classes() {
 		int index = 0;
 		List<Class> names = new ArrayList<Class>();
-		char[] dc = declaration.toCharArray();
+		char[] dc = descriptor.toCharArray();
 		int arrayDimentions = 0;
 		while ( index < dc.length ) {
 			final char c = dc[index++];
@@ -74,8 +74,8 @@ public final class ClassDeclaration {
 			} else {
 				Class ref = null;
 				if ( c == 'L' ) {
-					int end = declaration.indexOf( ';', index );
-					String name = declaration.substring( index, end );
+					int end = descriptor.indexOf( ';', index );
+					String name = descriptor.substring( index, end );
 					ref = Class.cls( Modifiers.UNKNOWN_CLASS, name, arrayDimentions );
 					index = end + 1;
 				} else {
@@ -86,5 +86,10 @@ public final class ClassDeclaration {
 			}
 		}
 		return names.toArray( new Class[names.size()] );
+	}
+
+	@Override
+	public String toString() {
+		return descriptor;
 	}
 }

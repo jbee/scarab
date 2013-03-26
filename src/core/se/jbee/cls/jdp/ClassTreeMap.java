@@ -11,7 +11,7 @@ import se.jbee.cls.graph.ClassGraph;
 import se.jbee.cls.graph.ClassNode;
 import se.jbee.cls.graph.PackageNode;
 import se.jbee.cls.sca.JarScanner;
-import se.jbee.cls.sca.TypeFilter;
+import se.jbee.cls.sca.ArchiveFilter;
 
 /**
  * Used as an example to experiment with d3.js treemap to visualize package structure.
@@ -79,7 +79,7 @@ public class ClassTreeMap {
 		}
 		String json = "/home/jan/project/scarab/src/jdp/data.js";
 		ClassGraph g = new ClassGraph( packages( root ) );
-		new JarScanner( g, TypeFilter.ALL ).scan( file );
+		new JarScanner( g, ArchiveFilter.ALL ).scan( file );
 		FileOutputStream out2 = new FileOutputStream( json );
 		try {
 			out2.write( "var data = ".getBytes() );
