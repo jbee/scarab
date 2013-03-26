@@ -1,5 +1,6 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.file.ClassDeclaration.classDeclaration;
 import se.jbee.cls.Class;
 
 public final class MethodDeclaration {
@@ -18,11 +19,11 @@ public final class MethodDeclaration {
 	}
 
 	public Class returnType() {
-		return Classfile.cls( declaration.substring( endOfParameters + 1 ) );
+		return classDeclaration( declaration.substring( endOfParameters + 1 ) ).cls();
 	}
 
 	public Class[] parameterTypes() {
-		return Classfile.classes( declaration.substring( 1, endOfParameters ) );
+		return classDeclaration( declaration.substring( 1, endOfParameters ) ).classes();
 	}
 
 	@Override

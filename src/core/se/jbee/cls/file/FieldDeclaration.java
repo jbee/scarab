@@ -1,5 +1,6 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.file.ClassDeclaration.classDeclaration;
 import se.jbee.cls.Class;
 
 public final class FieldDeclaration {
@@ -16,7 +17,7 @@ public final class FieldDeclaration {
 	}
 
 	public Class type() {
-		return Classfile.cls( declaration );
+		return classDeclaration( declaration ).cls();
 	}
 
 	@Override

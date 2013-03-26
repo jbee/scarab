@@ -2,18 +2,23 @@ package se.jbee.cls;
 
 public final class Class {
 
-	public static final Class OBJECT = cls( "java/lang/Object" );
+	//TODO change modifiers to what is correct for Object
+	public static final Class OBJECT = cls( Modifiers.UNKNOWN_CLASS, "java/lang/Object" );
 
-	public static final Class NONE = new Class( 0, "" );
+	public static final Class NONE = new Class( Modifiers.UNKNOWN_CLASS, 0, "" );
 
-	public static Class cls( String name ) {
-		return cls( name, 0 );
+	public static Class unknownClass( String name ) {
+		return cls( Modifiers.UNKNOWN_CLASS, name );
 	}
 
-	public static Class cls( String name, int arrayDimentions ) {
+	public static Class cls( Modifiers modifiers, String name ) {
+		return cls( modifiers, name, 0 );
+	}
+
+	public static Class cls( Modifiers modifiers, String name, int arrayDimentions ) {
 		return name == null || name.isEmpty()
 			? Class.NONE
-			: new Class( arrayDimentions, name );
+			: new Class( modifiers, arrayDimentions, name );
 	}
 
 	public final int arrayDimensions;
@@ -26,8 +31,11 @@ public final class Class {
 	 */
 	public final String name;
 
-	private Class( int arrayDimentions, String name ) {
+	public final Modifiers modifiers;
+
+	private Class( Modifiers modifiers, int arrayDimentions, String name ) {
 		super();
+		this.modifiers = modifiers;
 		this.arrayDimensions = arrayDimentions;
 		this.name = name.intern();
 	}
@@ -87,14 +95,18 @@ public final class Class {
 
 	public Class outerClass() {
 		return isInner()
-			? cls( name.substring( 0, name.indexOf( '$' ) ) )
+			? cls( modifiers, name.substring( 0, name.indexOf( '$' ) ) )
 			: this;
 	}
 
 	public Class elementClass() {
 		return isArray()
-			? new Class( 0, name )
+			? new Class( modifiers, 0, name )
 			: this;
+	}
+
+	public Class with( Modifiers modifiers ) {
+		return new Class( modifiers, arrayDimensions, name );
 	}
 
 	@Override
@@ -103,6 +115,6 @@ public final class Class {
 		for ( int i = 0; i < arrayDimensions; i++ ) {
 			res += "[]";
 		}
-		return res;
+		return modifiers + " " + res;
 	}
 }

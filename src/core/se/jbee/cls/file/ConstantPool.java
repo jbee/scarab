@@ -1,5 +1,6 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.file.ClassDeclaration.classDeclaration;
 import static se.jbee.cls.file.MethodDeclaration.methodDeclaration;
 
 import java.io.IOException;
@@ -180,7 +181,7 @@ public final class ConstantPool
 		if ( tags[index] != ConstantTag.CLASS ) {
 			throw new NoSuchElementException( "" );
 		}
-		return Classfile.cls( utf0( index ) );
+		return classDeclaration( utf0( index ) ).cls();
 	}
 
 	public Method method( int index ) {
@@ -191,11 +192,15 @@ public final class ConstantPool
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
 		MethodDeclaration declaration = methodDeclaration( utf1( i1 ) );
-		final Modifiers modifiers = tags[index] == ConstantTag.INTERFACE_METHOD_REF
-			? Modifiers.UNKNOWN
+		final boolean interfaceMethod = tags[index] == ConstantTag.INTERFACE_METHOD_REF;
+		final Modifiers modifiers = interfaceMethod
+			? Modifiers.UNKNOWN_CLASS_METHOD
 			: Modifiers.UNKNOWN_INTERFACE_METHOD;
-		return Method.method( Classfile.cls( declaringClass ), modifiers, declaration.returnType(),
-				name, declaration.parameterTypes() );
+		final Modifiers declaringModifiers = interfaceMethod
+			? Modifiers.UNKNOWN_INTERFACE
+			: Modifiers.UNKNOWN_CLASS;
+		return Method.method( classDeclaration( declaringClass ).cls( declaringModifiers ),
+				modifiers, declaration.returnType(), name, declaration.parameterTypes() );
 	}
 
 	public Field field( int index ) {
@@ -206,8 +211,8 @@ public final class ConstantPool
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
 		FieldDeclaration declaration = FieldDeclaration.fieldDeclaration( utf1( i1 ) );
-		return Field.field( Classfile.cls( declaringClass ), Modifiers.UNKNOWN, declaration.type(),
-				name );
+		return Field.field( classDeclaration( declaringClass ).cls(), Modifiers.UNKNOWN_FIELD,
+				declaration.type(), name );
 	}
 
 	@Override

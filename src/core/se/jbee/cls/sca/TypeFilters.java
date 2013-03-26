@@ -27,7 +27,7 @@ public class TypeFilters {
 
 		@Override
 		public boolean process( Type type ) {
-			return type.modifiers.all( mandatory );
+			return type.cls.modifiers.all( mandatory );
 		}
 
 	}

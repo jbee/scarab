@@ -78,6 +78,6 @@ public final class Package {
 	}
 
 	public Class memberClass( String simpleName ) {
-		return Class.cls( name + "/" + simpleName );
+		return Class.cls( Modifiers.UNKNOWN_CLASS, name + "/" + simpleName );
 	}
 }

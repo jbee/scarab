@@ -88,6 +88,5 @@ public enum Modifier {
 		CLASS,
 		FIELD,
 		METHOD,
-		UNKNOWN
 	}
 }

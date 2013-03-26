@@ -16,12 +16,12 @@ public final class ClassGraph
 	 * All (root) packages considered to be the basis, the "own" code.
 	 */
 	public final Packages basePackages;
-	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
-	public final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
-	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
-	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
-	public final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
 	public final Edges<Archive, ArchiveNode> archives = new Edges<Archive, ArchiveNode>();
+	public final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
+	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
+	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
+	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
+	public final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
 
 	public ClassGraph( Packages basePackages ) {
 		super();

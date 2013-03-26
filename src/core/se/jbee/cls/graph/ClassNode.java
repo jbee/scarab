@@ -16,7 +16,6 @@ public final class ClassNode
 	private Class key;
 	private ClassNode superclass;
 	private ArchiveNode archive;
-	private Modifiers modifiers;
 	public final PackageNode pkg;
 
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
@@ -50,7 +49,6 @@ public final class ClassNode
 		this.pkg = graph.pkg( cls.pkg() );
 		this.pkg.classes.add( this );
 		this.archive = graph.archive( Archive.RUNTIME );
-		this.modifiers = Modifiers.UNKNOWN;
 		if ( cls.isInner() ) {
 			graph.cls( cls.outerClass() ).innerClasses.add( this );
 		}
@@ -61,7 +59,6 @@ public final class ClassNode
 			throw new IllegalArgumentException();
 		}
 		this.key = type.cls;
-		this.modifiers = type.modifiers;
 		this.archive = graph.archive( type.archive );
 		this.archive.contains( this );
 		ClassNode sc = graph.cls( type.superclass );
@@ -94,7 +91,7 @@ public final class ClassNode
 	}
 
 	public Modifiers modifiers() {
-		return modifiers;
+		return key.modifiers;
 	}
 
 	public ArchiveNode archive() {

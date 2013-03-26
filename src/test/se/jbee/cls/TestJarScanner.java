@@ -52,7 +52,7 @@ public class TestJarScanner {
 		assertEquals( 2, g.archives.size() );
 		assertEquals( archive( file ), type.archive().id() );
 		ArchiveNode silk = g.archive( archive( file ) );
-		assertTrue( silk.classes.contains( Class.cls( "se/jbee/inject/Packages" ) ) );
+		assertTrue( silk.classes.contains( Class.unknownClass( "se/jbee/inject/Packages" ) ) );
 		assertTrue( silk.packages.contains( Package.pkg( "se/jbee/inject/util" ) ) );
 	}
 

@@ -4,9 +4,17 @@ import se.jbee.cls.Modifier.ModifierMode;
 
 public final class Modifiers {
 
-	public static final Modifiers UNKNOWN = modifiers( ModifierMode.UNKNOWN, 0 );
-	public static final Modifiers UNKNOWN_INTERFACE_METHOD = modifiers( ModifierMode.UNKNOWN,
-			Modifier.INTERFACE );
+	public static final Modifiers UNKNOWN_CLASS = new Modifiers( ModifierMode.CLASS, 0, true );
+	public static final Modifiers UNKNOWN_INTERFACE = new Modifiers( ModifierMode.CLASS,
+			Modifier.INTERFACE.accFlag | Modifier.ABSTRACT.accFlag, true );
+	public static final Modifiers UNKNOWN_FIELD = new Modifiers( ModifierMode.FIELD, 0, true );
+	//TODO can be derived from declaring class now
+	@Deprecated
+	public static final Modifiers UNKNOWN_CLASS_METHOD = new Modifiers( ModifierMode.METHOD, 0,
+			true );
+	@Deprecated
+	public static final Modifiers UNKNOWN_INTERFACE_METHOD = new Modifiers( ModifierMode.METHOD,
+			Modifier.INTERFACE.accFlag, true );
 
 	public static Modifiers classModifiers( int accFlags ) {
 		return modifiers( ModifierMode.CLASS, accFlags );
@@ -21,7 +29,7 @@ public final class Modifiers {
 	}
 
 	private static Modifiers modifiers( ModifierMode mode, int accFlags ) {
-		return new Modifiers( mode, accFlags );
+		return new Modifiers( mode, accFlags, false );
 	}
 
 	public static Modifiers modifiers( ModifierMode mode, Modifier... modifiers ) {
@@ -29,16 +37,18 @@ public final class Modifiers {
 		for ( Modifier m : modifiers ) {
 			flags |= m.accFlag;
 		}
-		return new Modifiers( mode, flags );
+		return new Modifiers( mode, flags, false );
 	}
 
 	public final ModifierMode mode;
 	private final int accFlags;
+	private final boolean derived;
 
-	private Modifiers( ModifierMode mode, int accFlags ) {
+	private Modifiers( ModifierMode mode, int accFlags, boolean derived ) {
 		super();
 		this.mode = mode;
 		this.accFlags = accFlags;
+		this.derived = derived;
 	}
 
 	public boolean has( Modifier modifier ) {
@@ -74,7 +84,7 @@ public final class Modifiers {
 	}
 
 	public boolean isUnknown() {
-		return mode == ModifierMode.UNKNOWN;
+		return derived && accFlags == 0;
 	}
 
 	@Override
