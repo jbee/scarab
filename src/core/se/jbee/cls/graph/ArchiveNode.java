@@ -7,6 +7,7 @@ import se.jbee.cls.Package;
 public final class ArchiveNode
 		implements Node<Archive> {
 
+	@SuppressWarnings ( "unused" )
 	private final ClassGraph graph;
 	private final Archive key;
 

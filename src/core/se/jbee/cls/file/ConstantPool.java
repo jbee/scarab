@@ -193,14 +193,12 @@ public final class ConstantPool
 		String name = utf0( i1 );
 		MethodDescriptor declaration = methodDescriptor( utf1( i1 ) );
 		final boolean interfaceMethod = tags[index] == ConstantTag.INTERFACE_METHOD_REF;
-		final Modifiers modifiers = interfaceMethod
-			? Modifiers.UNKNOWN_CLASS_METHOD
-			: Modifiers.UNKNOWN_INTERFACE_METHOD;
 		final Modifiers declaringModifiers = interfaceMethod
 			? Modifiers.UNKNOWN_INTERFACE
 			: Modifiers.UNKNOWN_CLASS;
 		return Method.method( classDescriptor( declaringClass ).cls( declaringModifiers ),
-				modifiers, declaration.returnType(), name, declaration.parameterTypes() );
+				Modifiers.UNKNOWN_METHOD, declaration.returnType(), name,
+				declaration.parameterTypes() );
 	}
 
 	public Field field( int index ) {

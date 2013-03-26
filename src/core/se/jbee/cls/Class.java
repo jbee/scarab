@@ -1,9 +1,11 @@
 package se.jbee.cls;
 
+import se.jbee.cls.Modifier.ModifierMode;
+
 public final class Class {
 
-	//TODO change modifiers to what is correct for Object
-	public static final Class OBJECT = cls( Modifiers.UNKNOWN_CLASS, "java/lang/Object" );
+	public static final Class OBJECT = cls(
+			Modifiers.modifiers( ModifierMode.CLASS, Modifier.PUBLIC ), "java/lang/Object" );
 
 	public static final Class NONE = new Class( Modifiers.UNKNOWN_CLASS, 0, "" );
 

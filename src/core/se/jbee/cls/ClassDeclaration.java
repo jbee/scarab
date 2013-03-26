@@ -2,8 +2,10 @@ package se.jbee.cls;
 
 public final class ClassDeclaration {
 
-	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass, Class[] interfaces,
-			Declarations declarations, References references ) {
+	//OPEN maybe have all declaration related code in a sub-package ? 
+
+	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass,
+			Class[] interfaces, Declarations declarations, References references ) {
 		return new ClassDeclaration( archive, cls, superclass, interfaces, declarations, references );
 	}
 

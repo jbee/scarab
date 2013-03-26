@@ -1,12 +1,19 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.Modifiers.modifiers;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import se.jbee.cls.Class;
+import se.jbee.cls.Modifier;
+import se.jbee.cls.Modifier.ModifierMode;
 import se.jbee.cls.Modifiers;
 
 public final class ClassDescriptor {
+
+	private static final Modifiers PRIMITIVES_MODIFIERS = modifiers( ModifierMode.CLASS,
+			Modifier.PUBLIC, Modifier.ABSTRACT, Modifier.FINAL );
 
 	private static enum TypeCode {
 		B( byte.class ),
@@ -32,8 +39,7 @@ public final class ClassDescriptor {
 
 	static {
 		for ( TypeCode c : TypeCode.values() ) {
-			//TODO change modifiers to what is correct for primitives
-			PRIMITIVES[c.name().charAt( 0 ) - 'A'] = Class.cls( Modifiers.UNKNOWN_CLASS, c.name, 0 );
+			PRIMITIVES[c.name().charAt( 0 ) - 'A'] = Class.cls( PRIMITIVES_MODIFIERS, c.name, 0 );
 		}
 	}
 

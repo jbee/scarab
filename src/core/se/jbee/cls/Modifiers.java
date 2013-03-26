@@ -8,13 +8,7 @@ public final class Modifiers {
 	public static final Modifiers UNKNOWN_INTERFACE = new Modifiers( ModifierMode.CLASS,
 			Modifier.INTERFACE.accFlag | Modifier.ABSTRACT.accFlag, true );
 	public static final Modifiers UNKNOWN_FIELD = new Modifiers( ModifierMode.FIELD, 0, true );
-	//TODO can be derived from declaring class now
-	@Deprecated
-	public static final Modifiers UNKNOWN_CLASS_METHOD = new Modifiers( ModifierMode.METHOD, 0,
-			true );
-	@Deprecated
-	public static final Modifiers UNKNOWN_INTERFACE_METHOD = new Modifiers( ModifierMode.METHOD,
-			Modifier.INTERFACE.accFlag, true );
+	public static final Modifiers UNKNOWN_METHOD = new Modifiers( ModifierMode.METHOD, 0, true );
 
 	public static Modifiers classModifiers( int accFlags ) {
 		return modifiers( ModifierMode.CLASS, accFlags );

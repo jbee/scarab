@@ -72,6 +72,8 @@ public enum Modifier {
 	 */
 	ENUM( 0x4000, CLASS, FIELD );
 
+	//TODO better: unknown as modifier flag
+
 	public final int accFlag;
 	public final EnumSet<ModifierMode> modes;
 
