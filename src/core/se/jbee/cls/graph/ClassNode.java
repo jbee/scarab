@@ -33,9 +33,16 @@ public final class ClassNode
 	public final Edges<Class, ClassNode> innerClasses = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> interfaces = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> implementations = new Edges<Class, ClassNode>();
-	//TODO distinguish between same parent package and others (dependencies)
 	public final Edges<Class, ClassNode> references = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> referencedBy = new Edges<Class, ClassNode>();
+	/**
+	 * The <i>external</i> classes this class {@link #references}.
+	 */
+	public final Edges<Class, ClassNode> dependencies = new Edges<Class, ClassNode>();
+	/**
+	 * The <i>external</i> classes this class is {@link #referencedBy}.
+	 */
+	public final Edges<Class, ClassNode> dependents = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> callsTypes = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> calledBy = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> accessesTypes = new Edges<Class, ClassNode>();
@@ -172,6 +179,19 @@ public final class ClassNode
 		ClassNode other = graph.cls( type );
 		other.referencedBy.add( this );
 		references.add( other );
+		boolean thisIsBase = graph.basePackages.isSubpackage( key.pkg() );
+		boolean otherIsBase = graph.basePackages.isSubpackage( type.pkg() );
+		if ( thisIsBase ) {
+			if ( !otherIsBase ) {
+				dependencies.add( other );
+				other.dependents.add( this );
+			}
+		} else {
+			if ( otherIsBase ) {
+				dependents.add( other );
+				other.dependencies.add( this );
+			}
+		}
 		packageReferences( this.key, type );
 	}
 

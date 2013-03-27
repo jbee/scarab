@@ -62,7 +62,8 @@ public final class ClassDescriptor {
 		if ( descriptor == null || descriptor.isEmpty() ) {
 			return Class.NONE;
 		}
-		if ( !Character.isLowerCase( descriptor.charAt( 0 ) ) && !descriptor.endsWith( ";" ) ) {
+		char c0 = descriptor.charAt( 0 );
+		if ( c0 == '[' || ( Character.isUpperCase( c0 ) && descriptor.indexOf( ';' ) > 0 ) ) {
 			return classes()[0];
 		}
 		return Class.cls( modifiers, descriptor );

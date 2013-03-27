@@ -20,8 +20,6 @@ import se.jbee.cls.graph.ClassGraph;
 import se.jbee.cls.graph.ClassNode;
 import se.jbee.cls.graph.MethodNode;
 import se.jbee.cls.graph.PackageNode;
-import se.jbee.cls.io.ArchiveFilter;
-import se.jbee.cls.io.JarScanner;
 import se.jbee.cls.reflect.ClassProcessor;
 
 public class TestJarScanner {
@@ -56,6 +54,8 @@ public class TestJarScanner {
 		ArchiveNode silk = g.archive( archive( file ) );
 		assertTrue( silk.classes.contains( Class.unknownClass( "se/jbee/inject/Packages" ) ) );
 		assertTrue( silk.packages.contains( Package.pkg( "se/jbee/inject/util" ) ) );
+		assertTrue( inject.dependencies.contains( Package.pkg( "java/lang" ) ) );
+		assertFalse( inject.dependencies.contains( bind ) );
 	}
 
 	@Test

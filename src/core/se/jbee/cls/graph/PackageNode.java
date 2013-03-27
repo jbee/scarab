@@ -15,8 +15,22 @@ public final class PackageNode
 	public final Edges<Package, PackageNode> subPackages = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> references = new Edges<Package, PackageNode>();
 	public final Edges<Package, PackageNode> referencedBy = new Edges<Package, PackageNode>();
+	/**
+	 * The {@link #references} of this package and all its sub-packages.
+	 */
 	public final Edges<Package, PackageNode> connects = new Edges<Package, PackageNode>();
+	/**
+	 * The {@link #referencedBy} of this package and all its sub-packages.
+	 */
 	public final Edges<Package, PackageNode> connectedFrom = new Edges<Package, PackageNode>();
+	/**
+	 * The <i>external</i> packages this package {@link #references}.
+	 */
+	public final Edges<Package, PackageNode> dependencies = new Edges<Package, PackageNode>();
+	/**
+	 * The <i>external</i> packages this package is {@link #referencedBy}.
+	 */
+	public final Edges<Package, PackageNode> dependents = new Edges<Package, PackageNode>();
 
 	PackageNode( ClassGraph graph, Package pkg, int serial ) {
 		super();
@@ -51,6 +65,19 @@ public final class PackageNode
 	void references( PackageNode other ) {
 		references.add( other );
 		other.referencedBy.add( this );
+		boolean thisIsBase = graph.basePackages.isSubpackage( key );
+		boolean otherIsBase = graph.basePackages.isSubpackage( other.key );
+		if ( thisIsBase ) {
+			if ( !otherIsBase ) {
+				dependencies.add( other );
+				other.dependents.add( this );
+			}
+		} else {
+			if ( otherIsBase ) {
+				dependents.add( other );
+				other.dependencies.add( this );
+			}
+		}
 		connects( other );
 	}
 

@@ -45,7 +45,7 @@ public final class Package {
 	}
 
 	public boolean isSubpackage( Package other ) {
-		return other.name.startsWith( name + "." );
+		return equalTo( other ) || other.name.startsWith( name + "/" );
 	}
 
 	@Override
