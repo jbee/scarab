@@ -1,4 +1,4 @@
-package se.jbee.cls.sca;
+package se.jbee.cls.io;
 
 import static se.jbee.cls.Archive.archive;
 
@@ -12,6 +12,7 @@ import java.util.zip.ZipInputStream;
 import se.jbee.cls.Archive;
 import se.jbee.cls.file.ClassInputStream;
 import se.jbee.cls.file.Classfile;
+import se.jbee.cls.reflect.ClassProcessor;
 
 public class JarScanner {
 

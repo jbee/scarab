@@ -1,4 +1,7 @@
-package se.jbee.cls;
+package se.jbee.cls.reflect;
+
+import se.jbee.cls.Archive;
+import se.jbee.cls.Class;
 
 public final class ClassDeclaration {
 

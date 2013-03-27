@@ -1,4 +1,4 @@
-package se.jbee.cls;
+package se.jbee.cls.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,14 +13,16 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import se.jbee.cls.Class;
+import se.jbee.cls.Package;
 import se.jbee.cls.graph.ArchiveNode;
 import se.jbee.cls.graph.ClassGraph;
 import se.jbee.cls.graph.ClassNode;
 import se.jbee.cls.graph.MethodNode;
 import se.jbee.cls.graph.PackageNode;
-import se.jbee.cls.sca.ClassProcessor;
-import se.jbee.cls.sca.JarScanner;
-import se.jbee.cls.sca.ArchiveFilter;
+import se.jbee.cls.io.ArchiveFilter;
+import se.jbee.cls.io.JarScanner;
+import se.jbee.cls.reflect.ClassProcessor;
 
 public class TestJarScanner {
 

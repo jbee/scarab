@@ -1,4 +1,4 @@
-package se.jbee.cls.sca;
+package se.jbee.cls.io;
 
 import se.jbee.cls.Archive;
 

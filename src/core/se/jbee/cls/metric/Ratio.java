@@ -4,9 +4,23 @@ public final class Ratio
 		implements Comparable<Ratio> {
 
 	public static enum RatioType {
+		/**
+		 * Part of total, a usual ratio
+		 */
 		RATIO,
+		/**
+		 * A absolute count (denominator will be 1)
+		 */
 		COUNT,
-		NATURE
+		/**
+		 * How much something has a certain characteristic. A relative ratio where the relation
+		 * might differ from measurement to measurement since it is also measured.
+		 */
+		NATURE,
+		/**
+		 * Actual count in relation to a absolute fix-point marking the 'normal' or 100%.
+		 */
+		BENCHMARK
 	}
 
 	public static Ratio count( int numerator ) {

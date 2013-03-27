@@ -1,4 +1,9 @@
-package se.jbee.cls;
+package se.jbee.cls.reflect;
+
+import se.jbee.cls.Class;
+import se.jbee.cls.Field;
+import se.jbee.cls.Items;
+import se.jbee.cls.Method;
 
 
 public interface References {

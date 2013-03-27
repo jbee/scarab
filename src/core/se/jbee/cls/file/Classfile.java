@@ -1,15 +1,15 @@
 package se.jbee.cls.file;
 
-import static se.jbee.cls.ClassDeclaration.classDeclaration;
 import static se.jbee.cls.file.ClassDescriptor.classDescriptor;
+import static se.jbee.cls.reflect.ClassDeclaration.classDeclaration;
 
 import java.io.IOException;
 
 import se.jbee.cls.Archive;
 import se.jbee.cls.Class;
 import se.jbee.cls.Modifiers;
-import se.jbee.cls.ClassDeclaration;
-import se.jbee.cls.sca.ClassProcessor;
+import se.jbee.cls.reflect.ClassDeclaration;
+import se.jbee.cls.reflect.ClassProcessor;
 
 public final class Classfile {
 

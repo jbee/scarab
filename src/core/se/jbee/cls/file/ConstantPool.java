@@ -12,7 +12,7 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Items;
 import se.jbee.cls.Method;
 import se.jbee.cls.Modifiers;
-import se.jbee.cls.References;
+import se.jbee.cls.reflect.References;
 
 public final class ConstantPool
 		implements References {

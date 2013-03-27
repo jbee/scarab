@@ -9,10 +9,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import se.jbee.cls.Class;
-import se.jbee.cls.Declarations;
 import se.jbee.cls.Field;
 import se.jbee.cls.Items;
 import se.jbee.cls.Method;
+import se.jbee.cls.reflect.Declarations;
 
 public final class DeclarationPool
 		implements Declarations {

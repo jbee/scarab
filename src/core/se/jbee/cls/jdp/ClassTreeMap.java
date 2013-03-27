@@ -10,8 +10,8 @@ import se.jbee.cls.Package;
 import se.jbee.cls.graph.ClassGraph;
 import se.jbee.cls.graph.ClassNode;
 import se.jbee.cls.graph.PackageNode;
-import se.jbee.cls.sca.JarScanner;
-import se.jbee.cls.sca.ArchiveFilter;
+import se.jbee.cls.io.ArchiveFilter;
+import se.jbee.cls.io.JarScanner;
 
 /**
  * Used as an example to experiment with d3.js treemap to visualize package structure.

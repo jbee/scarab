@@ -6,8 +6,8 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Method;
 import se.jbee.cls.Package;
 import se.jbee.cls.Packages;
-import se.jbee.cls.ClassDeclaration;
-import se.jbee.cls.sca.ClassProcessor;
+import se.jbee.cls.reflect.ClassDeclaration;
+import se.jbee.cls.reflect.ClassProcessor;
 
 public final class ClassGraph
 		implements ClassProcessor {

@@ -5,8 +5,8 @@ import se.jbee.cls.Class;
 import se.jbee.cls.Field;
 import se.jbee.cls.Method;
 import se.jbee.cls.Modifiers;
-import se.jbee.cls.References;
-import se.jbee.cls.ClassDeclaration;
+import se.jbee.cls.reflect.ClassDeclaration;
+import se.jbee.cls.reflect.References;
 
 public final class ClassNode
 		implements Node<Class> {

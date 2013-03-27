@@ -1,6 +1,5 @@
-package se.jbee.cls.sca;
+package se.jbee.cls.reflect;
 
-import se.jbee.cls.ClassDeclaration;
 
 
 public interface ClassProcessor {
