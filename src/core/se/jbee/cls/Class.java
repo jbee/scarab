@@ -13,14 +13,27 @@ public final class Class {
 		return cls( Modifiers.UNKNOWN_CLASS, name );
 	}
 
+	public static Class unknownInterface( String name ) {
+		return cls( Modifiers.UNKNOWN_INTERFACE, name );
+	}
+
 	public static Class cls( Modifiers modifiers, String name ) {
 		return cls( modifiers, name, 0 );
 	}
 
 	public static Class cls( Modifiers modifiers, String name, int arrayDimentions ) {
-		return name == null || name.isEmpty()
-			? Class.NONE
-			: new Class( modifiers, arrayDimentions, name );
+		if ( name == null || name.isEmpty() ) {
+			return Class.NONE;
+		}
+		if ( name.charAt( 0 ) == '[' ) {
+			// while non-array classes use the plain internal name in CP array classes have the descriptor syntax [L<name>;
+			while ( name.charAt( arrayDimentions ) == '[' ) {
+				arrayDimentions++;
+			}
+			return new Class( modifiers, arrayDimentions, name.substring( arrayDimentions + 1,
+					name.length() - 1 ) );
+		}
+		return new Class( modifiers, arrayDimentions, name );
 	}
 
 	public final int arrayDimensions;
@@ -119,4 +132,5 @@ public final class Class {
 		}
 		return modifiers + " " + res;
 	}
+
 }

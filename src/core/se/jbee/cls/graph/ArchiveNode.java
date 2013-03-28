@@ -14,6 +14,8 @@ public final class ArchiveNode
 	public final Edges<Package, PackageNode> packages = new Edges<Package, PackageNode>();
 	public final Edges<Class, ClassNode> classes = new Edges<Class, ClassNode>();
 
+	//TODO also add links to other archives like on package and class level
+
 	ArchiveNode( ClassGraph graph, Archive key ) {
 		super();
 		this.graph = graph;

@@ -196,7 +196,7 @@ public final class ConstantPool
 		final Modifiers declaringModifiers = interfaceMethod
 			? Modifiers.UNKNOWN_INTERFACE
 			: Modifiers.UNKNOWN_CLASS;
-		return Method.method( classDescriptor( declaringClass ).cls( declaringModifiers ),
+		return Method.method( Class.cls( declaringModifiers, declaringClass ),
 				Modifiers.UNKNOWN_METHOD, declaration.returnType(), name,
 				declaration.parameterTypes() );
 	}
@@ -209,7 +209,7 @@ public final class ConstantPool
 		String declaringClass = utf0( index0( index ) );
 		String name = utf0( i1 );
 		FieldDescriptor declaration = FieldDescriptor.fieldDescriptor( utf1( i1 ) );
-		return Field.field( classDescriptor( declaringClass ).cls(), Modifiers.UNKNOWN_FIELD,
+		return Field.field( Class.unknownClass( declaringClass ), Modifiers.UNKNOWN_FIELD,
 				declaration.type(), name );
 	}
 
