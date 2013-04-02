@@ -10,7 +10,7 @@ import se.jbee.cls.Modifiers;
 import se.jbee.cls.reflect.ClassDeclaration;
 import se.jbee.cls.reflect.ClassProcessor;
 
-public final class Classfile {
+public final class ClassFile {
 
 	private static final int MAGIC_NUMBER = 0xcafebabe;
 

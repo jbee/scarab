@@ -54,9 +54,6 @@ public class ClassTreeMap {
 				out.print( "\t\t{\"name\": \"" + c.id().simpleName() + "\"," );
 				out.print( "\"type\": \""
 						+ c.modifiers().toString().replace( "@interface", "annotation" ) + "\", " );
-				out.print( "\"nature\": \"" + ( c.isUitl()
-					? "util"
-					: "" ) + "\", " );
 				out.print( "\"c_method\": " + c.methods.size() + ", " );
 				out.print( "\"c_field\": " + c.instanceFields.size() + ", " );
 				out.print( "\"c_references\": " + c.references.size() + ", " );

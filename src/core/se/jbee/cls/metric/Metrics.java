@@ -11,9 +11,43 @@ public final class Metrics {
 	public static final ClassMeasure NUMBER_OF_INSTANCE_FIELDS = new NumberOfInstanceFields();
 	public static final ClassMeasure NUMBER_OF_INCOMING_REFERENCES = new NumberOfIncomingReferences();
 	public static final ClassMeasure NUMBER_OF_OUTGOING_REFERENCES = new NumberOfOutgoingReferences();
+	public static final ClassMeasure EQUIPARTITION_1 = new Equipartition( 1 );
+
+	public static final Rating NUMERATOR = new NumeratorRating();
 
 	private Metrics() {
 		throw new UnsupportedOperationException( "util" );
+	}
+
+	private static final class NumeratorRating
+			implements Rating {
+
+		NumeratorRating() {
+			// make visible
+		}
+
+		@Override
+		public int rate( Ratio ratio ) {
+			return ratio.numerator;
+		}
+
+	}
+
+	private static final class Equipartition
+			implements ClassMeasure {
+
+		private final int numerator;
+
+		Equipartition( int numerator ) {
+			super();
+			this.numerator = numerator;
+		}
+
+		@Override
+		public Ratio measure( ClassNode cls ) {
+			return count( numerator );
+		}
+
 	}
 
 	private static final class Utilisation

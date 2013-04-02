@@ -75,10 +75,12 @@ public enum Modifier {
 	//TODO better: unknown as modifier flag
 
 	public final int accFlag;
+	public final String description;
 	public final EnumSet<ModifierMode> modes;
 
 	private Modifier( int accFlag, ModifierMode... modes ) {
 		this.accFlag = accFlag;
+		this.description = name().toLowerCase().intern();
 		this.modes = EnumSet.of( modes[0], modes );
 	}
 

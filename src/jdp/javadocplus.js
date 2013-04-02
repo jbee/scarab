@@ -28,7 +28,7 @@ var jdp = {
 		  var node = div.datum(data).selectAll(".node")
 		      .data(treemap.nodes)
 		      .enter().append("div")
-		      .attr("class", function(d) { return d.type == null ? "node border package" : "node bg "+d.type+" "+d.nature; })
+		      .attr("class", function(d) { return d.type == null ? "node border package" : "node bg "+d.type; })
 			  .on("click", function click(d) {
 				jdp.packageMap(d.parent);
 			  })

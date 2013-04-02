@@ -55,4 +55,8 @@ public final class ClassInputStream {
 		in.skipBytes( n );
 	}
 
+	public void bytecode( byte[] code, int length )
+			throws IOException {
+		in.readFully( code, 0, length );
+	}
 }

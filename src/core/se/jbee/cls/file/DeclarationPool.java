@@ -19,6 +19,7 @@ public final class DeclarationPool
 
 	public static final int[][] SHARED_FIELD_INDEXES = new int[256][3];
 	public static final int[][] SHARED_METHOD_INDEXES = new int[512][3];
+	public static final byte[] SHARED_BYTECODE = new byte[2048];
 
 	public static DeclarationPool read( ClassInputStream in, Class declaringClass, ConstantPool cp )
 			throws IOException {
@@ -76,7 +77,32 @@ public final class DeclarationPool
 			throws IOException {
 		String name = cp.utf( in.uint16bit() );
 		int length = in.int32bit();
-		in.skipBytes( length );
+		if ( "Code".equals( name ) ) {
+			int maxStack = in.uint16bit();
+			int maxLocals = in.uint16bit();
+			int codeLength = in.int32bit();
+			byte[] code = codeLength <= SHARED_BYTECODE.length
+				? SHARED_BYTECODE
+				: new byte[codeLength];
+			in.bytecode( code, codeLength );
+			Bytecode bytecode = new Bytecode( code, codeLength );
+			bytecode.read();
+			int exceptionsCount = in.uint16bit();
+			for ( int i = 0; i < exceptionsCount; i++ ) {
+				readException( cp, in );
+			}
+			readAttributes( in, cp );
+		} else {
+			in.skipBytes( length );
+		}
+	}
+
+	private static void readException( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		int startPC = in.uint16bit();
+		int endPC = in.uint16bit();
+		int handlerPC = in.uint16bit();
+		int catchType = in.uint16bit(); // UTF8 in cp
 	}
 
 	public Method method( int index ) {

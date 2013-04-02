@@ -5,8 +5,6 @@ import se.jbee.cls.Class;
 
 public final class ClassDeclaration {
 
-	//OPEN maybe have all declaration related code in a sub-package ? 
-
 	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass,
 			Class[] interfaces, Declarations declarations, References references ) {
 		return new ClassDeclaration( archive, cls, superclass, interfaces, declarations, references );

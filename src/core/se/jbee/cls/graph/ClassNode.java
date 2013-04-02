@@ -61,22 +61,21 @@ public final class ClassNode
 		}
 	}
 
-	void declaredAs( ClassDeclaration type ) {
-		if ( !type.cls.equalTo( key ) ) {
+	void declaredAs( ClassDeclaration cls ) {
+		if ( !cls.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();
 		}
-		this.key = type.cls;
-		this.archive = graph.archive( type.archive );
-		this.archive.contains( this );
-		ClassNode sc = graph.cls( type.superclass );
-		this.superclass = sc;
-		sc.subclasses.add( this );
-		for ( Class t : type.interfaces ) {
+		this.key = cls.cls;
+		this.archive = graph.archive( cls.archive );
+		ClassNode superclass = graph.cls( cls.superclass );
+		this.superclass = superclass;
+		superclass.subclasses.add( this );
+		for ( Class t : cls.interfaces ) {
 			ClassNode other = graph.cls( t );
 			other.implementations.add( this );
 			interfaces.add( other );
 		}
-		final References refs = type.references;
+		final References refs = cls.references;
 		for ( Method m : refs.calledMethods() ) {
 			calls( m );
 		}
@@ -89,12 +88,13 @@ public final class ClassNode
 		for ( Class t : refs.referencedClasses() ) {
 			references( t );
 		}
-		for ( Field f : type.declarations.declaredFields() ) {
+		for ( Field f : cls.declarations.declaredFields() ) {
 			declaredAs( f );
 		}
-		for ( Method m : type.declarations.declaredMethods() ) {
+		for ( Method m : cls.declarations.declaredMethods() ) {
 			declaredAs( m );
 		}
+		this.archive.contains( this );
 	}
 
 	public Modifiers modifiers() {
@@ -223,11 +223,6 @@ public final class ClassNode
 	@Override
 	public String toString() {
 		return key.toString();
-	}
-
-	public boolean isUitl() {
-		//TODO this kind of predicate should be exracted since it just works on the public API  
-		return instanceMethods.size() == 0 && staticMethods.size() > 0;
 	}
 
 	public MethodNode method( String name ) {
