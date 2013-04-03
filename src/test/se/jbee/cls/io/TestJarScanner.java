@@ -10,7 +10,6 @@ import static se.jbee.cls.Packages.packages;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import se.jbee.cls.Class;
@@ -59,7 +58,6 @@ public class TestJarScanner {
 	}
 
 	@Test
-	@Ignore
 	public void testScanLargerGraph() {
 		Package root = Package.pkg( "org/springframework" );
 		ClassGraph g = new ClassGraph( packages( root ) );

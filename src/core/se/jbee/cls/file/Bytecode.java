@@ -260,15 +260,18 @@ public final class Bytecode {
 				? 5
 				: 3 );
 		} else {
-			skipBytes( code.position() % 4 ); // padding
+			int pad = code.position() & 3;
+			if ( pad > 0 ) {
+				skipBytes( 4 - pad ); // padding
+			}
 			skipBytes( 4 ); // default value
 			if ( opcode == Opcode.tableswitch ) {
 				int low = code.getInt();
 				int high = code.getInt();
-				skipBytes( 4 * ( high - low + 1 ) );
+				skipBytes( ( high - low + 1 ) << 2 );
 			} else if ( opcode == Opcode.lookupswitch ) {
 				int pairs = code.getInt();
-				skipBytes( 8 * pairs ); // 2 x 4 bytes / pair
+				skipBytes( pairs << 3 ); // 2 x 4 bytes / pair
 			} else {
 				throw new UnsupportedOperationException( "Unknown opcode: " + opcode );
 			}
