@@ -85,7 +85,7 @@ public final class DeclarationPool
 				? SHARED_BYTECODE
 				: new byte[codeLength];
 			in.bytecode( code, codeLength );
-			Bytecode bytecode = new Bytecode( code, codeLength );
+			Bytecode bytecode = new Bytecode( cp, code, codeLength );
 			bytecode.read();
 			int exceptionsCount = in.uint16bit();
 			for ( int i = 0; i < exceptionsCount; i++ ) {

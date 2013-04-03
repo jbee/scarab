@@ -20,7 +20,7 @@ public final class Bytecode {
 		aload_1( 43, 0 ),
 		aload_2( 44, 0 ),
 		aload_3( 45, 0 ),
-		anewarray( 189, 2 ),
+		anewarray( 189, 2, true, false, false ),
 		areturn( 176, 0 ),
 		arraylength( 190, 0 ),
 		astore( 58, 1 ),
@@ -34,7 +34,7 @@ public final class Bytecode {
 		bipush( 16, 1 ),
 		caload( 52, 0 ),
 		castore( 85, 0 ),
-		checkcast( 192, 2 ),
+		checkcast( 192, 2, true, false, false ),
 		dadd( 99, 0 ),
 		daload( 49, 0 ),
 		dastore( 82, 0 ),
@@ -88,8 +88,8 @@ public final class Bytecode {
 		fstore_2( 69, 0 ),
 		fstore_3( 70, 0 ),
 		fsub( 102, 0 ),
-		getfield( 180, 2 ),
-		getstatic( 178, 2 ),
+		getfield( 180, 2, false, true, false ),
+		getstatic( 178, 2, false, true, false ),
 		goto_( 167, 2 ),
 		goto_w( 200, 4 ),
 		i2l( 133, 0 ),
@@ -143,12 +143,12 @@ public final class Bytecode {
 		iload_3( 29, 0 ),
 		imul( 104, 0 ),
 		ineg( 116, 0 ),
-		instanceof_( 193, 2 ),
-		invokedynamic( 186, 4 ),
-		invokeinterface( 185, 4 ),
-		invokespecial( 183, 2 ),
-		invokestatic( 184, 2 ),
-		invokevirtual( 182, 2 ),
+		instanceof_( 193, 2, true, false, false ),
+		invokedynamic( 186, 4, false, false, true ),
+		invokeinterface( 185, 4, false, false, true ),
+		invokespecial( 183, 2, false, false, true ),
+		invokestatic( 184, 2, false, false, true ),
+		invokevirtual( 182, 2, false, false, true ),
 		ior( 128, 0 ),
 		irem( 112, 0 ),
 		ireturn( 172, 0 ),
@@ -198,14 +198,14 @@ public final class Bytecode {
 		lxor( 131, 0 ),
 		monitorenter( 194, 0 ),
 		monitorexit( 195, 0 ),
-		multianewarray( 197, 3 ),
-		new_( 187, 2 ),
+		multianewarray( 197, 3, true, false, false ),
+		new_( 187, 2, true, false, false ),
 		newarray( 188, 1 ),
 		nop( 0, 0 ),
 		pop( 87, 0 ),
 		pop2( 88, 0 ),
-		putfield( 181, 2 ),
-		putstatic( 179, 2 ),
+		putfield( 181, 2, false, true, false ),
+		putstatic( 179, 2, false, true, false ),
 		ret( 169, 1 ),
 		return_( 177, 0 ),
 		saload( 53, 0 ),
@@ -218,40 +218,91 @@ public final class Bytecode {
 		impdep1( 254, 0 ),
 		impdep2( 255, 0 );
 
-		public final int decimalCode;
-		public final int otherByteCount;
+		/**
+		 * The opcode in decimal
+		 */
+		public final int opcodeDecimal;
+		/**
+		 * The count of bytes that are following the opcode byte
+		 */
+		public final int argBytes;
+		/**
+		 * The count of bytes that needs to be skipped
+		 */
+		public final int skipBytes;
 
-		private Opcode( int decimalCode, int otherByteCount ) {
-			this.decimalCode = decimalCode;
-			this.otherByteCount = otherByteCount;
-			OPCODES[decimalCode] = this;
+		public final boolean classIndex;
+		public final boolean fieldIndex;
+		public final boolean methodIndex;
+		/**
+		 * True, in case the opcode uses a index into the CP. For such a index always 2 bytes of the
+		 * {@link #argBytes} are used.
+		 */
+		public final boolean cpIndex;
+
+		private Opcode( int opcodeDecimal, int argBytes ) {
+			this( opcodeDecimal, argBytes, false, false, false );
+		}
+
+		private Opcode( int opcodeDecimal, int argBytes, boolean classIndex, boolean fieldIndex,
+				boolean methodIndex ) {
+			this.opcodeDecimal = opcodeDecimal;
+			this.argBytes = argBytes;
+			this.classIndex = classIndex;
+			this.fieldIndex = fieldIndex;
+			this.methodIndex = methodIndex;
+			this.cpIndex = classIndex || fieldIndex || methodIndex;
+			this.skipBytes = argBytes - ( this.cpIndex
+				? 2
+				: 0 );
+			OPCODES[opcodeDecimal] = this;
 		}
 	}
 
 	private final ByteBuffer code;
+	private final ConstantPool cp;
 
-	public Bytecode( byte[] code, int length ) {
+	public Bytecode( ConstantPool cp, byte[] code, int length ) {
 		super();
+		this.cp = cp;
 		this.code = ByteBuffer.wrap( code, 0, length );
 		this.code.order( ByteOrder.BIG_ENDIAN );
 	}
 
 	public void read() {
 		while ( code.hasRemaining() ) {
-			skip( opcode() );
+			Opcode opcode = opcode();
+			if ( opcode.cpIndex ) {
+				int index = index();
+				if ( opcode.methodIndex ) {
+					cp.method( index );
+				} else if ( opcode.fieldIndex ) {
+					cp.field( index );
+				} else {
+					cp.cls( index );
+				}
+			}
+			skip( opcode );
 		}
 	}
 
 	public Opcode opcode() {
-		byte idx = code.get();
-		int index = idx < 0
-			? idx & 0xFF
-			: idx;
-		return OPCODES[index];
+		return OPCODES[uint8()];
+	}
+
+	private int uint8() {
+		byte v = code.get();
+		return v < 0
+			? v & 0xFF
+			: v;
+	}
+
+	public int index() {
+		return ( uint8() << 8 ) + uint8();
 	}
 
 	public void skip( Opcode opcode ) {
-		int bytes = opcode.otherByteCount;
+		int bytes = opcode.skipBytes;
 		if ( bytes >= 0 ) {
 			skipBytes( bytes );
 		} else if ( opcode == Opcode.wide ) {
