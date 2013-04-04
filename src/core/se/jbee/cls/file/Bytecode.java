@@ -1,7 +1,17 @@
 package se.jbee.cls.file;
 
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.ARRAY;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.CLASS;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.FIELD;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.INDEX;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.INSTANCE_OF;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.METHOD;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.NEW;
+import static se.jbee.cls.file.Bytecode.OpcodeFlags.STATIC;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.EnumSet;
 
 public final class Bytecode {
 
@@ -9,6 +19,18 @@ public final class Bytecode {
 
 	static {
 		Opcode.values(); // force load
+	}
+
+	static enum OpcodeFlags {
+		INDEX,
+		CLASS,
+		FIELD,
+		METHOD,
+		STATIC,
+		NEW,
+		ARRAY,
+		INSTANCE_OF,
+		CAST
 	}
 
 	static enum Opcode {
@@ -20,7 +42,7 @@ public final class Bytecode {
 		aload_1( 43, 0 ),
 		aload_2( 44, 0 ),
 		aload_3( 45, 0 ),
-		anewarray( 189, 2, true, false, false ),
+		anewarray( 189, 2, CLASS, INDEX ),
 		areturn( 176, 0 ),
 		arraylength( 190, 0 ),
 		astore( 58, 1 ),
@@ -34,7 +56,7 @@ public final class Bytecode {
 		bipush( 16, 1 ),
 		caload( 52, 0 ),
 		castore( 85, 0 ),
-		checkcast( 192, 2, true, false, false ),
+		checkcast( 192, 2, CLASS, INDEX ),
 		dadd( 99, 0 ),
 		daload( 49, 0 ),
 		dastore( 82, 0 ),
@@ -88,8 +110,8 @@ public final class Bytecode {
 		fstore_2( 69, 0 ),
 		fstore_3( 70, 0 ),
 		fsub( 102, 0 ),
-		getfield( 180, 2, false, true, false ),
-		getstatic( 178, 2, false, true, false ),
+		getfield( 180, 2, FIELD, INDEX ),
+		getstatic( 178, 2, FIELD, INDEX, STATIC ),
 		goto_( 167, 2 ),
 		goto_w( 200, 4 ),
 		i2l( 133, 0 ),
@@ -143,12 +165,12 @@ public final class Bytecode {
 		iload_3( 29, 0 ),
 		imul( 104, 0 ),
 		ineg( 116, 0 ),
-		instanceof_( 193, 2, true, false, false ),
-		invokedynamic( 186, 4, false, false, true ),
-		invokeinterface( 185, 4, false, false, true ),
-		invokespecial( 183, 2, false, false, true ),
-		invokestatic( 184, 2, false, false, true ),
-		invokevirtual( 182, 2, false, false, true ),
+		instanceof_( 193, 2, CLASS, INDEX, INSTANCE_OF ),
+		invokedynamic( 186, 4, METHOD, INDEX ),
+		invokeinterface( 185, 4, METHOD, INDEX ),
+		invokespecial( 183, 2, METHOD, INDEX ),
+		invokestatic( 184, 2, METHOD, INDEX, STATIC ),
+		invokevirtual( 182, 2, METHOD, INDEX ),
 		ior( 128, 0 ),
 		irem( 112, 0 ),
 		ireturn( 172, 0 ),
@@ -198,14 +220,14 @@ public final class Bytecode {
 		lxor( 131, 0 ),
 		monitorenter( 194, 0 ),
 		monitorexit( 195, 0 ),
-		multianewarray( 197, 3, true, false, false ),
-		new_( 187, 2, true, false, false ),
+		multianewarray( 197, 3, CLASS, INDEX, NEW, ARRAY ),
+		new_( 187, 2, CLASS, INDEX, NEW ),
 		newarray( 188, 1 ),
 		nop( 0, 0 ),
 		pop( 87, 0 ),
 		pop2( 88, 0 ),
-		putfield( 181, 2, false, true, false ),
-		putstatic( 179, 2, false, true, false ),
+		putfield( 181, 2, FIELD, INDEX ),
+		putstatic( 179, 2, FIELD, INDEX, STATIC ),
 		ret( 169, 1 ),
 		return_( 177, 0 ),
 		saload( 53, 0 ),
@@ -231,31 +253,41 @@ public final class Bytecode {
 		 */
 		public final int skipBytes;
 
-		public final boolean classIndex;
-		public final boolean fieldIndex;
-		public final boolean methodIndex;
 		/**
 		 * True, in case the opcode uses a index into the CP. For such a index always 2 bytes of the
 		 * {@link #argBytes} are used.
 		 */
 		public final boolean cpIndex;
 
+		private final EnumSet<OpcodeFlags> flags;
+
 		private Opcode( int opcodeDecimal, int argBytes ) {
-			this( opcodeDecimal, argBytes, false, false, false );
+			this( opcodeDecimal, argBytes, (OpcodeFlags[]) null );
 		}
 
-		private Opcode( int opcodeDecimal, int argBytes, boolean classIndex, boolean fieldIndex,
-				boolean methodIndex ) {
+		private Opcode( int opcodeDecimal, int argBytes, OpcodeFlags... flags ) {
 			this.opcodeDecimal = opcodeDecimal;
 			this.argBytes = argBytes;
-			this.classIndex = classIndex;
-			this.fieldIndex = fieldIndex;
-			this.methodIndex = methodIndex;
-			this.cpIndex = classIndex || fieldIndex || methodIndex;
+			this.flags = flags == null
+				? EnumSet.noneOf( OpcodeFlags.class )
+				: EnumSet.of( flags[0], flags );
+			this.cpIndex = this.flags.contains( INDEX );
 			this.skipBytes = argBytes - ( this.cpIndex
 				? 2
 				: 0 );
 			OPCODES[opcodeDecimal] = this;
+		}
+
+		public boolean cpClass() {
+			return flags.contains( CLASS );
+		}
+
+		public boolean cpMethod() {
+			return flags.contains( METHOD );
+		}
+
+		public boolean cpField() {
+			return flags.contains( FIELD );
 		}
 	}
 
@@ -274,9 +306,9 @@ public final class Bytecode {
 			Opcode opcode = opcode();
 			if ( opcode.cpIndex ) {
 				int index = index();
-				if ( opcode.methodIndex ) {
+				if ( opcode.cpMethod() ) {
 					cp.method( index );
-				} else if ( opcode.fieldIndex ) {
+				} else if ( opcode.cpField() ) {
 					cp.field( index );
 				} else {
 					cp.cls( index );
@@ -313,16 +345,16 @@ public final class Bytecode {
 		} else {
 			int pad = code.position() & 3;
 			if ( pad > 0 ) {
-				skipBytes( 4 - pad ); // padding
+				skipBytes( 4 - pad ); // 0-3 bytes padding
 			}
-			skipBytes( 4 ); // default value
+			skipBytes( 4 ); // 4 bytes default value
 			if ( opcode == Opcode.tableswitch ) {
 				int low = code.getInt();
 				int high = code.getInt();
-				skipBytes( ( high - low + 1 ) << 2 );
+				skipBytes( ( high - low + 1 ) << 2 ); // x 2 bytes 
 			} else if ( opcode == Opcode.lookupswitch ) {
 				int pairs = code.getInt();
-				skipBytes( pairs << 3 ); // 2 x 4 bytes / pair
+				skipBytes( pairs << 3 ); // x 2 x 4 bytes / pair
 			} else {
 				throw new UnsupportedOperationException( "Unknown opcode: " + opcode );
 			}
