@@ -1,5 +1,6 @@
 package se.jbee.cls.file;
 
+import static java.util.Arrays.copyOf;
 import static se.jbee.cls.file.Bytecode.OpcodeFlags.ARRAY;
 import static se.jbee.cls.file.Bytecode.OpcodeFlags.CLASS;
 import static se.jbee.cls.file.Bytecode.OpcodeFlags.FIELD;
@@ -12,6 +13,12 @@ import static se.jbee.cls.file.Bytecode.OpcodeFlags.STATIC;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.EnumSet;
+
+import se.jbee.cls.Class;
+import se.jbee.cls.Field;
+import se.jbee.cls.Items;
+import se.jbee.cls.Method;
+import se.jbee.cls.reflect.References;
 
 public final class Bytecode {
 
@@ -291,31 +298,30 @@ public final class Bytecode {
 		}
 	}
 
+	private static final int[] indexBuffer = new int[512];
+	private static final Opcode[] opcodeBuffer = new Opcode[512];
+
 	private final ByteBuffer code;
 	private final ConstantPool cp;
 
-	public Bytecode( ConstantPool cp, byte[] code, int length ) {
+	public Bytecode( ConstantPool cp, ByteBuffer code ) {
 		super();
 		this.cp = cp;
-		this.code = ByteBuffer.wrap( code, 0, length );
+		this.code = code;
 		this.code.order( ByteOrder.BIG_ENDIAN );
 	}
 
-	public void read() {
+	public References read() {
+		int c = 0;
 		while ( code.hasRemaining() ) {
 			Opcode opcode = opcode();
 			if ( opcode.cpIndex ) {
-				int index = index();
-				if ( opcode.cpMethod() ) {
-					cp.method( index );
-				} else if ( opcode.cpField() ) {
-					cp.field( index );
-				} else {
-					cp.cls( index );
-				}
+				opcodeBuffer[c] = opcode;
+				indexBuffer[c++] = index();
 			}
 			skip( opcode );
 		}
+		return new OpcodeReferences( copyOf( opcodeBuffer, c ), copyOf( indexBuffer, c ), cp );
 	}
 
 	public Opcode opcode() {
@@ -365,4 +371,43 @@ public final class Bytecode {
 		code.position( code.position() + count );
 	}
 
+	private static final class OpcodeReferences
+			implements References {
+
+		private final Opcode[] opcodes;
+		private final int[] indexes;
+		private final ConstantPool cp;
+
+		OpcodeReferences( Opcode[] opcodes, int[] indexes, ConstantPool cp ) {
+			super();
+			this.opcodes = opcodes;
+			this.indexes = indexes;
+			this.cp = cp;
+		}
+
+		@Override
+		public Items<Method> calledMethods() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Items<Method> calledInterfaceMethods() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Items<Field> accessedFields() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Items<Class> referencedClasses() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	}
 }

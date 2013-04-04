@@ -5,6 +5,7 @@ import static se.jbee.cls.Modifiers.methodModifiers;
 import static se.jbee.cls.file.MethodDescriptor.methodDescriptor;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -15,13 +16,15 @@ import se.jbee.cls.Method;
 import se.jbee.cls.reflect.Declarations;
 import se.jbee.cls.reflect.FieldDeclaration;
 import se.jbee.cls.reflect.MethodDeclaration;
+import se.jbee.cls.reflect.References;
 
 public final class DeclarationPool
 		implements Declarations {
 
-	public static final int[][] SHARED_FIELD_INDEXES = new int[256][3];
-	public static final int[][] SHARED_METHOD_INDEXES = new int[512][3];
-	public static final byte[] SHARED_BYTECODE = new byte[2048];
+	private static final int[][] SHARED_FIELD_INDEXES = new int[256][3];
+	private static final int[][] SHARED_METHOD_INDEXES = new int[512][3];
+	private static final References[] SHARED_METHOD_REFERENCES = new References[512];
+	private static final byte[] SHARED_BYTECODE = new byte[2048];
 
 	public static DeclarationPool read( ClassInputStream in, Class declaringClass, ConstantPool cp )
 			throws IOException {
@@ -32,10 +35,11 @@ public final class DeclarationPool
 
 	private final ConstantPool cp;
 	private final Class declaringClass;
-	private int methodCount;
-	private int[][] methodsMND;
 	private int fieldCount;
 	private int[][] fieldsMND;
+	private int methodCount;
+	private int[][] methodsMND;
+	private References[] methodReferences;
 
 	private DeclarationPool( ConstantPool cp, Class declaringClass ) {
 		super();
@@ -53,29 +57,33 @@ public final class DeclarationPool
 			fieldsMND[i][0] = in.uint16bit();
 			fieldsMND[i][1] = in.uint16bit();
 			fieldsMND[i][2] = in.uint16bit();
-			readAttributes( in, cp );
+			readAttributes( i, in, cp );
 		}
 		methodCount = in.uint16bit();
-		methodsMND = SHARED_METHOD_INDEXES.length <= methodCount
+		boolean share = SHARED_METHOD_INDEXES.length <= methodCount;
+		methodsMND = share
 			? SHARED_METHOD_INDEXES
 			: new int[methodCount][3];
+		methodReferences = share
+			? SHARED_METHOD_REFERENCES
+			: new References[methodCount];
 		for ( int i = 0; i < methodCount; i++ ) {
 			methodsMND[i][0] = in.uint16bit();
 			methodsMND[i][1] = in.uint16bit();
 			methodsMND[i][2] = in.uint16bit();
-			readAttributes( in, cp );
+			readAttributes( i, in, cp );
 		}
 	}
 
-	private static void readAttributes( ClassInputStream in, ConstantPool cp )
+	private void readAttributes( int descriptorIndex, ClassInputStream in, ConstantPool cp )
 			throws IOException {
 		int attributeCount = in.uint16bit();
 		for ( int a = 0; a < attributeCount; a++ ) {
-			readAttribute( cp, in );
+			readAttribute( descriptorIndex, cp, in );
 		}
 	}
 
-	private static void readAttribute( ConstantPool cp, ClassInputStream in )
+	private void readAttribute( int descriptorIndex, ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		String name = cp.utf( in.uint16bit() );
 		int length = in.int32bit();
@@ -87,13 +95,13 @@ public final class DeclarationPool
 				? SHARED_BYTECODE
 				: new byte[codeLength];
 			in.bytecode( code, codeLength );
-			Bytecode bytecode = new Bytecode( cp, code, codeLength );
-			bytecode.read();
+			Bytecode bytecode = new Bytecode( cp, ByteBuffer.wrap( code, 0, codeLength ) );
+			methodReferences[descriptorIndex] = bytecode.read();
 			int exceptionsCount = in.uint16bit();
 			for ( int i = 0; i < exceptionsCount; i++ ) {
 				readException( cp, in );
 			}
-			readAttributes( in, cp );
+			readAttributes( descriptorIndex, in, cp );
 		} else {
 			in.skipBytes( length );
 		}
@@ -111,6 +119,11 @@ public final class DeclarationPool
 		MethodDescriptor d = methodDescriptor( cp.utf( methodsMND[index][2] ) );
 		return Method.method( declaringClass, methodModifiers( methodsMND[index][0] ),
 				d.returnType(), cp.utf( methodsMND[index][1] ), d.parameterTypes() );
+	}
+
+	public MethodDeclaration methodDeclaration( int index ) {
+
+		return new MethodDeclaration( method( index ), methodReferences[index] );
 	}
 
 	public Field field( int index ) {
@@ -152,7 +165,7 @@ public final class DeclarationPool
 
 		@Override
 		MethodDeclaration declaration( DeclarationPool dp, int index ) {
-			return new MethodDeclaration( dp.method( index ) );
+			return dp.methodDeclaration( index );
 		}
 
 	}
