@@ -6,6 +6,8 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Method;
 import se.jbee.cls.Modifiers;
 import se.jbee.cls.reflect.ClassDeclaration;
+import se.jbee.cls.reflect.FieldDeclaration;
+import se.jbee.cls.reflect.MethodDeclaration;
 import se.jbee.cls.reflect.References;
 
 public final class ClassNode
@@ -88,11 +90,11 @@ public final class ClassNode
 		for ( Class t : refs.referencedClasses() ) {
 			references( t );
 		}
-		for ( Field f : cls.declarations.declaredFields() ) {
-			declaredAs( f );
+		for ( FieldDeclaration f : cls.declarations.declaredFields() ) {
+			declaredAs( f.field );
 		}
-		for ( Method m : cls.declarations.declaredMethods() ) {
-			declaredAs( m );
+		for ( MethodDeclaration m : cls.declarations.declaredMethods() ) {
+			declaredAs( m.method );
 		}
 		this.archive.contains( this );
 	}

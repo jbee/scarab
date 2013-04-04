@@ -13,6 +13,8 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Items;
 import se.jbee.cls.Method;
 import se.jbee.cls.reflect.Declarations;
+import se.jbee.cls.reflect.FieldDeclaration;
+import se.jbee.cls.reflect.MethodDeclaration;
 
 public final class DeclarationPool
 		implements Declarations {
@@ -118,39 +120,39 @@ public final class DeclarationPool
 	}
 
 	@Override
-	public Items<Method> declaredMethods() {
+	public Items<MethodDeclaration> declaredMethods() {
 		return new MethodIterator( this, methodCount );
 	}
 
 	@Override
-	public Items<Field> declaredFields() {
+	public Items<FieldDeclaration> declaredFields() {
 		return new FieldIterator( this, fieldCount );
 	}
 
 	private static final class FieldIterator
-			extends DeclarationPoolIterator<Field> {
+			extends DeclarationPoolIterator<FieldDeclaration> {
 
 		FieldIterator( DeclarationPool dp, int count ) {
 			super( dp, count );
 		}
 
 		@Override
-		Field declaration( DeclarationPool dp, int index ) {
-			return dp.field( index );
+		FieldDeclaration declaration( DeclarationPool dp, int index ) {
+			return new FieldDeclaration( dp.field( index ) );
 		}
 
 	}
 
 	private static final class MethodIterator
-			extends DeclarationPoolIterator<Method> {
+			extends DeclarationPoolIterator<MethodDeclaration> {
 
 		MethodIterator( DeclarationPool dp, int count ) {
 			super( dp, count );
 		}
 
 		@Override
-		Method declaration( DeclarationPool dp, int index ) {
-			return dp.method( index );
+		MethodDeclaration declaration( DeclarationPool dp, int index ) {
+			return new MethodDeclaration( dp.method( index ) );
 		}
 
 	}
