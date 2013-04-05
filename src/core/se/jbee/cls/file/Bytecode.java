@@ -1,6 +1,5 @@
 package se.jbee.cls.file;
 
-import static java.util.Arrays.copyOf;
 import static se.jbee.cls.file.Bytecode.OpcodeFlags.ARRAY;
 import static se.jbee.cls.file.Bytecode.OpcodeFlags.CLASS;
 import static se.jbee.cls.file.Bytecode.OpcodeFlags.FIELD;
@@ -13,12 +12,6 @@ import static se.jbee.cls.file.Bytecode.OpcodeFlags.STATIC;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.EnumSet;
-
-import se.jbee.cls.Class;
-import se.jbee.cls.Field;
-import se.jbee.cls.Items;
-import se.jbee.cls.Method;
-import se.jbee.cls.reflect.References;
 
 public final class Bytecode {
 
@@ -298,30 +291,12 @@ public final class Bytecode {
 		}
 	}
 
-	private static final int[] indexBuffer = new int[512];
-	private static final Opcode[] opcodeBuffer = new Opcode[512];
-
 	private final ByteBuffer code;
-	private final ConstantPool cp;
 
-	public Bytecode( ConstantPool cp, ByteBuffer code ) {
+	public Bytecode( ByteBuffer code ) {
 		super();
-		this.cp = cp;
 		this.code = code;
 		this.code.order( ByteOrder.BIG_ENDIAN );
-	}
-
-	public References read() {
-		int c = 0;
-		while ( code.hasRemaining() ) {
-			Opcode opcode = opcode();
-			if ( opcode.cpIndex ) {
-				opcodeBuffer[c] = opcode;
-				indexBuffer[c++] = index();
-			}
-			skip( opcode );
-		}
-		return new OpcodeReferences( copyOf( opcodeBuffer, c ), copyOf( indexBuffer, c ), cp );
 	}
 
 	public Opcode opcode() {
@@ -339,75 +314,27 @@ public final class Bytecode {
 		return ( uint8() << 8 ) + uint8();
 	}
 
-	public void skip( Opcode opcode ) {
-		int bytes = opcode.skipBytes;
-		if ( bytes >= 0 ) {
-			skipBytes( bytes );
-		} else if ( opcode == Opcode.wide ) {
-			Opcode wide = opcode();
-			skipBytes( wide == Opcode.iinc
-				? 5
-				: 3 );
-		} else {
-			int pad = code.position() & 3;
-			if ( pad > 0 ) {
-				skipBytes( 4 - pad ); // 0-3 bytes padding
-			}
-			skipBytes( 4 ); // 4 bytes default value
-			if ( opcode == Opcode.tableswitch ) {
-				int low = code.getInt();
-				int high = code.getInt();
-				skipBytes( ( high - low + 1 ) << 2 ); // x 2 bytes 
-			} else if ( opcode == Opcode.lookupswitch ) {
-				int pairs = code.getInt();
-				skipBytes( pairs << 3 ); // x 2 x 4 bytes / pair
-			} else {
-				throw new UnsupportedOperationException( "Unknown opcode: " + opcode );
-			}
-		}
-	}
-
-	private void skipBytes( int count ) {
+	public void skipBytes( int count ) {
 		code.position( code.position() + count );
 	}
 
-	private static final class OpcodeReferences
-			implements References {
-
-		private final Opcode[] opcodes;
-		private final int[] indexes;
-		private final ConstantPool cp;
-
-		OpcodeReferences( Opcode[] opcodes, int[] indexes, ConstantPool cp ) {
-			super();
-			this.opcodes = opcodes;
-			this.indexes = indexes;
-			this.cp = cp;
-		}
-
-		@Override
-		public Items<Method> calledMethods() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Items<Method> calledInterfaceMethods() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Items<Field> accessedFields() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Items<Class> referencedClasses() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
+	public boolean hasBytes() {
+		return code.hasRemaining();
 	}
+
+	public int position() {
+		return code.position();
+	}
+
+	public void alignToEven32BitPosition() {
+		int pad = code.position() & 3;
+		if ( pad > 0 ) {
+			skipBytes( 4 - pad ); // 0-3 bytes padding
+		}
+	}
+
+	public int int32() {
+		return code.getInt();
+	}
+
 }

@@ -21,8 +21,11 @@ import se.jbee.cls.reflect.References;
 public final class DeclarationPool
 		implements Declarations {
 
-	private static final int[][] SHARED_FIELD_INDEXES = new int[256][3];
-	private static final int[][] SHARED_METHOD_INDEXES = new int[512][3];
+	private static final int FIELD_DATA = 3;
+	private static final int METHOD_DATA = 7;
+
+	private static final int[][] SHARED_FIELD_INDEXES = new int[256][FIELD_DATA];
+	private static final int[][] SHARED_METHOD_INDEXES = new int[512][METHOD_DATA];
 	private static final References[] SHARED_METHOD_REFERENCES = new References[512];
 	private static final byte[] SHARED_BYTECODE = new byte[2048];
 
@@ -52,7 +55,7 @@ public final class DeclarationPool
 		fieldCount = in.uint16bit();
 		fieldsMND = SHARED_FIELD_INDEXES.length <= fieldCount
 			? SHARED_FIELD_INDEXES
-			: new int[fieldCount][3];
+			: new int[fieldCount][FIELD_DATA];
 		for ( int i = 0; i < fieldCount; i++ ) {
 			fieldsMND[i][0] = in.uint16bit();
 			fieldsMND[i][1] = in.uint16bit();
@@ -63,7 +66,7 @@ public final class DeclarationPool
 		boolean share = SHARED_METHOD_INDEXES.length <= methodCount;
 		methodsMND = share
 			? SHARED_METHOD_INDEXES
-			: new int[methodCount][3];
+			: new int[methodCount][METHOD_DATA];
 		methodReferences = share
 			? SHARED_METHOD_REFERENCES
 			: new References[methodCount];
@@ -75,33 +78,36 @@ public final class DeclarationPool
 		}
 	}
 
-	private void readAttributes( int descriptorIndex, ClassInputStream in, ConstantPool cp )
+	private void readAttributes( int index, ClassInputStream in, ConstantPool cp )
 			throws IOException {
 		int attributeCount = in.uint16bit();
 		for ( int a = 0; a < attributeCount; a++ ) {
-			readAttribute( descriptorIndex, cp, in );
+			readAttribute( index, cp, in );
 		}
 	}
 
-	private void readAttribute( int descriptorIndex, ConstantPool cp, ClassInputStream in )
+	private void readAttribute( int index, ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		String name = cp.utf( in.uint16bit() );
 		int length = in.int32bit();
 		if ( "Code".equals( name ) ) {
-			int maxStack = in.uint16bit();
-			int maxLocals = in.uint16bit();
+			methodsMND[index][3] = in.uint16bit(); // maxStack
+			methodsMND[index][4] = in.uint16bit(); // maxLocals
 			int codeLength = in.int32bit();
+			methodsMND[index][5] = codeLength;
 			byte[] code = codeLength <= SHARED_BYTECODE.length
 				? SHARED_BYTECODE
 				: new byte[codeLength];
 			in.bytecode( code, codeLength );
-			Bytecode bytecode = new Bytecode( cp, ByteBuffer.wrap( code, 0, codeLength ) );
-			methodReferences[descriptorIndex] = bytecode.read();
+			CodeAttribute bytecode = new CodeAttribute( cp, new Bytecode( ByteBuffer.wrap( code, 0,
+					codeLength ) ) );
+			methodReferences[index] = bytecode.read();
 			int exceptionsCount = in.uint16bit();
+			methodsMND[index][6] = exceptionsCount;
 			for ( int i = 0; i < exceptionsCount; i++ ) {
 				readException( cp, in );
 			}
-			readAttributes( descriptorIndex, in, cp );
+			readAttributes( index, in, cp );
 		} else {
 			in.skipBytes( length );
 		}
@@ -122,8 +128,8 @@ public final class DeclarationPool
 	}
 
 	public MethodDeclaration methodDeclaration( int index ) {
-
-		return new MethodDeclaration( method( index ), methodReferences[index] );
+		return new MethodDeclaration( method( index ), methodsMND[index][3], methodsMND[index][4],
+				methodsMND[index][5], methodsMND[index][6], methodReferences[index] );
 	}
 
 	public Field field( int index ) {
