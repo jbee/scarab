@@ -91,6 +91,7 @@ public final class DeclarationPool
 		String name = cp.utf( in.uint16bit() );
 		int length = in.int32bit();
 		if ( "Code".equals( name ) ) {
+			//TODO move all this into CodeAttribute
 			methodsMND[index][3] = in.uint16bit(); // maxStack
 			methodsMND[index][4] = in.uint16bit(); // maxLocals
 			int codeLength = in.int32bit();

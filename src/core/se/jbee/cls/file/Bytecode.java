@@ -1,13 +1,14 @@
 package se.jbee.cls.file;
 
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.ARRAY;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.CLASS;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.FIELD;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.INDEX;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.INSTANCE_OF;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.METHOD;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.NEW;
-import static se.jbee.cls.file.Bytecode.OpcodeFlags.STATIC;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.ARRAY;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.CLASS;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.FIELD;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.INDEX;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.INSTANCE_OF;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.METHOD;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.NEW;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.STATIC;
+import static se.jbee.cls.file.Bytecode.OpcodeFlag.THROW;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,7 +22,7 @@ public final class Bytecode {
 		Opcode.values(); // force load
 	}
 
-	static enum OpcodeFlags {
+	static enum OpcodeFlag {
 		INDEX,
 		CLASS,
 		FIELD,
@@ -30,7 +31,8 @@ public final class Bytecode {
 		NEW,
 		ARRAY,
 		INSTANCE_OF,
-		CAST
+		CAST,
+		THROW
 	}
 
 	static enum Opcode {
@@ -50,7 +52,7 @@ public final class Bytecode {
 		astore_1( 76, 0 ),
 		astore_2( 77, 0 ),
 		astore_3( 78, 0 ),
-		athrow( 191, 0 ),
+		athrow( 191, 0, THROW ),
 		baload( 51, 0 ),
 		bastore( 84, 0 ),
 		bipush( 16, 1 ),
@@ -259,17 +261,17 @@ public final class Bytecode {
 		 */
 		public final boolean cpIndex;
 
-		private final EnumSet<OpcodeFlags> flags;
+		private final EnumSet<OpcodeFlag> flags;
 
 		private Opcode( int opcodeDecimal, int argBytes ) {
-			this( opcodeDecimal, argBytes, (OpcodeFlags[]) null );
+			this( opcodeDecimal, argBytes, (OpcodeFlag[]) null );
 		}
 
-		private Opcode( int opcodeDecimal, int argBytes, OpcodeFlags... flags ) {
+		private Opcode( int opcodeDecimal, int argBytes, OpcodeFlag... flags ) {
 			this.opcodeDecimal = opcodeDecimal;
 			this.argBytes = argBytes;
 			this.flags = flags == null
-				? EnumSet.noneOf( OpcodeFlags.class )
+				? EnumSet.noneOf( OpcodeFlag.class )
 				: EnumSet.of( flags[0], flags );
 			this.cpIndex = this.flags.contains( INDEX );
 			this.skipBytes = argBytes - ( this.cpIndex
@@ -278,16 +280,20 @@ public final class Bytecode {
 			OPCODES[opcodeDecimal] = this;
 		}
 
+		public boolean has( OpcodeFlag flag ) {
+			return flags.contains( flag );
+		}
+
 		public boolean cpClass() {
-			return flags.contains( CLASS );
+			return has( CLASS );
 		}
 
 		public boolean cpMethod() {
-			return flags.contains( METHOD );
+			return has( METHOD );
 		}
 
 		public boolean cpField() {
-			return flags.contains( FIELD );
+			return has( FIELD );
 		}
 	}
 
