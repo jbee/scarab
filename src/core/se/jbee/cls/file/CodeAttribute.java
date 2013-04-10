@@ -15,6 +15,10 @@ import se.jbee.cls.reflect.References;
 
 public final class CodeAttribute {
 
+	public static References emptyMethod( ConstantPool cp ) {
+		return new OpcodeReferences( new Opcode[0], new int[0], cp );
+	}
+
 	private static final int[] cpIndexBuffer = new int[512];
 	private static final Opcode[] opcodeBuffer = new Opcode[512];
 

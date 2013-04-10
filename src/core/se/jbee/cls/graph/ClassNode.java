@@ -94,7 +94,7 @@ public final class ClassNode
 			declaredAs( f.field );
 		}
 		for ( MethodDeclaration m : cls.declarations.declaredMethods() ) {
-			declaredAs( m.method );
+			declaredAs( m );
 		}
 		this.archive.contains( this );
 	}
@@ -121,8 +121,8 @@ public final class ClassNode
 			: superclass.declaringClass( method );
 	}
 
-	private void declaredAs( Method method ) {
-		MethodNode node = graph.method( method );
+	private void declaredAs( MethodDeclaration method ) {
+		MethodNode node = graph.method( method.method );
 		node.declaredAs( method );
 		methods.add( node );
 		if ( node.isInstanceMethod() ) {

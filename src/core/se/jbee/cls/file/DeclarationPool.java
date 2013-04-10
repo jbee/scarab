@@ -129,8 +129,13 @@ public final class DeclarationPool
 	}
 
 	public MethodDeclaration methodDeclaration( int index ) {
-		return new MethodDeclaration( method( index ), methodsMND[index][3], methodsMND[index][4],
-				methodsMND[index][5], methodsMND[index][6], methodReferences[index] );
+		Method method = method( index );
+		References references = methodReferences[index];
+		if ( references == null ) {
+			references = CodeAttribute.emptyMethod( cp );
+		}
+		return new MethodDeclaration( method, methodsMND[index][3], methodsMND[index][4],
+				methodsMND[index][5], methodsMND[index][6], references );
 	}
 
 	public Field field( int index ) {

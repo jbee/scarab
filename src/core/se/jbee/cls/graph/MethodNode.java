@@ -2,6 +2,7 @@ package se.jbee.cls.graph;
 
 import se.jbee.cls.Class;
 import se.jbee.cls.Method;
+import se.jbee.cls.reflect.MethodDeclaration;
 
 public final class MethodNode
 		implements Node<Method> {
@@ -12,11 +13,14 @@ public final class MethodNode
 	public final ClassNode returnType;
 	public final Edges<Class, ClassNode> parameterTypes = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> calledBy = new Edges<Class, ClassNode>();
+	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
 	public final OverrideNode overrides;
 	private final ClassNode[] parameters;
+	private final ClassGraph graph;
 
 	MethodNode( ClassGraph graph, Method method, int serial ) {
 		super();
+		this.graph = graph;
 		this.key = method;
 		this.serial = serial;
 		this.declaringClass = graph.cls( method.declaringClass );
@@ -42,8 +46,11 @@ public final class MethodNode
 		return key.toString();
 	}
 
-	void declaredAs( Method method ) {
-		this.key = method;
+	void declaredAs( MethodDeclaration method ) {
+		this.key = method.method;
+		for ( Method m : method.references.calledMethods() ) {
+			calls.add( graph.method( m ) );
+		}
 	}
 
 	public ClassNode parameter( int index ) {

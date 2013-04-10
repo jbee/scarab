@@ -14,6 +14,9 @@ public final class MethodDeclaration {
 	public MethodDeclaration( Method method, int maxStack, int maxLocals, int byteCount,
 			int exceptionsCount, References references ) {
 		super();
+		if ( references == null ) {
+			throw new NullPointerException();
+		}
 		this.method = method;
 		this.maxStack = maxStack;
 		this.maxLocals = maxLocals;
@@ -22,4 +25,22 @@ public final class MethodDeclaration {
 		this.references = references;
 	}
 
+	@Override
+	public boolean equals( Object obj ) {
+		return obj instanceof MethodDeclaration && equalTo( (MethodDeclaration) obj );
+	}
+
+	private boolean equalTo( MethodDeclaration other ) {
+		return method.equalTo( other.method );
+	}
+
+	@Override
+	public int hashCode() {
+		return method.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return method.toString();
+	}
 }
