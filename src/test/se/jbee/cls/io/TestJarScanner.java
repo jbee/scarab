@@ -55,6 +55,8 @@ public class TestJarScanner {
 		assertTrue( silk.packages.contains( Package.pkg( "se/jbee/inject/util" ) ) );
 		assertTrue( inject.dependencies.contains( Package.pkg( "java/lang" ) ) );
 		assertFalse( inject.dependencies.contains( bind ) );
+		MethodNode isParameterized = type.method( "isParameterized" );
+		assertTrue( isAssignableTo.calls.contains( isParameterized.id() ) );
 	}
 
 	@Test

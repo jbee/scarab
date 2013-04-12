@@ -63,7 +63,7 @@ public final class ClassNode
 		}
 	}
 
-	void declaredAs( ClassDeclaration cls ) {
+	void declare( ClassDeclaration cls ) {
 		if ( !cls.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();
 		}
@@ -91,10 +91,10 @@ public final class ClassNode
 			references( t );
 		}
 		for ( FieldDeclaration f : cls.declarations.declaredFields() ) {
-			declaredAs( f.field );
+			declare( f.field );
 		}
 		for ( MethodDeclaration m : cls.declarations.declaredMethods() ) {
-			declaredAs( m );
+			declare( m );
 		}
 		this.archive.contains( this );
 	}
@@ -121,9 +121,9 @@ public final class ClassNode
 			: superclass.declaringClass( method );
 	}
 
-	private void declaredAs( MethodDeclaration method ) {
+	private void declare( MethodDeclaration method ) {
 		MethodNode node = graph.method( method.method );
-		node.declaredAs( method );
+		node.declare( method );
 		methods.add( node );
 		if ( node.isInstanceMethod() ) {
 			instanceMethods.add( node );
@@ -132,9 +132,9 @@ public final class ClassNode
 		}
 	}
 
-	private void declaredAs( Field field ) {
+	private void declare( Field field ) {
 		FieldNode node = graph.field( field );
-		node.declaredAs( field );
+		node.declare( field );
 		fields.add( node );
 		if ( node.isInstanceField() ) {
 			instanceFields.add( node );

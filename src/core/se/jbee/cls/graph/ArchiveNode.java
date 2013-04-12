@@ -33,4 +33,8 @@ public final class ArchiveNode
 		packages.add( cls.pkg );
 	}
 
+	@Override
+	public String toString() {
+		return id().toString();
+	}
 }

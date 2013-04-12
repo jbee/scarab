@@ -25,7 +25,7 @@ public final class FieldNode
 		return key;
 	}
 
-	void declaredAs( Field field ) {
+	void declare( Field field ) {
 		this.key = field;
 	}
 

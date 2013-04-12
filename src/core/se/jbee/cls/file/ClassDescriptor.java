@@ -63,7 +63,7 @@ public final class ClassDescriptor {
 			return Class.NONE;
 		}
 		char c0 = descriptor.charAt( 0 );
-		if ( c0 == '[' || ( Character.isUpperCase( c0 ) && descriptor.indexOf( ';' ) > 0 ) ) {
+		if ( c0 == '[' || descriptor.indexOf( ';' ) > 0 || Character.isUpperCase( c0 ) ) {
 			return classes()[0];
 		}
 		return Class.cls( modifiers, descriptor );

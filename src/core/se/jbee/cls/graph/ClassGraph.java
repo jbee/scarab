@@ -30,7 +30,7 @@ public final class ClassGraph
 
 	@Override
 	public void process( ClassDeclaration cls ) {
-		cls( cls.cls ).declaredAs( cls );
+		cls( cls.cls ).declare( cls );
 	}
 
 	public ArchiveNode archive( Archive archive ) {

@@ -226,7 +226,7 @@ public final class CodeAttribute {
 				index++;
 			}
 			done++;
-			return referenced( references, index );
+			return referenced( references, index++ );
 		}
 
 		abstract T referenced( OpcodeReferences references, int index );
