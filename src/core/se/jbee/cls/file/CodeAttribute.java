@@ -2,11 +2,14 @@ package se.jbee.cls.file;
 
 import static java.util.Arrays.copyOf;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import se.jbee.cls.Class;
+import se.jbee.cls.Code;
 import se.jbee.cls.Field;
 import se.jbee.cls.Items;
 import se.jbee.cls.Method;
@@ -19,25 +22,58 @@ public final class CodeAttribute {
 		return new OpcodeReferences( new Opcode[0], new int[0], cp );
 	}
 
+	public static CodeAttribute read( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		int maxStack = in.uint16bit(); // maxStack
+		int maxLocals = in.uint16bit(); // maxLocals
+		int byteCount = in.int32bit();
+		byte[] code = byteCount <= SHARED_BYTECODE.length
+			? SHARED_BYTECODE
+			: new byte[byteCount];
+		in.bytecode( code, byteCount );
+		int exceptionsCount = in.uint16bit();
+		Code c = Code.code( maxStack, maxLocals, byteCount, exceptionsCount );
+		for ( int i = 0; i < exceptionsCount; i++ ) {
+			readException( cp, in );
+		}
+		return new CodeAttribute( cp, new Bytecode( ByteBuffer.wrap( code, 0, byteCount ) ), c );
+	}
+
+	private static final byte[] SHARED_BYTECODE = new byte[2048];
+
 	private static final int[] cpIndexBuffer = new int[512];
 	private static final Opcode[] opcodeBuffer = new Opcode[512];
 
-	private final Bytecode code;
 	private final ConstantPool cp;
+	private final Code code;
+	private final Bytecode bytecode;
 
-	public CodeAttribute( ConstantPool cp, Bytecode code ) {
+	public CodeAttribute( ConstantPool cp, Bytecode bytecode, Code code ) {
 		super();
 		this.cp = cp;
+		this.bytecode = bytecode;
 		this.code = code;
 	}
 
-	public References read() {
+	private static void readException( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		int startPC = in.uint16bit();
+		int endPC = in.uint16bit();
+		int handlerPC = in.uint16bit();
+		int catchType = in.uint16bit(); // UTF8 in cp
+	}
+
+	public Code code() {
+		return code;
+	}
+
+	public References references() {
 		int c = 0;
-		while ( code.hasBytes() ) {
-			Opcode opcode = code.opcode();
+		while ( bytecode.hasBytes() ) {
+			Opcode opcode = bytecode.opcode();
 			if ( opcode.cpIndex ) {
 				opcodeBuffer[c] = opcode;
-				cpIndexBuffer[c++] = code.index();
+				cpIndexBuffer[c++] = bytecode.index();
 			}
 			skip( opcode );
 		}
@@ -47,22 +83,22 @@ public final class CodeAttribute {
 	public void skip( Opcode opcode ) {
 		int bytes = opcode.skipBytes;
 		if ( bytes >= 0 ) {
-			code.skipBytes( bytes );
+			bytecode.skipBytes( bytes );
 		} else if ( opcode == Opcode.wide ) {
-			Opcode wide = code.opcode();
-			code.skipBytes( wide == Opcode.iinc
+			Opcode wide = bytecode.opcode();
+			bytecode.skipBytes( wide == Opcode.iinc
 				? 5
 				: 3 );
 		} else {
-			code.alignToEven32BitPosition();
-			code.skipBytes( 4 ); // 4 bytes default value
+			bytecode.alignToEven32BitPosition();
+			bytecode.skipBytes( 4 ); // 4 bytes default value
 			if ( opcode == Opcode.tableswitch ) {
-				int low = code.int32();
-				int high = code.int32();
-				code.skipBytes( ( high - low + 1 ) << 2 ); // x 2 bytes 
+				int low = bytecode.int32();
+				int high = bytecode.int32();
+				bytecode.skipBytes( ( high - low + 1 ) << 2 ); // x 2 bytes 
 			} else if ( opcode == Opcode.lookupswitch ) {
-				int pairs = code.int32();
-				code.skipBytes( pairs << 3 ); // x 2 x 4 bytes / pair
+				int pairs = bytecode.int32();
+				bytecode.skipBytes( pairs << 3 ); // x 2 x 4 bytes / pair
 			} else {
 				throw new UnsupportedOperationException( "Unknown opcode: " + opcode );
 			}
@@ -236,4 +272,5 @@ public final class CodeAttribute {
 			throw new UnsupportedOperationException( "read only!" );
 		}
 	}
+
 }
