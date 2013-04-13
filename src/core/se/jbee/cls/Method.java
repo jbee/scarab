@@ -2,7 +2,8 @@ package se.jbee.cls;
 
 import java.util.Arrays;
 
-public final class Method {
+public final class Method
+		implements Member {
 
 	public static Method method( Class declaringClass, Modifiers modifiers, Class returnType,
 			String name, Class... parameterTypes ) {
@@ -23,6 +24,21 @@ public final class Method {
 		this.returnType = returnType;
 		this.name = name;
 		this.parameterTypes = parameterTypes;
+	}
+
+	@Override
+	public Class declaringClass() {
+		return declaringClass;
+	}
+
+	@Override
+	public String name() {
+		return name;
+	}
+
+	@Override
+	public Modifiers modifiers() {
+		return modifiers;
 	}
 
 	@Override
@@ -67,6 +83,10 @@ public final class Method {
 	}
 
 	public boolean isConstructor() {
-		return name.charAt( 0 ) == '<'; //init>
+		return name.charAt( 0 ) == '<' && name.length() == 6; //<init>
+	}
+
+	public boolean isStaticInitialization() {
+		return name.charAt( 0 ) == '<' && name.length() == 8; //<clinit>
 	}
 }

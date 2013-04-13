@@ -6,7 +6,7 @@ import se.jbee.cls.Class;
 public final class ClassDeclaration {
 
 	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass,
-			Class[] interfaces, Declarations declarations, References references ) {
+			Class[] interfaces, Declarations declarations, ClassReferences references ) {
 		return new ClassDeclaration( archive, cls, superclass, interfaces, declarations, references );
 	}
 
@@ -15,10 +15,10 @@ public final class ClassDeclaration {
 	public final Class superclass;
 	public final Class[] interfaces;
 	public final Declarations declarations;
-	public final References references;
+	public final ClassReferences references;
 
 	private ClassDeclaration( Archive archive, Class cls, Class superclass, Class[] interfaces,
-			Declarations declarations, References references ) {
+			Declarations declarations, ClassReferences references ) {
 		super();
 		this.archive = archive;
 		this.cls = cls;

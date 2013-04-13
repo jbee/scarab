@@ -1,6 +1,7 @@
 package se.jbee.cls;
 
-public final class Field {
+public final class Field
+		implements Member {
 
 	public static Field field( Class declaringClass, Modifiers modifiers, Class type, String name ) {
 		return new Field( declaringClass, modifiers, type, name );
@@ -17,6 +18,21 @@ public final class Field {
 		this.modifiers = modifiers;
 		this.type = type;
 		this.name = name.intern();
+	}
+
+	@Override
+	public Class declaringClass() {
+		return declaringClass;
+	}
+
+	@Override
+	public String name() {
+		return name;
+	}
+
+	@Override
+	public Modifiers modifiers() {
+		return modifiers;
 	}
 
 	@Override

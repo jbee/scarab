@@ -8,7 +8,7 @@ import se.jbee.cls.Modifiers;
 import se.jbee.cls.reflect.ClassDeclaration;
 import se.jbee.cls.reflect.FieldDeclaration;
 import se.jbee.cls.reflect.MethodDeclaration;
-import se.jbee.cls.reflect.References;
+import se.jbee.cls.reflect.ClassReferences;
 
 public final class ClassNode
 		implements Node<Class> {
@@ -77,7 +77,7 @@ public final class ClassNode
 			other.implementations.add( this );
 			interfaces.add( other );
 		}
-		final References refs = cls.references;
+		final ClassReferences refs = cls.references;
 		for ( Method m : refs.calledMethods() ) {
 			calls( m );
 		}

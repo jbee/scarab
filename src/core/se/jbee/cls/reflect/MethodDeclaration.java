@@ -7,9 +7,9 @@ public final class MethodDeclaration {
 
 	public final Method method;
 	public final Code code;
-	public final References references;
+	public final MethodReferences references;
 
-	public MethodDeclaration( Method method, Code code, References references ) {
+	public MethodDeclaration( Method method, Code code, MethodReferences references ) {
 		super();
 		this.method = method;
 		this.code = code;

@@ -223,7 +223,7 @@ public final class Bytecode {
 		monitorenter( 194, 0 ),
 		monitorexit( 195, 0 ),
 		multianewarray( 197, 3, CLASS, INDEX, NEW, ARRAY ),
-		new_( 187, 2, CLASS, INDEX, NEW ),
+		new_( 187, 2, CLASS, INDEX, NEW ), // followed by invokespecial for the <init> method
 		newarray( 188, 1 ),
 		nop( 0, 0 ),
 		pop( 87, 0 ),

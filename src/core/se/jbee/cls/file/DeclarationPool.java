@@ -16,7 +16,7 @@ import se.jbee.cls.Method;
 import se.jbee.cls.reflect.Declarations;
 import se.jbee.cls.reflect.FieldDeclaration;
 import se.jbee.cls.reflect.MethodDeclaration;
-import se.jbee.cls.reflect.References;
+import se.jbee.cls.reflect.MethodReferences;
 
 public final class DeclarationPool
 		implements Declarations {
@@ -26,7 +26,7 @@ public final class DeclarationPool
 
 	private static final int[][] SHARED_FIELD_INDEXES = new int[256][FIELD_DATA];
 	private static final int[][] SHARED_METHOD_INDEXES = new int[512][METHOD_DATA];
-	private static final References[] SHARED_METHOD_REFERENCES = new References[512];
+	private static final MethodReferences[] SHARED_METHOD_REFERENCES = new MethodReferences[512];
 	private static final Code[] SHARED_CODE = new Code[512];
 
 	public static DeclarationPool read( ClassInputStream in, Class declaringClass, ConstantPool cp )
@@ -42,7 +42,7 @@ public final class DeclarationPool
 	private int[][] fieldsMND;
 	private int methodCount;
 	private int[][] methodsMND;
-	private References[] methodReferences;
+	private MethodReferences[] methodReferences;
 	private Code[] codes;
 
 	private DeclarationPool( ConstantPool cp, Class declaringClass ) {
@@ -70,7 +70,7 @@ public final class DeclarationPool
 			: new int[methodCount][METHOD_DATA];
 		methodReferences = share
 			? SHARED_METHOD_REFERENCES
-			: new References[methodCount];
+			: new MethodReferences[methodCount];
 		codes = share
 			? SHARED_CODE
 			: new Code[methodCount];
@@ -100,6 +100,9 @@ public final class DeclarationPool
 			methodReferences[index] = code.references();
 			readAttributes( index, in, cp );
 		} else {
+			if ( "Deprecated".equals( name ) ) {
+				//TODO reflect somehow
+			}
 			in.skipBytes( length );
 		}
 	}
@@ -112,7 +115,7 @@ public final class DeclarationPool
 
 	public MethodDeclaration methodDeclaration( int index ) {
 		Method method = method( index );
-		References references = methodReferences[index];
+		MethodReferences references = methodReferences[index];
 		if ( references == null ) {
 			references = CodeAttribute.emptyMethod( cp );
 		}

@@ -14,11 +14,11 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Items;
 import se.jbee.cls.Method;
 import se.jbee.cls.file.Bytecode.Opcode;
-import se.jbee.cls.reflect.References;
+import se.jbee.cls.reflect.MethodReferences;
 
 public final class CodeAttribute {
 
-	public static References emptyMethod( ConstantPool cp ) {
+	public static MethodReferences emptyMethod( ConstantPool cp ) {
 		return new OpcodeReferences( new Opcode[0], new int[0], cp );
 	}
 
@@ -67,7 +67,7 @@ public final class CodeAttribute {
 		return code;
 	}
 
-	public References references() {
+	public MethodReferences references() {
 		int c = 0;
 		while ( bytecode.hasBytes() ) {
 			Opcode opcode = bytecode.opcode();
@@ -106,12 +106,11 @@ public final class CodeAttribute {
 	}
 
 	private static final class OpcodeReferences
-			implements References {
+			implements MethodReferences {
 
 		static final EnumSet<Opcode> METHOD_CALLS = EnumSet.of( Opcode.invokedynamic,
-				Opcode.invokespecial, Opcode.invokestatic, Opcode.invokevirtual );
-
-		static final EnumSet<Opcode> INTERFACE_METHOD_CALLS = EnumSet.of( Opcode.invokeinterface );
+				Opcode.invokespecial, Opcode.invokestatic, Opcode.invokevirtual,
+				Opcode.invokeinterface );
 
 		static final EnumSet<Opcode> FIELD_ACCESS = EnumSet.of( Opcode.putfield, Opcode.putstatic,
 				Opcode.getfield, Opcode.getstatic );
@@ -133,17 +132,12 @@ public final class CodeAttribute {
 		}
 
 		@Override
-		public Items<Method> calledInterfaceMethods() {
-			return new OpcodeMethodIterator( INTERFACE_METHOD_CALLS, this );
-		}
-
-		@Override
 		public Items<Field> accessedFields() {
 			return new OpcodeFieldIterator( FIELD_ACCESS, this );
 		}
 
 		@Override
-		public Items<Class> referencedClasses() {
+		public Items<Class> constructedClasses() {
 			return new OpcodeClassIterator( EnumSet.of( Opcode.new_ ), this );
 		}
 

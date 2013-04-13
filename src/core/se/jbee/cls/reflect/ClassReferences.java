@@ -6,7 +6,7 @@ import se.jbee.cls.Items;
 import se.jbee.cls.Method;
 
 
-public interface References {
+public interface ClassReferences {
 
 	/**
 	 * @return class method-calls.

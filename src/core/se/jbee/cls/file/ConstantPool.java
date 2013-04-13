@@ -12,10 +12,10 @@ import se.jbee.cls.Field;
 import se.jbee.cls.Items;
 import se.jbee.cls.Method;
 import se.jbee.cls.Modifiers;
-import se.jbee.cls.reflect.References;
+import se.jbee.cls.reflect.ClassReferences;
 
 public final class ConstantPool
-		implements References {
+		implements ClassReferences {
 
 	private static final int TAG_COUNT = ConstantTag.values().length;
 	/**
