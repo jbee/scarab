@@ -126,12 +126,14 @@ public final class DeclarationPool
 		}
 	}
 
-	private void readAnnotations( ConstantPool cp, ClassInputStream in )
+	private Annotation[] readAnnotations( ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		int num = in.uint16bit();
+		Annotation[] annotations = new Annotation[num];
 		for ( int i = 0; i < num; i++ ) {
-			readAnnotation( cp, in );
+			annotations[i] = readAnnotation( cp, in );
 		}
+		return annotations;
 	}
 
 	private Annotation readAnnotation( ConstantPool cp, ClassInputStream in )
