@@ -1,5 +1,6 @@
 package se.jbee.jvm.reflect;
 
+import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Code;
 import se.jbee.jvm.Method;
 
@@ -8,6 +9,7 @@ public final class MethodDeclaration {
 	public final Method method;
 	public final Code code;
 	public final MethodReferences references;
+	public final Annotation[] annotations = null;//TODO add
 
 	public MethodDeclaration( Method method, Code code, MethodReferences references ) {
 		super();

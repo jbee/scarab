@@ -1,5 +1,6 @@
 package se.jbee.jvm.graph;
 
+import static se.jbee.jvm.Annotation.annotation;
 import se.jbee.jvm.Archive;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Field;
@@ -60,6 +61,9 @@ public final class ClassNode
 		this.archive = graph.archive( Archive.RUNTIME );
 		if ( cls.isInner() ) {
 			graph.cls( cls.outerClass() ).innerClasses.add( this );
+		}
+		if ( cls.modifiers.isAnnotation() ) {
+			graph.annotation( annotation( cls ) ); // will create and link the annotation node
 		}
 	}
 

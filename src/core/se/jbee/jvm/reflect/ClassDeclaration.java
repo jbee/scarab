@@ -1,5 +1,6 @@
 package se.jbee.jvm.reflect;
 
+import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Archive;
 import se.jbee.jvm.Class;
 
@@ -16,6 +17,7 @@ public final class ClassDeclaration {
 	public final Class[] interfaces;
 	public final Declarations declarations;
 	public final ClassReferences references;
+	public final Annotation[] annotations = null;//TODO add
 
 	private ClassDeclaration( Archive archive, Class cls, Class superclass, Class[] interfaces,
 			Declarations declarations, ClassReferences references ) {

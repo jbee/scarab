@@ -1,4 +1,4 @@
-package se.jbee.jvm.jdp;
+package se.jbee.jdp;
 
 import static se.jbee.jvm.Packages.packages;
 

@@ -1,5 +1,6 @@
 package se.jbee.jvm.graph;
 
+import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Archive;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Field;
@@ -22,6 +23,7 @@ public final class ClassGraph
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
 	public final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
+	public final Edges<Annotation, AnnotationNode> annotations = new Edges<Annotation, AnnotationNode>();
 
 	public ClassGraph( Packages basePackages ) {
 		super();
@@ -84,6 +86,15 @@ public final class ClassGraph
 		if ( node == null ) {
 			node = new FieldNode( this, field, fields.size() );
 			fields.add( node );
+		}
+		return node;
+	}
+
+	public AnnotationNode annotation( Annotation annotation ) {
+		AnnotationNode node = annotations.node( annotation );
+		if ( node == null ) {
+			node = new AnnotationNode( this, annotation, annotations.size() );
+			annotations.add( node );
 		}
 		return node;
 	}
