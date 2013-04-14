@@ -2,12 +2,16 @@ package se.jbee.jvm.file;
 
 import static se.jbee.jvm.Modifiers.fieldModifiers;
 import static se.jbee.jvm.Modifiers.methodModifiers;
+import static se.jbee.jvm.file.ClassDescriptor.classDescriptor;
 import static se.jbee.jvm.file.MethodDescriptor.methodDescriptor;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import se.jbee.jvm.Annotation;
+import se.jbee.jvm.Annotation.Element;
+import se.jbee.jvm.Annotation.ElementKind;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Code;
 import se.jbee.jvm.Field;
@@ -130,36 +134,48 @@ public final class DeclarationPool
 		}
 	}
 
-	private void readAnnotation( ConstantPool cp, ClassInputStream in )
+	private Annotation readAnnotation( ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		String type = cp.utf( in.uint16bit() );
 		System.out.println( type );
 		int num = in.uint16bit();
+		Element[] elements = new Element[num];
 		for ( int i = 0; i < num; i++ ) {
 			String name = cp.utf( in.uint16bit() );
 			System.out.println( "elem :" + name );
-			readElementValue( cp, in );
+			elements[i] = readElementValue( name, cp, in );
 		}
+		return Annotation.annotation( classDescriptor( type ).cls(), elements );
 	}
 
-	private void readElementValue( ConstantPool cp, ClassInputStream in )
+	private Element readElementValue( String name, ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		int tag = in.uint8bit();
 		if ( 'e' == tag ) { // enum
-			System.out.println( "type :" + cp.utf( in.uint16bit() ) );
+			Class type = classDescriptor( cp.utf( in.uint16bit() ) ).cls();
+			System.out.println( "type :" + type );
 			System.out.println( "name :" + cp.utf( in.uint16bit() ) );
+			return Element.element( name, ElementKind.ENUM, type );
 		} else if ( '@' == tag ) {
 			System.out.println( "@" );
-			readAnnotation( cp, in );
+			Annotation annotation = readAnnotation( cp, in );
+			return Element.element( name, ElementKind.ANNOTATION, annotation.type ).annotations(
+					annotation );
 		} else if ( '[' == tag ) {
 			int num = in.uint16bit();
 			System.out.println( "[" );
+			Element e = null;
 			for ( int i = 0; i < num; i++ ) {
-				readElementValue( cp, in );
+				e = readElementValue( name, cp, in );
 			}
 			System.out.println( "]" );
+			return e;
+		} else if ( 's' == tag ) {
+			String value = cp.utf( in.uint16bit() );
+			return Element.element( name, ElementKind.STRING,
+					Class.unknownClass( "java/lang/String" ) );
 		} else {
-			System.out.println( "value:" + cp.utf( in.uint16bit() ) );
+			return Element.element( name, ElementKind.PRIMITIVE, cp.cls( in.uint16bit() ) );
 		}
 	}
 

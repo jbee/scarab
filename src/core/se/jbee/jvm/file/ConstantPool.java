@@ -179,7 +179,7 @@ public final class ConstantPool
 
 	public Class cls( int index ) {
 		if ( tags[index] != ConstantTag.CLASS ) {
-			throw new NoSuchElementException( "" );
+			throw new NoSuchElementException( "Should be a class but was: " + tags[index] );
 		}
 		return classDescriptor( utf0( index ) ).cls();
 	}

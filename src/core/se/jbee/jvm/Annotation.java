@@ -67,6 +67,13 @@ public final class Annotation
 	public static class Element
 			implements Annotated {
 
+		private static final Class[] NO_CLASSES = new Class[0];
+		private static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
+
+		public static Element element( String name, ElementKind kind, Class type ) {
+			return new Element( name, kind, type, 0, NO_CLASSES, NO_ANNOTATIONS );
+		}
+
 		public final String name;
 		public final ElementKind kind;
 		public final Class type;
@@ -83,7 +90,7 @@ public final class Annotation
 		private Element( String name, ElementKind kind, Class type, int arrayDimensions,
 				Class[] classes, Annotation[] annotations ) {
 			super();
-			this.name = name;
+			this.name = name.intern();
 			this.kind = kind;
 			this.type = type;
 			this.arrayDimensions = arrayDimensions;
@@ -91,9 +98,40 @@ public final class Annotation
 			this.annotations = annotations;
 		}
 
+		public Element classes( Class... classes ) {
+			return new Element( name, kind, type, classes.length == 1
+				? 0
+				: 1, classes, NO_ANNOTATIONS );
+		}
+
+		public Element annotations( Annotation... annotations ) {
+			return new Element( name, kind, type, annotations.length == 1
+				? 0
+				: 1, NO_CLASSES, annotations );
+		}
+
 		@Override
 		public Items<Annotation> annotations() {
 			return ArrayItems.items( annotations );
+		}
+
+		@Override
+		public boolean equals( Object obj ) {
+			return obj instanceof Element && equalTo( (Element) obj );
+		}
+
+		public boolean equalTo( Element other ) {
+			return name.equals( other.name );
+		}
+
+		@Override
+		public int hashCode() {
+			return name.hashCode();
+		}
+
+		@Override
+		public String toString() {
+			return type + " " + name;
 		}
 	}
 
