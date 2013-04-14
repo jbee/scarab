@@ -9,8 +9,6 @@ public final class Edges<K, T extends Node<K>>
 
 	private final HashMap<K, T> nodes = new HashMap<K, T>();
 
-	private final int serial = -1;
-
 	public boolean contains( K key ) {
 		return nodes.containsKey( key );
 	}
@@ -20,9 +18,6 @@ public final class Edges<K, T extends Node<K>>
 	}
 
 	void add( T node ) {
-		if ( node.serial() < serial ) {
-			throw new IllegalStateException();
-		}
 		nodes.put( node.id(), node );
 	}
 
