@@ -64,6 +64,11 @@ public final class ClassNode
 		}
 	}
 
+	@Override
+	public int serial() {
+		return serial;
+	}
+
 	void declare( ClassDeclaration cls ) {
 		if ( !cls.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();

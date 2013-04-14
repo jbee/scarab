@@ -25,4 +25,8 @@ public final class AnnotationNode
 		return key;
 	}
 
+	@Override
+	public int serial() {
+		return serial;
+	}
 }

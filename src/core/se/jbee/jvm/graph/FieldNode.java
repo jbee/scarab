@@ -25,6 +25,11 @@ public final class FieldNode
 		return key;
 	}
 
+	@Override
+	public int serial() {
+		return serial;
+	}
+
 	void declare( Field field ) {
 		this.key = field;
 	}

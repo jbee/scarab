@@ -62,6 +62,11 @@ public final class PackageNode
 		return key;
 	}
 
+	@Override
+	public int serial() {
+		return serial;
+	}
+
 	void references( PackageNode other ) {
 		references.add( other );
 		other.referencedBy.add( this );

@@ -38,7 +38,7 @@ public final class ClassGraph
 	public ArchiveNode archive( Archive archive ) {
 		ArchiveNode node = archives.node( archive );
 		if ( node == null ) {
-			node = new ArchiveNode( this, archive );
+			node = new ArchiveNode( this, archive, archives.size() );
 			archives.add( node );
 		}
 		return node;

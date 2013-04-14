@@ -45,6 +45,11 @@ public final class MethodNode
 	}
 
 	@Override
+	public int serial() {
+		return serial;
+	}
+
+	@Override
 	public String toString() {
 		return key.toString();
 	}

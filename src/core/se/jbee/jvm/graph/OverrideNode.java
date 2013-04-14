@@ -38,6 +38,11 @@ public final class OverrideNode
 		return key;
 	}
 
+	@Override
+	public int serial() {
+		return serial;
+	}
+
 	public boolean isOverridden( Method method ) {
 		return isOverridden( graph.method( method ) );
 	}
