@@ -106,12 +106,18 @@ public final class DeclarationPool
 			} else if ( "Signature".equals( name ) ) {
 				String signature = cp.utf( in.uint16bit() );
 				//TODO reflect somehow
-			} else {
-				if ( name.endsWith( "RuntimeVisibleAnnotations" ) ) {
+			} else if ( "RuntimeVisibleAnnotations".equals( name ) ) {
+				readAnnotations( cp, in );
+			} else if ( "RuntimeVisibleParameterAnnotations".equals( name ) ) {
+				int num = in.uint8bit();
+				for ( int i = 0; i < num; i++ ) {
 					readAnnotations( cp, in );
-				} else {
-					in.skipBytes( length );
 				}
+			} else {
+				if ( name.endsWith( "Annotations" ) ) {
+					System.out.println( name );
+				}
+				in.skipBytes( length );
 			}
 		}
 	}

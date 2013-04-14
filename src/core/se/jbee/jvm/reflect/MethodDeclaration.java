@@ -1,10 +1,14 @@
 package se.jbee.jvm.reflect;
 
+import se.jbee.jvm.Annotated;
 import se.jbee.jvm.Annotation;
+import se.jbee.jvm.ArrayItems;
 import se.jbee.jvm.Code;
+import se.jbee.jvm.Items;
 import se.jbee.jvm.Method;
 
-public final class MethodDeclaration {
+public final class MethodDeclaration
+		implements Annotated {
 
 	public final Method method;
 	public final Code code;
@@ -35,5 +39,10 @@ public final class MethodDeclaration {
 	@Override
 	public String toString() {
 		return method.toString();
+	}
+
+	@Override
+	public Items<Annotation> annotations() {
+		return ArrayItems.items( annotations );
 	}
 }

@@ -62,9 +62,6 @@ public final class ClassNode
 		if ( cls.isInner() ) {
 			graph.cls( cls.outerClass() ).innerClasses.add( this );
 		}
-		if ( cls.modifiers.isAnnotation() ) {
-			graph.annotation( annotation( cls ) ); // will create and link the annotation node
-		}
 	}
 
 	void declare( ClassDeclaration cls ) {
@@ -72,6 +69,10 @@ public final class ClassNode
 			throw new IllegalArgumentException();
 		}
 		this.key = cls.cls;
+		if ( key.modifiers.isAnnotation() ) {
+			graph.annotation( annotation( key ) ); // will create and link the annotation node
+		}
+		//TODO link annotations
 		this.archive = graph.archive( cls.archive );
 		ClassNode superclass = graph.cls( cls.superclass );
 		this.superclass = superclass;

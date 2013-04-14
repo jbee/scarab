@@ -1,6 +1,7 @@
 package se.jbee.jvm;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * 
@@ -12,7 +13,8 @@ import java.util.Arrays;
  * @author Jan Bernitt (jan@jbee.se)
  * 
  */
-public final class Annotation {
+public final class Annotation
+		implements Items<Annotation.Element> {
 
 	public static Annotation annotation( Class type, Element... elements ) {
 		return new Annotation( type, elements );
@@ -62,7 +64,8 @@ public final class Annotation {
 	 * 
 	 * @author Jan Bernitt (jan@jbee.se)
 	 */
-	public static class Element {
+	public static class Element
+			implements Annotated {
 
 		public final String name;
 		public final ElementKind kind;
@@ -88,6 +91,10 @@ public final class Annotation {
 			this.annotations = annotations;
 		}
 
+		@Override
+		public Items<Annotation> annotations() {
+			return ArrayItems.items( annotations );
+		}
 	}
 
 	/**
@@ -101,5 +108,15 @@ public final class Annotation {
 		ENUM,
 		CLASS,
 		ANNOTATION,
+	}
+
+	@Override
+	public Iterator<Element> iterator() {
+		return Arrays.asList( elements ).iterator();
+	}
+
+	@Override
+	public int count() {
+		return elements.length;
 	}
 }

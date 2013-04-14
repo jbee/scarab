@@ -1,10 +1,14 @@
 package se.jbee.jvm.reflect;
 
+import se.jbee.jvm.Annotated;
 import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Archive;
+import se.jbee.jvm.ArrayItems;
 import se.jbee.jvm.Class;
+import se.jbee.jvm.Items;
 
-public final class ClassDeclaration {
+public final class ClassDeclaration
+		implements Annotated {
 
 	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass,
 			Class[] interfaces, Declarations declarations, ClassReferences references ) {
@@ -28,6 +32,11 @@ public final class ClassDeclaration {
 		this.interfaces = interfaces;
 		this.declarations = declarations;
 		this.references = references;
+	}
+
+	@Override
+	public Items<Annotation> annotations() {
+		return ArrayItems.items( annotations );
 	}
 
 	@Override
