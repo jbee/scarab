@@ -80,6 +80,7 @@ public final class DeclarationPool
 			methodsMND[i][2] = in.uint16bit();
 			readAttributes( i, in, cp );
 		}
+		readAttributes( -1, in, cp );
 	}
 
 	private void readAttributes( int index, ClassInputStream in, ConstantPool cp )
@@ -102,8 +103,57 @@ public final class DeclarationPool
 		} else {
 			if ( "Deprecated".equals( name ) ) {
 				//TODO reflect somehow
+			} else if ( "Signature".equals( name ) ) {
+				String signature = cp.utf( in.uint16bit() );
+				//TODO reflect somehow
+			} else {
+				if ( name.endsWith( "RuntimeVisibleAnnotations" ) ) {
+					readAnnotations( cp, in );
+				} else {
+					in.skipBytes( length );
+				}
 			}
-			in.skipBytes( length );
+		}
+	}
+
+	private void readAnnotations( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		int num = in.uint16bit();
+		for ( int i = 0; i < num; i++ ) {
+			readAnnotation( cp, in );
+		}
+	}
+
+	private void readAnnotation( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		String type = cp.utf( in.uint16bit() );
+		System.out.println( type );
+		int num = in.uint16bit();
+		for ( int i = 0; i < num; i++ ) {
+			String name = cp.utf( in.uint16bit() );
+			System.out.println( "elem :" + name );
+			readElementValue( cp, in );
+		}
+	}
+
+	private void readElementValue( ConstantPool cp, ClassInputStream in )
+			throws IOException {
+		int tag = in.uint8bit();
+		if ( 'e' == tag ) { // enum
+			System.out.println( "type :" + cp.utf( in.uint16bit() ) );
+			System.out.println( "name :" + cp.utf( in.uint16bit() ) );
+		} else if ( '@' == tag ) {
+			System.out.println( "@" );
+			readAnnotation( cp, in );
+		} else if ( '[' == tag ) {
+			int num = in.uint16bit();
+			System.out.println( "[" );
+			for ( int i = 0; i < num; i++ ) {
+				readElementValue( cp, in );
+			}
+			System.out.println( "]" );
+		} else {
+			System.out.println( "value:" + cp.utf( in.uint16bit() ) );
 		}
 	}
 

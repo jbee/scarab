@@ -7,8 +7,8 @@ import java.util.List;
 
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Modifier;
-import se.jbee.jvm.Modifiers;
 import se.jbee.jvm.Modifier.ModifierMode;
+import se.jbee.jvm.Modifiers;
 
 public final class ClassDescriptor {
 
@@ -64,6 +64,7 @@ public final class ClassDescriptor {
 		}
 		char c0 = descriptor.charAt( 0 );
 		if ( c0 == '[' || descriptor.indexOf( ';' ) > 0 || Character.isUpperCase( c0 ) ) {
+			//FIXME the above check does not work for Classes in default package
 			return classes()[0];
 		}
 		return Class.cls( modifiers, descriptor );

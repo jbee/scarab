@@ -7,4 +7,6 @@ public interface Declarations {
 	Items<MethodDeclaration> declaredMethods();
 
 	Items<FieldDeclaration> declaredFields();
+
+	//OPEN declaredInnerClasses(); ? 
 }

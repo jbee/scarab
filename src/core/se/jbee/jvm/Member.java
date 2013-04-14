@@ -1,6 +1,6 @@
 package se.jbee.jvm;
 
-public interface Member {
+public interface Member { // maybe make this a VO?
 
 	Class declaringClass();
 

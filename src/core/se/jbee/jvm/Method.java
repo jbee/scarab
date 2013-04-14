@@ -2,6 +2,11 @@ package se.jbee.jvm;
 
 import java.util.Arrays;
 
+/**
+ * In
+ * 
+ * @author Jan Bernitt (jan@jbee.se)
+ */
 public final class Method
 		implements Member {
 

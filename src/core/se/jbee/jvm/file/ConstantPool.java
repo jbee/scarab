@@ -184,21 +184,24 @@ public final class ConstantPool
 		return classDescriptor( utf0( index ) ).cls();
 	}
 
+	public Class declaringClass( int index ) {
+		return cls( index0( index ) );
+	}
+
 	public Method method( int index ) {
 		if ( !tags[index].isMethod() ) {
 			throw new NoSuchElementException( "" );
 		}
 		final int i1 = index1( index );
-		String declaringClass = utf0( index0( index ) );
+		Class declaringClass = declaringClass( index );
 		String name = utf0( i1 );
 		MethodDescriptor declaration = methodDescriptor( utf1( i1 ) );
 		final boolean interfaceMethod = tags[index] == ConstantTag.INTERFACE_METHOD_REF;
 		final Modifiers declaringModifiers = interfaceMethod
 			? Modifiers.UNKNOWN_INTERFACE
 			: Modifiers.UNKNOWN_CLASS;
-		return Method.method( Class.cls( declaringModifiers, declaringClass ),
-				Modifiers.UNKNOWN_METHOD, declaration.returnType(), name,
-				declaration.parameterTypes() );
+		return Method.method( declaringClass.with( declaringModifiers ), Modifiers.UNKNOWN_METHOD,
+				declaration.returnType(), name, declaration.parameterTypes() );
 	}
 
 	public Field field( int index ) {
@@ -206,11 +209,10 @@ public final class ConstantPool
 			throw new NoSuchElementException( "" );
 		}
 		final int i1 = index1( index );
-		String declaringClass = utf0( index0( index ) );
+		Class declaringClass = declaringClass( index );
 		String name = utf0( i1 );
 		FieldDescriptor declaration = FieldDescriptor.fieldDescriptor( utf1( i1 ) );
-		return Field.field( Class.unknownClass( declaringClass ), Modifiers.UNKNOWN_FIELD,
-				declaration.type(), name );
+		return Field.field( declaringClass, Modifiers.UNKNOWN_FIELD, declaration.type(), name );
 	}
 
 	@Override
