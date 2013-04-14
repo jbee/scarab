@@ -1,5 +1,7 @@
 package se.jbee.jvm;
 
+import java.util.Arrays;
+
 /**
  * 
  * <pre>
@@ -28,6 +30,27 @@ public final class Annotation {
 		super();
 		this.type = type;
 		this.elements = elements;
+	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		return obj instanceof Annotation && equalTo( (Annotation) obj );
+	}
+
+	@Override
+	public int hashCode() {
+		return type.hashCode();
+	}
+
+	public boolean equalTo( Annotation other ) {
+		return type.equalTo( other.type );
+	}
+
+	@Override
+	public String toString() {
+		return type.toString() + ( elements.length == 0
+			? ""
+			: Arrays.toString( elements ) );
 	}
 
 	/**
