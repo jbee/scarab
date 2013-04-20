@@ -19,8 +19,6 @@ import se.jbee.jvm.graph.ClassGraph;
 import se.jbee.jvm.graph.ClassNode;
 import se.jbee.jvm.graph.MethodNode;
 import se.jbee.jvm.graph.PackageNode;
-import se.jbee.jvm.io.ArchiveFilter;
-import se.jbee.jvm.io.JarScanner;
 import se.jbee.jvm.reflect.ClassProcessor;
 
 public class TestJarScanner {
@@ -45,7 +43,7 @@ public class TestJarScanner {
 		MethodNode fieldType = type.method( "fieldType" );
 		assertTrue( fieldType.id().modifiers.isStatic() );
 		assertEquals( 1, fieldType.parameterTypes.size() );
-		assertEquals( "Field", fieldType.parameter( 0 ).id().simpleName() );
+		assertEquals( "Field", fieldType.parameter( 0 ).type.id().simpleName() );
 		MethodNode isAssignableTo = type.method( "isAssignableTo" );
 		assertTrue( isAssignableTo.isOverridden() );
 		ClassNode binder = g.pkg( bind ).cls( bind.memberClass( "Binder" ) );

@@ -9,6 +9,12 @@ public final class Modifiers {
 			Modifier.INTERFACE.accFlag | Modifier.ABSTRACT.accFlag, true );
 	public static final Modifiers UNKNOWN_FIELD = new Modifiers( ModifierMode.FIELD, 0, true );
 	public static final Modifiers UNKNOWN_METHOD = new Modifiers( ModifierMode.METHOD, 0, true );
+	public static final Modifiers UNKNOWN_ANNOTATION = new Modifiers( ModifierMode.CLASS,
+			Modifier.ANNOTATION.accFlag, true );
+	public static final Modifiers UNKNOWN_ENUM = new Modifiers( ModifierMode.CLASS,
+			Modifier.PUBLIC.accFlag | Modifier.FINAL.accFlag | Modifier.ENUM.accFlag, true );
+	public static final Modifiers ENUM_CONSTANT = new Modifiers( ModifierMode.FIELD,
+			Modifier.PUBLIC.accFlag | Modifier.STATIC.accFlag | Modifier.FINAL.accFlag, true );
 
 	public static Modifiers classModifiers( int accFlags ) {
 		return modifiers( ModifierMode.CLASS, accFlags );
@@ -83,10 +89,17 @@ public final class Modifiers {
 
 	@Override
 	public String toString() {
-		if ( isUnknown() ) {
+		if ( isUnknown() && accFlags == 0 ) {
 			return "?";
 		}
 		//TODO this is for class mode
+		String visibility = has( Modifier.PUBLIC )
+			? "public "
+			: has( Modifier.PRIVATE )
+				? "private "
+				: has( Modifier.PROTECTED )
+					? "protected "
+					: "";
 		String extending = isAbstract()
 			? isInterface()
 				? ""
@@ -100,8 +113,15 @@ public final class Modifiers {
 				: "interface"
 			: isEnum()
 				? "enum"
-				: "class";
-		return extending + type;
+				: mode == ModifierMode.CLASS
+					? "class"
+					: "";
+		String res = visibility + ( isStatic()
+			? "static "
+			: "" ) + extending + type;
+		return isUnknown()
+			? "(" + res + ")"
+			: res;
 	}
 
 	public boolean all( Modifiers other ) {

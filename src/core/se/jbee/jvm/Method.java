@@ -46,6 +46,14 @@ public final class Method
 		return modifiers;
 	}
 
+	public Parameter[] parameters() {
+		Parameter[] params = new Parameter[parameterTypes.length];
+		for ( int i = 0; i < parameterTypes.length; i++ ) {
+			params[i] = Parameter.parameter( this, i );
+		}
+		return params;
+	}
+
 	@Override
 	public int hashCode() {
 		return ( declaringClass.hashCode() ^ returnType.hashCode() ) + parameterTypes.length;

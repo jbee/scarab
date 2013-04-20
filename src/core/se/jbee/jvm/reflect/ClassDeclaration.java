@@ -11,8 +11,10 @@ public final class ClassDeclaration
 		implements Annotated {
 
 	public static ClassDeclaration classDeclaration( Archive archive, Class cls, Class superclass,
-			Class[] interfaces, Declarations declarations, ClassReferences references ) {
-		return new ClassDeclaration( archive, cls, superclass, interfaces, declarations, references );
+			Class[] interfaces, Declarations declarations, ClassReferences references,
+			Annotation[] annotations ) {
+		return new ClassDeclaration( archive, cls, superclass, interfaces, declarations,
+				references, annotations );
 	}
 
 	public final Archive archive;
@@ -21,10 +23,10 @@ public final class ClassDeclaration
 	public final Class[] interfaces;
 	public final Declarations declarations;
 	public final ClassReferences references;
-	public final Annotation[] annotations = null;//TODO add
+	public final Annotation[] annotations;
 
 	private ClassDeclaration( Archive archive, Class cls, Class superclass, Class[] interfaces,
-			Declarations declarations, ClassReferences references ) {
+			Declarations declarations, ClassReferences references, Annotation[] annotations ) {
 		super();
 		this.archive = archive;
 		this.cls = cls;
@@ -32,6 +34,7 @@ public final class ClassDeclaration
 		this.interfaces = interfaces;
 		this.declarations = declarations;
 		this.references = references;
+		this.annotations = annotations;
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import se.jbee.jvm.Code;
 import se.jbee.jvm.Field;
 import se.jbee.jvm.Items;
 import se.jbee.jvm.Method;
+import se.jbee.jvm.Modifiers;
 import se.jbee.jvm.reflect.Declarations;
 import se.jbee.jvm.reflect.FieldDeclaration;
 import se.jbee.jvm.reflect.MethodDeclaration;
@@ -42,6 +43,7 @@ public final class DeclarationPool
 
 	private final ConstantPool cp;
 	private final Class declaringClass;
+	public Annotation[] classAnnotations = new Annotation[0];
 	private int fieldCount;
 	private int[][] fieldsMND;
 	private int methodCount;
@@ -110,9 +112,14 @@ public final class DeclarationPool
 			} else if ( "Signature".equals( name ) ) {
 				String signature = cp.utf( in.uint16bit() );
 				//TODO reflect somehow
-			} else if ( "RuntimeVisibleAnnotations".equals( name ) ) {
-				readAnnotations( cp, in );
-			} else if ( "RuntimeVisibleParameterAnnotations".equals( name ) ) {
+			} else if ( "RuntimeVisibleAnnotations".equals( name )
+					|| "RuntimeInvisibleAnnotations".equals( name ) ) {
+				Annotation[] annotations = readAnnotations( cp, in );
+				if ( index < 0 ) {
+					classAnnotations = annotations;
+				}
+			} else if ( "RuntimeVisibleParameterAnnotations".equals( name )
+					|| "RuntimeVisibleParameterAnnotations".equals( name ) ) {
 				int num = in.uint8bit();
 				for ( int i = 0; i < num; i++ ) {
 					readAnnotations( cp, in );
@@ -147,37 +154,46 @@ public final class DeclarationPool
 			System.out.println( "elem :" + name );
 			elements[i] = readElementValue( name, cp, in );
 		}
-		return Annotation.annotation( classDescriptor( type ).cls(), elements );
+		return Annotation.annotation( classDescriptor( type ).cls( Modifiers.UNKNOWN_ANNOTATION ),
+				elements );
 	}
 
 	private Element readElementValue( String name, ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		int tag = in.uint8bit();
 		if ( 'e' == tag ) { // enum
-			Class type = classDescriptor( cp.utf( in.uint16bit() ) ).cls();
-			System.out.println( "type :" + type );
-			System.out.println( "name :" + cp.utf( in.uint16bit() ) );
-			return Element.element( name, ElementKind.ENUM, type );
+			Class type = classDescriptor( cp.utf( in.uint16bit() ) ).cls( Modifiers.UNKNOWN_ENUM );
+			String constantName = cp.utf( in.uint16bit() );
+			Field enumConstant = Field.field( type, Modifiers.ENUM_CONSTANT, type, constantName );
+			return Element.element( name, ElementKind.ENUM, type, enumConstant );
 		} else if ( '@' == tag ) {
 			System.out.println( "@" );
 			Annotation annotation = readAnnotation( cp, in );
-			return Element.element( name, ElementKind.ANNOTATION, annotation.type ).annotations(
-					annotation );
+			return Element.element( name, ElementKind.ANNOTATION, annotation.type, annotation );
 		} else if ( '[' == tag ) {
 			int num = in.uint16bit();
 			System.out.println( "[" );
-			Element e = null;
+			Element[] elements = new Element[num];
 			for ( int i = 0; i < num; i++ ) {
-				e = readElementValue( name, cp, in );
+				elements[i] = readElementValue( name, cp, in );
 			}
 			System.out.println( "]" );
-			return e;
+			//FIXME correctly create array
+			Object[] values = new Object[elements.length];
+			for ( int i = 0; i < values.length; i++ ) {
+				values[i] = elements[i].value;
+			}
+			return Element.element( name, elements[0].kind, elements[0].type, values );
 		} else if ( 's' == tag ) {
 			String value = cp.utf( in.uint16bit() );
 			return Element.element( name, ElementKind.STRING,
-					Class.unknownClass( "java/lang/String" ) );
+					Class.unknownClass( "java/lang/String" ), value );
+		} else if ( 'c' == tag ) {
+			return Element.element( name, ElementKind.CLASS, Class.CLASS, cp.cls( in.uint16bit() ) );
 		} else {
-			return Element.element( name, ElementKind.PRIMITIVE, cp.cls( in.uint16bit() ) );
+			int valueIndex = in.uint16bit();
+			return Element.element( name, ElementKind.PRIMITIVE,
+					ClassDescriptor.classDescriptor( Character.toString( (char) tag ) ).cls(), null );
 		}
 	}
 

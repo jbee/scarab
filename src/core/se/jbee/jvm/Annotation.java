@@ -64,55 +64,23 @@ public final class Annotation
 	 * 
 	 * @author Jan Bernitt (jan@jbee.se)
 	 */
-	public static class Element
-			implements Annotated {
+	public static final class Element {
 
-		private static final Class[] NO_CLASSES = new Class[0];
-		private static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
-
-		public static Element element( String name, ElementKind kind, Class type ) {
-			return new Element( name, kind, type, 0, NO_CLASSES, NO_ANNOTATIONS );
+		public static Element element( String name, ElementKind kind, Class type, Object value ) {
+			return new Element( name, kind, type, value );
 		}
 
 		public final String name;
 		public final ElementKind kind;
 		public final Class type;
-		public final int arrayDimensions;
-		/**
-		 * The class values in case this is an element of kind class (or array of that).
-		 */
-		public final Class[] classes;
-		/**
-		 * The annotation values in case this is an element of kind annotation (or array of that).
-		 */
-		public final Annotation[] annotations;
+		public final Object value;
 
-		private Element( String name, ElementKind kind, Class type, int arrayDimensions,
-				Class[] classes, Annotation[] annotations ) {
+		private Element( String name, ElementKind kind, Class type, Object value ) {
 			super();
-			this.name = name.intern();
+			this.name = name;
 			this.kind = kind;
 			this.type = type;
-			this.arrayDimensions = arrayDimensions;
-			this.classes = classes;
-			this.annotations = annotations;
-		}
-
-		public Element classes( Class... classes ) {
-			return new Element( name, kind, type, classes.length == 1
-				? 0
-				: 1, classes, NO_ANNOTATIONS );
-		}
-
-		public Element annotations( Annotation... annotations ) {
-			return new Element( name, kind, type, annotations.length == 1
-				? 0
-				: 1, NO_CLASSES, annotations );
-		}
-
-		@Override
-		public Items<Annotation> annotations() {
-			return ArrayItems.items( annotations );
+			this.value = value;
 		}
 
 		@Override

@@ -14,6 +14,7 @@ public final class MethodDeclaration
 	public final Code code;
 	public final MethodReferences references;
 	public final Annotation[] annotations = null;//TODO add
+	public final Annotation[][] parameterAnnotations = null;
 
 	public MethodDeclaration( Method method, Code code, MethodReferences references ) {
 		super();

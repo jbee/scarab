@@ -9,12 +9,24 @@ public final class Class {
 
 	public static final Class NONE = new Class( Modifiers.UNKNOWN_CLASS, 0, "" );
 
+	public static final Class ENUM = cls(
+			Modifiers.modifiers( ModifierMode.CLASS, Modifier.PUBLIC, Modifier.ABSTRACT ),
+			"java/lang/Enum" );
+
+	public static final Class CLASS = cls(
+			Modifiers.modifiers( ModifierMode.CLASS, Modifier.PUBLIC, Modifier.ABSTRACT ),
+			"java/lang/Class" );
+
 	public static Class unknownClass( String name ) {
 		return cls( Modifiers.UNKNOWN_CLASS, name );
 	}
 
 	public static Class unknownInterface( String name ) {
 		return cls( Modifiers.UNKNOWN_INTERFACE, name );
+	}
+
+	public static Class unknownAnnotation( String name ) {
+		return cls( Modifiers.UNKNOWN_ANNOTATION, name );
 	}
 
 	public static Class cls( Modifiers modifiers, String name ) {

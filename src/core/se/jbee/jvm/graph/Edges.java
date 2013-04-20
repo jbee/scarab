@@ -21,6 +21,10 @@ public final class Edges<K, T extends Node<K>>
 		nodes.put( node.id(), node );
 	}
 
+	void put( K key, T node ) {
+		nodes.put( key, node );
+	}
+
 	@Override
 	public String toString() {
 		return nodes.values().toString();

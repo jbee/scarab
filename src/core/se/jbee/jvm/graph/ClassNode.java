@@ -1,6 +1,7 @@
 package se.jbee.jvm.graph;
 
 import static se.jbee.jvm.Annotation.annotation;
+import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Archive;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Field;
@@ -20,6 +21,8 @@ public final class ClassNode
 	private ClassNode superclass;
 	private ArchiveNode archive;
 	public final PackageNode pkg;
+
+	public final Edges<Annotation, AnnotationNode> annotations = new Edges<Annotation, AnnotationNode>();
 
 	public final Edges<Field, FieldNode> fields = new Edges<Field, FieldNode>();
 	public final Edges<Field, FieldNode> instanceFields = new Edges<Field, FieldNode>();
@@ -77,7 +80,11 @@ public final class ClassNode
 		if ( key.modifiers.isAnnotation() ) {
 			graph.annotation( annotation( key ) ); // will create and link the annotation node
 		}
-		//TODO link annotations
+		for ( Annotation a : cls.annotations() ) {
+			AnnotationNode annotation = graph.annotation( a );
+			annotations.put( a, annotation );
+			annotation.annotatedClasses.add( this );
+		}
 		this.archive = graph.archive( cls.archive );
 		ClassNode superclass = graph.cls( cls.superclass );
 		this.superclass = superclass;

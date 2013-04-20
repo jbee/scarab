@@ -46,6 +46,10 @@ public final class FieldNode
 		return key.modifiers.isStatic() && key.modifiers.isFinal();
 	}
 
+	public boolean isEnumConstant() {
+		return isConstantField() && declaringClass.subclasses.contains( Class.ENUM );
+	}
+
 	@Override
 	public String toString() {
 		return key.toString();

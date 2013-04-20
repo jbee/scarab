@@ -37,7 +37,8 @@ public final class ClassFile {
 		Class superclass = Class.unknownClass( cp.utf0( in.uint16bit() ) );
 		Class[] interfaces = readInterfaces( in, cp, in.uint16bit() );
 		DeclarationPool dp = DeclarationPool.read( in, cls, cp );
-		ClassDeclaration self = classDeclaration( archive, cls, superclass, interfaces, dp, cp );
+		ClassDeclaration self = classDeclaration( archive, cls, superclass, interfaces, dp, cp,
+				dp.classAnnotations );
 		out.process( self );
 	}
 

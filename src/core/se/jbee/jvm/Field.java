@@ -51,6 +51,6 @@ public final class Field
 
 	@Override
 	public String toString() {
-		return declaringClass + "#" + type + " " + name;
+		return modifiers + declaringClass.canonicalName() + "#" + type + " " + name;
 	}
 }

@@ -3,6 +3,7 @@ package se.jbee.jvm.graph;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Field;
 import se.jbee.jvm.Method;
+import se.jbee.jvm.Parameter;
 import se.jbee.jvm.reflect.MethodDeclaration;
 
 public final class MethodNode
@@ -18,7 +19,7 @@ public final class MethodNode
 	public final Edges<Field, FieldNode> accesses = new Edges<Field, FieldNode>();
 
 	public final OverrideNode overrides;
-	private final ClassNode[] parameters;
+	private final ParameterNode[] parameters;
 	private final ClassGraph graph;
 
 	MethodNode( ClassGraph graph, Method method, int serial ) {
@@ -30,12 +31,12 @@ public final class MethodNode
 		this.returnType = graph.cls( method.returnType );
 		this.overrides = graph.override( method );
 		this.overrides.declaredBy( this );
-		this.parameters = new ClassNode[method.parameterTypes.length];
+		this.parameters = new ParameterNode[method.parameterTypes.length];
 		int i = 0;
-		for ( Class p : method.parameterTypes ) {
-			ClassNode cls = graph.cls( p );
+		for ( Parameter p : method.parameters() ) {
+			ClassNode cls = graph.cls( p.type() );
 			parameterTypes.add( cls );
-			parameters[i++] = cls;
+			parameters[i++] = graph.parameter( p );
 		}
 	}
 
@@ -64,7 +65,7 @@ public final class MethodNode
 		}
 	}
 
-	public ClassNode parameter( int index ) {
+	public ParameterNode parameter( int index ) {
 		return parameters[index];
 	}
 

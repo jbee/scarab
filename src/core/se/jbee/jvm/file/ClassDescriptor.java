@@ -65,7 +65,7 @@ public final class ClassDescriptor {
 		char c0 = descriptor.charAt( 0 );
 		if ( c0 == '[' || descriptor.indexOf( ';' ) > 0 || Character.isUpperCase( c0 ) ) {
 			//FIXME the above check does not work for Classes in default package
-			return classes()[0];
+			return classes()[0].with( modifiers );
 		}
 		return Class.cls( modifiers, descriptor );
 	}

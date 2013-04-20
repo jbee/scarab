@@ -7,6 +7,7 @@ import se.jbee.jvm.Field;
 import se.jbee.jvm.Method;
 import se.jbee.jvm.Package;
 import se.jbee.jvm.Packages;
+import se.jbee.jvm.Parameter;
 import se.jbee.jvm.reflect.ClassDeclaration;
 import se.jbee.jvm.reflect.ClassProcessor;
 
@@ -24,6 +25,7 @@ public final class ClassGraph
 	public final Edges<Method, MethodNode> methods = new Edges<Method, MethodNode>();
 	public final Edges<Method, OverrideNode> overrides = new Edges<Method, OverrideNode>();
 	public final Edges<Annotation, AnnotationNode> annotations = new Edges<Annotation, AnnotationNode>();
+	public final Edges<Parameter, ParameterNode> parameters = new Edges<Parameter, ParameterNode>();
 
 	public ClassGraph( Packages basePackages ) {
 		super();
@@ -95,6 +97,15 @@ public final class ClassGraph
 		if ( node == null ) {
 			node = new AnnotationNode( this, annotation, annotations.size() );
 			annotations.add( node );
+		}
+		return node;
+	}
+
+	public ParameterNode parameter( Parameter parameter ) {
+		ParameterNode node = parameters.node( parameter );
+		if ( node == null ) {
+			node = new ParameterNode( this, parameter, parameters.size() );
+			parameters.add( node );
 		}
 		return node;
 	}
