@@ -172,13 +172,15 @@ public final class DeclarationPool
 			return Element.element( name, ElementKind.ANNOTATION, annotation.type, annotation );
 		} else if ( '[' == tag ) {
 			int num = in.uint16bit();
+			if ( num == 0 ) {
+				return Element.element( name, ElementKind.ARRAY, Class.OBJECT, new Object[0] );
+			}
 			System.out.println( "[" );
 			Element[] elements = new Element[num];
 			for ( int i = 0; i < num; i++ ) {
 				elements[i] = readElementValue( name, cp, in );
 			}
 			System.out.println( "]" );
-			//FIXME correctly create array
 			Object[] values = new Object[elements.length];
 			for ( int i = 0; i < values.length; i++ ) {
 				values[i] = elements[i].value;
@@ -189,11 +191,12 @@ public final class DeclarationPool
 			return Element.element( name, ElementKind.STRING,
 					Class.unknownClass( "java/lang/String" ), value );
 		} else if ( 'c' == tag ) {
-			return Element.element( name, ElementKind.CLASS, Class.CLASS, cp.cls( in.uint16bit() ) );
+			return Element.element( name, ElementKind.CLASS, Class.CLASS,
+					classDescriptor( cp.utf( in.uint16bit() ) ).cls() );
 		} else {
 			int valueIndex = in.uint16bit();
 			return Element.element( name, ElementKind.PRIMITIVE,
-					ClassDescriptor.classDescriptor( Character.toString( (char) tag ) ).cls(), null );
+					classDescriptor( Character.toString( (char) tag ) ).cls(), null );
 		}
 	}
 

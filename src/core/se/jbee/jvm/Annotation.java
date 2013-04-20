@@ -114,6 +114,7 @@ public final class Annotation
 		ENUM,
 		CLASS,
 		ANNOTATION,
+		ARRAY
 	}
 
 	@Override

@@ -25,9 +25,9 @@ public class TestJarScanner {
 
 	@Test
 	public void testScanGraph() {
+		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
 		Package root = Package.pkg( "se/jbee/inject" );
 		ClassGraph g = new ClassGraph( packages( root ) );
-		String file = "/home/jan/project/silk/dist/silk-di-0.4.3.jar";
 		scanJar( file, ArchiveFilter.ALL, g );
 		PackageNode jbee = g.pkg( root.parent() );
 		assertEquals( 1, jbee.subPackages.size() );
@@ -57,6 +57,14 @@ public class TestJarScanner {
 		assertFalse( inject.dependencies.contains( bind ) );
 		MethodNode isParameterized = type.method( "isParameterized" );
 		assertTrue( isAssignableTo.calls.contains( isParameterized.id() ) );
+	}
+
+	@Test
+	public void testScanGraph2() {
+		String file = "/home/jan/Desktop/silk-all.jar";
+		Package root = Package.pkg( "se/jbee/inject" );
+		ClassGraph g = new ClassGraph( packages( root ) );
+		scanJar( file, ArchiveFilter.ALL, g );
 	}
 
 	@Test
