@@ -125,9 +125,6 @@ public final class DeclarationPool
 					readAnnotations( cp, in );
 				}
 			} else {
-				if ( name.endsWith( "Annotations" ) ) {
-					System.out.println( name );
-				}
 				in.skipBytes( length );
 			}
 		}
@@ -146,12 +143,10 @@ public final class DeclarationPool
 	private Annotation readAnnotation( ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		String type = cp.utf( in.uint16bit() );
-		System.out.println( type );
 		int num = in.uint16bit();
 		Element[] elements = new Element[num];
 		for ( int i = 0; i < num; i++ ) {
 			String name = cp.utf( in.uint16bit() );
-			System.out.println( "elem :" + name );
 			elements[i] = readElementValue( name, cp, in );
 		}
 		return Annotation.annotation( classDescriptor( type ).cls( Modifiers.UNKNOWN_ANNOTATION ),
@@ -167,7 +162,6 @@ public final class DeclarationPool
 			Field enumConstant = Field.field( type, Modifiers.ENUM_CONSTANT, type, constantName );
 			return Element.element( name, ElementKind.ENUM, type, enumConstant );
 		} else if ( '@' == tag ) {
-			System.out.println( "@" );
 			Annotation annotation = readAnnotation( cp, in );
 			return Element.element( name, ElementKind.ANNOTATION, annotation.type, annotation );
 		} else if ( '[' == tag ) {
@@ -175,12 +169,10 @@ public final class DeclarationPool
 			if ( num == 0 ) {
 				return Element.element( name, ElementKind.ARRAY, Class.OBJECT, new Object[0] );
 			}
-			System.out.println( "[" );
 			Element[] elements = new Element[num];
 			for ( int i = 0; i < num; i++ ) {
 				elements[i] = readElementValue( name, cp, in );
 			}
-			System.out.println( "]" );
 			Object[] values = new Object[elements.length];
 			for ( int i = 0; i < values.length; i++ ) {
 				values[i] = elements[i].value;
