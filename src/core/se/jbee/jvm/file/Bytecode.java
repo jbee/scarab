@@ -16,10 +16,14 @@ import java.util.EnumSet;
 
 public final class Bytecode {
 
-	static final Opcode[] OPCODES = new Opcode[256];
+	static final Opcode[] OPCODES = decimalOrderCodes();
 
-	static {
-		Opcode.values(); // force load
+	private static Opcode[] decimalOrderCodes() {
+		Opcode[] res = new Opcode[256];
+		for ( Opcode opcode : Opcode.values() ) {
+			res[opcode.opcodeDecimal] = opcode;
+		}
+		return res;
 	}
 
 	static enum OpcodeFlag {
@@ -36,6 +40,7 @@ public final class Bytecode {
 	}
 
 	static enum Opcode {
+
 		aaload( 50, 0 ),
 		aastore( 83, 0 ),
 		aconst_null( 1, 0 ),
@@ -277,7 +282,6 @@ public final class Bytecode {
 			this.skipBytes = argBytes - ( this.cpIndex
 				? 2
 				: 0 );
-			OPCODES[opcodeDecimal] = this;
 		}
 
 		public boolean has( OpcodeFlag flag ) {

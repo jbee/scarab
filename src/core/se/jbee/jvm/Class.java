@@ -1,21 +1,13 @@
 package se.jbee.jvm;
 
-import se.jbee.jvm.Modifier.ModifierMode;
 
 public final class Class {
 
-	public static final Class OBJECT = cls(
-			Modifiers.modifiers( ModifierMode.CLASS, Modifier.PUBLIC ), "java/lang/Object" );
-
 	public static final Class NONE = new Class( Modifiers.UNKNOWN_CLASS, 0, "" );
 
-	public static final Class ENUM = cls(
-			Modifiers.modifiers( ModifierMode.CLASS, Modifier.PUBLIC, Modifier.ABSTRACT ),
-			"java/lang/Enum" );
-
-	public static final Class CLASS = cls(
-			Modifiers.modifiers( ModifierMode.CLASS, Modifier.PUBLIC, Modifier.ABSTRACT ),
-			"java/lang/Class" );
+	public static final Class OBJECT = cls( Object.class );
+	public static final Class ENUM = cls( Enum.class );
+	public static final Class CLASS = cls( java.lang.Class.class );
 
 	public static Class unknownClass( String name ) {
 		return cls( Modifiers.UNKNOWN_CLASS, name );
@@ -31,6 +23,17 @@ public final class Class {
 
 	public static Class cls( Modifiers modifiers, String name ) {
 		return cls( modifiers, name, 0 );
+	}
+
+	public static Class cls( java.lang.Class<?> cls ) {
+		return new Class( Modifiers.classModifiers( cls.getModifiers() ), dimensions( cls ),
+				cls.getName().replace( '.', '/' ) );
+	}
+
+	private static int dimensions( java.lang.Class<?> cls ) {
+		return cls.isArray()
+			? 1 + dimensions( cls.getComponentType() )
+			: 0;
 	}
 
 	public static Class cls( Modifiers modifiers, String name, int arrayDimentions ) {

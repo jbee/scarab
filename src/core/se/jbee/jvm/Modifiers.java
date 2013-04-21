@@ -1,5 +1,7 @@
 package se.jbee.jvm;
 
+import java.lang.Thread.State;
+
 import se.jbee.jvm.Modifier.ModifierMode;
 
 public final class Modifiers {
@@ -12,9 +14,9 @@ public final class Modifiers {
 	public static final Modifiers UNKNOWN_ANNOTATION = new Modifiers( ModifierMode.CLASS,
 			Modifier.ANNOTATION.accFlag, true );
 	public static final Modifiers UNKNOWN_ENUM = new Modifiers( ModifierMode.CLASS,
-			Modifier.PUBLIC.accFlag | Modifier.FINAL.accFlag | Modifier.ENUM.accFlag, true );
+			State.class.getModifiers(), true );
 	public static final Modifiers ENUM_CONSTANT = new Modifiers( ModifierMode.FIELD,
-			Modifier.PUBLIC.accFlag | Modifier.STATIC.accFlag | Modifier.FINAL.accFlag, true );
+			State.class.getFields()[0].getModifiers(), true );
 
 	public static Modifiers classModifiers( int accFlags ) {
 		return modifiers( ModifierMode.CLASS, accFlags );

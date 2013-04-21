@@ -5,15 +5,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static se.jbee.jvm.Annotation.annotation;
 import static se.jbee.jvm.Archive.archive;
+import static se.jbee.jvm.Class.cls;
 import static se.jbee.jvm.Packages.packages;
 
 import java.io.IOException;
 
 import org.junit.Test;
+import org.junit.runners.Suite.SuiteClasses;
 
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Package;
+import se.jbee.jvm.graph.AnnotationNode;
 import se.jbee.jvm.graph.ArchiveNode;
 import se.jbee.jvm.graph.ClassGraph;
 import se.jbee.jvm.graph.ClassNode;
@@ -65,6 +69,11 @@ public class TestJarScanner {
 		Package root = Package.pkg( "se/jbee/inject" );
 		ClassGraph g = new ClassGraph( packages( root ) );
 		scanJar( file, ArchiveFilter.ALL, g );
+		assertTrue( g.annotations.size() > 0 );
+		ClassNode suiteClasses = g.cls( cls( SuiteClasses.class ) );
+		assertNotNull( suiteClasses );
+		AnnotationNode suiteClassesA = g.annotation( annotation( cls( SuiteClasses.class ) ) );
+		assertNotNull( suiteClassesA );
 	}
 
 	@Test
