@@ -30,7 +30,7 @@ public final class Edges<K, T extends Node<K>>
 		return nodes.values().toString();
 	}
 
-	public int size() {
+	public int count() {
 		return nodes.size();
 	}
 

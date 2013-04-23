@@ -54,10 +54,10 @@ public class ClassTreeMap {
 				out.print( "\t\t{\"name\": \"" + c.id().simpleName() + "\"," );
 				out.print( "\"type\": \""
 						+ c.modifiers().toString().replace( "@interface", "annotation" ) + "\", " );
-				out.print( "\"c_method\": " + c.methods.size() + ", " );
-				out.print( "\"c_field\": " + c.instanceFields.size() + ", " );
-				out.print( "\"c_references\": " + c.references.size() + ", " );
-				out.print( "\"c_referencedBy\": " + c.referencedBy.size() );
+				out.print( "\"c_method\": " + c.methods.count() + ", " );
+				out.print( "\"c_field\": " + c.instanceFields.count() + ", " );
+				out.print( "\"c_references\": " + c.references.count() + ", " );
+				out.print( "\"c_referencedBy\": " + c.referencedBy.count() );
 				out.print( '}' );
 				i++;
 			}

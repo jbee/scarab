@@ -1,5 +1,6 @@
 package se.jbee.jvm.graph;
 
+import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Field;
 import se.jbee.jvm.Method;
@@ -13,6 +14,7 @@ public final class MethodNode
 	public final int serial;
 	public final ClassNode declaringClass;
 	public final ClassNode returnType;
+	public final Edges<Annotation, AnnotationNode> annotations = new Edges<Annotation, AnnotationNode>();
 	public final Edges<Class, ClassNode> parameterTypes = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> calledBy = new Edges<Class, ClassNode>();
 	public final Edges<Method, MethodNode> calls = new Edges<Method, MethodNode>();
@@ -57,6 +59,11 @@ public final class MethodNode
 
 	void declare( MethodDeclaration method ) {
 		this.key = method.method;
+		for ( Annotation a : method.annotations() ) {
+			AnnotationNode annotation = graph.annotation( a );
+			annotations.put( a, annotation );
+			annotation.annotatedMethods.add( this );
+		}
 		for ( Method m : method.references.calledMethods() ) {
 			calls.add( graph.method( m ) );
 		}

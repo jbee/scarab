@@ -2,7 +2,6 @@ package se.jbee.jvm.file;
 
 import static se.jbee.jvm.Modifiers.fieldModifiers;
 import static se.jbee.jvm.Modifiers.methodModifiers;
-import static se.jbee.jvm.file.ClassDescriptor.classDescriptor;
 import static se.jbee.jvm.file.MethodDescriptor.methodDescriptor;
 
 import java.io.IOException;
@@ -10,14 +9,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import se.jbee.jvm.Annotation;
-import se.jbee.jvm.Annotation.Element;
-import se.jbee.jvm.Annotation.ElementKind;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Code;
 import se.jbee.jvm.Field;
 import se.jbee.jvm.Items;
 import se.jbee.jvm.Method;
-import se.jbee.jvm.Modifiers;
 import se.jbee.jvm.reflect.Declarations;
 import se.jbee.jvm.reflect.FieldDeclaration;
 import se.jbee.jvm.reflect.MethodDeclaration;
@@ -49,6 +45,7 @@ public final class DeclarationPool
 	private int methodCount;
 	private int[][] methodsMND;
 	private MethodReferences[] methodReferences;
+	private Annotation[][] methodAnnotations;
 	private Code[] codes;
 
 	private DeclarationPool( ConstantPool cp, Class declaringClass ) {
@@ -80,6 +77,7 @@ public final class DeclarationPool
 		codes = share
 			? SHARED_CODE
 			: new Code[methodCount];
+		methodAnnotations = new Annotation[methodCount][];
 		for ( int i = 0; i < methodCount; i++ ) {
 			methodsMND[i][0] = in.uint16bit();
 			methodsMND[i][1] = in.uint16bit();
@@ -114,81 +112,21 @@ public final class DeclarationPool
 				//TODO reflect somehow
 			} else if ( "RuntimeVisibleAnnotations".equals( name )
 					|| "RuntimeInvisibleAnnotations".equals( name ) ) {
-				Annotation[] annotations = readAnnotations( cp, in );
+				Annotation[] annotations = AnnotationAttribute.readAnnotations( cp, in );
 				if ( index < 0 ) {
 					classAnnotations = annotations;
+				} else {
+					methodAnnotations[index] = annotations;
 				}
 			} else if ( "RuntimeVisibleParameterAnnotations".equals( name )
 					|| "RuntimeVisibleParameterAnnotations".equals( name ) ) {
 				int num = in.uint8bit();
 				for ( int i = 0; i < num; i++ ) {
-					readAnnotations( cp, in );
+					AnnotationAttribute.readAnnotations( cp, in );
 				}
 			} else {
 				in.skipBytes( length );
 			}
-		}
-	}
-
-	private Annotation[] readAnnotations( ConstantPool cp, ClassInputStream in )
-			throws IOException {
-		int num = in.uint16bit();
-		Annotation[] annotations = new Annotation[num];
-		for ( int i = 0; i < num; i++ ) {
-			annotations[i] = readAnnotation( cp, in );
-		}
-		return annotations;
-	}
-
-	private Annotation readAnnotation( ConstantPool cp, ClassInputStream in )
-			throws IOException {
-		String type = cp.utf( in.uint16bit() );
-		int num = in.uint16bit();
-		Element[] elements = new Element[num];
-		for ( int i = 0; i < num; i++ ) {
-			String name = cp.utf( in.uint16bit() );
-			elements[i] = readElementValue( name, cp, in );
-		}
-		return Annotation.annotation( classDescriptor( type ).cls( Modifiers.UNKNOWN_ANNOTATION ),
-				elements );
-	}
-
-	private Element readElementValue( String name, ConstantPool cp, ClassInputStream in )
-			throws IOException {
-		int tag = in.uint8bit();
-		if ( 'e' == tag ) { // enum
-			Class type = classDescriptor( cp.utf( in.uint16bit() ) ).cls( Modifiers.UNKNOWN_ENUM );
-			String constantName = cp.utf( in.uint16bit() );
-			Field enumConstant = Field.field( type, Modifiers.ENUM_CONSTANT, type, constantName );
-			return Element.element( name, ElementKind.ENUM, type, enumConstant );
-		} else if ( '@' == tag ) {
-			Annotation annotation = readAnnotation( cp, in );
-			return Element.element( name, ElementKind.ANNOTATION, annotation.type, annotation );
-		} else if ( '[' == tag ) {
-			int num = in.uint16bit();
-			if ( num == 0 ) {
-				return Element.element( name, ElementKind.ARRAY, Class.OBJECT, new Object[0] );
-			}
-			Element[] elements = new Element[num];
-			for ( int i = 0; i < num; i++ ) {
-				elements[i] = readElementValue( name, cp, in );
-			}
-			Object[] values = new Object[elements.length];
-			for ( int i = 0; i < values.length; i++ ) {
-				values[i] = elements[i].value;
-			}
-			return Element.element( name, elements[0].kind, elements[0].type, values );
-		} else if ( 's' == tag ) {
-			String value = cp.utf( in.uint16bit() );
-			return Element.element( name, ElementKind.STRING,
-					Class.unknownClass( "java/lang/String" ), value );
-		} else if ( 'c' == tag ) {
-			return Element.element( name, ElementKind.CLASS, Class.CLASS,
-					classDescriptor( cp.utf( in.uint16bit() ) ).cls() );
-		} else {
-			int valueIndex = in.uint16bit();
-			return Element.element( name, ElementKind.PRIMITIVE,
-					classDescriptor( Character.toString( (char) tag ) ).cls(), null );
 		}
 	}
 
@@ -204,7 +142,11 @@ public final class DeclarationPool
 		if ( references == null ) {
 			references = CodeAttribute.emptyMethod( cp );
 		}
-		return new MethodDeclaration( method, codes[index], references );
+		Annotation[] annotations = methodAnnotations[index];
+		if ( annotations == null ) {
+			annotations = new Annotation[0];
+		}
+		return new MethodDeclaration( method, codes[index], references, annotations );
 	}
 
 	public Field field( int index ) {

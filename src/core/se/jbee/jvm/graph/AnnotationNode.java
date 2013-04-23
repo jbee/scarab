@@ -2,6 +2,7 @@ package se.jbee.jvm.graph;
 
 import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Class;
+import se.jbee.jvm.Method;
 
 /**
  * Represents a {@link Class} that is an {@link Annotation}.
@@ -17,6 +18,7 @@ public final class AnnotationNode
 	public final ClassNode cls;
 
 	public final Edges<Class, ClassNode> annotatedClasses = new Edges<Class, ClassNode>();
+	public final Edges<Method, MethodNode> annotatedMethods = new Edges<Method, MethodNode>();
 
 	//TODO add classes, methods, fields and annotation where this annotation is used 
 

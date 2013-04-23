@@ -40,7 +40,7 @@ public final class ClassGraph
 	public ArchiveNode archive( Archive archive ) {
 		ArchiveNode node = archives.node( archive );
 		if ( node == null ) {
-			node = new ArchiveNode( this, archive, archives.size() );
+			node = new ArchiveNode( this, archive, archives.count() );
 			archives.add( node );
 		}
 		return node;
@@ -49,7 +49,7 @@ public final class ClassGraph
 	public ClassNode cls( Class type ) {
 		ClassNode node = classes.node( type );
 		if ( node == null ) {
-			node = new ClassNode( this, type, classes.size() );
+			node = new ClassNode( this, type, classes.count() );
 			classes.add( node );
 		}
 		return node;
@@ -58,7 +58,7 @@ public final class ClassGraph
 	public PackageNode pkg( Package pkg ) {
 		PackageNode node = packages.node( pkg );
 		if ( node == null ) {
-			node = new PackageNode( this, pkg, packages.size() );
+			node = new PackageNode( this, pkg, packages.count() );
 			packages.add( node );
 		}
 		return node;
@@ -67,7 +67,7 @@ public final class ClassGraph
 	public MethodNode method( Method method ) {
 		MethodNode node = methods.node( method );
 		if ( node == null ) {
-			node = new MethodNode( this, method, methods.size() );
+			node = new MethodNode( this, method, methods.count() );
 			methods.add( node );
 		}
 		return node;
@@ -77,7 +77,7 @@ public final class ClassGraph
 		method = method.declaredBy( Class.NONE );
 		OverrideNode node = overrides.node( method );
 		if ( node == null ) {
-			node = new OverrideNode( this, method, overrides.size() );
+			node = new OverrideNode( this, method, overrides.count() );
 			overrides.add( node );
 		}
 		return node;
@@ -86,16 +86,20 @@ public final class ClassGraph
 	public FieldNode field( Field field ) {
 		FieldNode node = fields.node( field );
 		if ( node == null ) {
-			node = new FieldNode( this, field, fields.size() );
+			node = new FieldNode( this, field, fields.count() );
 			fields.add( node );
 		}
 		return node;
 	}
 
+	public AnnotationNode annotation( Class annotation ) {
+		return annotation( Annotation.annotation( annotation ) );
+	}
+
 	public AnnotationNode annotation( Annotation annotation ) {
 		AnnotationNode node = annotations.node( annotation );
 		if ( node == null ) {
-			node = new AnnotationNode( this, annotation, annotations.size() );
+			node = new AnnotationNode( this, annotation, annotations.count() );
 			annotations.add( node );
 		}
 		return node;
@@ -104,9 +108,10 @@ public final class ClassGraph
 	public ParameterNode parameter( Parameter parameter ) {
 		ParameterNode node = parameters.node( parameter );
 		if ( node == null ) {
-			node = new ParameterNode( this, parameter, parameters.size() );
+			node = new ParameterNode( this, parameter, parameters.count() );
 			parameters.add( node );
 		}
 		return node;
 	}
+
 }

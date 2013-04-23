@@ -59,7 +59,7 @@ public final class Metrics {
 
 		@Override
 		public Ratio measure( ClassNode cls ) {
-			return ratio( cls.staticMethods.size(), cls.methods.size() );
+			return ratio( cls.staticMethods.count(), cls.methods.count() );
 		}
 
 	}
@@ -73,7 +73,7 @@ public final class Metrics {
 
 		@Override
 		public Ratio measure( ClassNode cls ) {
-			return count( cls.instanceMethods.size() );
+			return count( cls.instanceMethods.count() );
 		}
 
 	}
@@ -87,7 +87,7 @@ public final class Metrics {
 
 		@Override
 		public Ratio measure( ClassNode cls ) {
-			return count( cls.instanceFields.size() );
+			return count( cls.instanceFields.count() );
 		}
 
 	}
@@ -101,7 +101,7 @@ public final class Metrics {
 
 		@Override
 		public Ratio measure( ClassNode cls ) {
-			return count( cls.referencedBy.size() );
+			return count( cls.referencedBy.count() );
 		}
 
 	}
@@ -115,7 +115,7 @@ public final class Metrics {
 
 		@Override
 		public Ratio measure( ClassNode cls ) {
-			return count( cls.references.size() );
+			return count( cls.references.count() );
 		}
 
 	}

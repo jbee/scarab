@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static se.jbee.jvm.Annotation.annotation;
 import static se.jbee.jvm.Archive.archive;
 import static se.jbee.jvm.Class.cls;
 import static se.jbee.jvm.Packages.packages;
@@ -34,10 +33,10 @@ public class TestJarScanner {
 		ClassGraph g = new ClassGraph( packages( root ) );
 		scanJar( file, ArchiveFilter.ALL, g );
 		PackageNode jbee = g.pkg( root.parent() );
-		assertEquals( 1, jbee.subPackages.size() );
+		assertEquals( 1, jbee.subPackages.count() );
 		assertTrue( jbee.contains( root ) );
 		PackageNode inject = jbee.subPackages.node( root );
-		assertEquals( 5, inject.subPackages.size() );
+		assertEquals( 5, inject.subPackages.count() );
 		Package bind = Package.pkg( "se/jbee/inject/bind" );
 		assertFalse( inject.references( bind ) );
 		assertTrue( g.pkg( bind ).references( root ) );
@@ -46,13 +45,13 @@ public class TestJarScanner {
 		ClassNode type = inject.cls( root.memberClass( "Type" ) );
 		MethodNode fieldType = type.method( "fieldType" );
 		assertTrue( fieldType.id().modifiers.isStatic() );
-		assertEquals( 1, fieldType.parameterTypes.size() );
+		assertEquals( 1, fieldType.parameterTypes.count() );
 		assertEquals( "Field", fieldType.parameter( 0 ).type.id().simpleName() );
 		MethodNode isAssignableTo = type.method( "isAssignableTo" );
 		assertTrue( isAssignableTo.isOverridden() );
 		ClassNode binder = g.pkg( bind ).cls( bind.memberClass( "Binder" ) );
-		assertTrue( binder.subclasses.size() > 0 );
-		assertEquals( 2, g.archives.size() );
+		assertTrue( binder.subclasses.count() > 0 );
+		assertEquals( 2, g.archives.count() );
 		assertEquals( archive( file ), type.archive().id() );
 		ArchiveNode silk = g.archive( archive( file ) );
 		assertTrue( silk.classes.contains( Class.unknownClass( "se/jbee/inject/Packages" ) ) );
@@ -69,11 +68,14 @@ public class TestJarScanner {
 		Package root = Package.pkg( "se/jbee/inject" );
 		ClassGraph g = new ClassGraph( packages( root ) );
 		scanJar( file, ArchiveFilter.ALL, g );
-		assertTrue( g.annotations.size() > 0 );
+		assertTrue( g.annotations.count() > 0 );
 		ClassNode suiteClasses = g.cls( cls( SuiteClasses.class ) );
 		assertNotNull( suiteClasses );
-		AnnotationNode suiteClassesA = g.annotation( annotation( cls( SuiteClasses.class ) ) );
+		AnnotationNode suiteClassesA = g.annotation( cls( SuiteClasses.class ) );
 		assertNotNull( suiteClassesA );
+		AnnotationNode tests = g.annotation( cls( Test.class ) );
+		assertNotNull( tests );
+		assertEquals( 193, tests.annotatedMethods.count() );
 	}
 
 	@Test

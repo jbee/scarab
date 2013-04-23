@@ -13,14 +13,16 @@ public final class MethodDeclaration
 	public final Method method;
 	public final Code code;
 	public final MethodReferences references;
-	public final Annotation[] annotations = null;//TODO add
+	public final Annotation[] annotations;
 	public final Annotation[][] parameterAnnotations = null;
 
-	public MethodDeclaration( Method method, Code code, MethodReferences references ) {
+	public MethodDeclaration( Method method, Code code, MethodReferences references,
+			Annotation[] annotations ) {
 		super();
 		this.method = method;
 		this.code = code;
 		this.references = references;
+		this.annotations = annotations;
 	}
 
 	@Override
