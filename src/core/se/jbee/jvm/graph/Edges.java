@@ -1,13 +1,13 @@
 package se.jbee.jvm.graph;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
 public final class Edges<K, T extends Node<K>>
 		implements Iterable<T> {
 
-	private final HashMap<K, T> nodes = new HashMap<K, T>();
+	private final Hashtable<K, T> nodes = new Hashtable<K, T>();
 
 	public boolean contains( K key ) {
 		return nodes.containsKey( key );
@@ -20,6 +20,10 @@ public final class Edges<K, T extends Node<K>>
 	void add( T node ) {
 		nodes.put( node.id(), node );
 	}
+	
+	public void addAll(Edges<K, T> others) {
+		nodes.putAll(others.nodes);
+	}	
 
 	void put( K key, T node ) {
 		nodes.put( key, node );
@@ -46,4 +50,5 @@ public final class Edges<K, T extends Node<K>>
 	public boolean isEmpty() {
 		return nodes.isEmpty();
 	}
+
 }

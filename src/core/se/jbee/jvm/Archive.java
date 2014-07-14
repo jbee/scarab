@@ -43,4 +43,8 @@ public final class Archive {
 		return file;
 	}
 
+	public String filename() {
+		return file.substring(file.lastIndexOf('/') + 1);
+	}
+
 }

@@ -41,8 +41,8 @@ public final class CodeAttribute {
 
 	private static final byte[] SHARED_BYTECODE = new byte[2048];
 
-	private static final int[] cpIndexBuffer = new int[512];
-	private static final Opcode[] opcodeBuffer = new Opcode[512];
+	private static final int[] cpIndexBuffer = new int[4096];
+	private static final Opcode[] opcodeBuffer = new Opcode[4096];
 
 	private final ConstantPool cp;
 	private final Code code;
@@ -95,6 +95,10 @@ public final class CodeAttribute {
 			if ( opcode == Opcode.tableswitch ) {
 				int low = bytecode.int32();
 				int high = bytecode.int32();
+				if (low < 0 || low > high) {
+					bytecode.skipToEnd(); // FIXME could be 2 things: wrong bytecode or bug in bytecode processing before so this isn't really a tableswitch or padding is wrong -> skip over rest of code
+					return;
+				}
 				bytecode.skipBytes( ( high - low + 1 ) << 2 ); // x 2 bytes 
 			} else if ( opcode == Opcode.lookupswitch ) {
 				int pairs = bytecode.int32();

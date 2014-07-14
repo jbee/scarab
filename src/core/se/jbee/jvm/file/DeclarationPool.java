@@ -25,10 +25,10 @@ public final class DeclarationPool
 	private static final int FIELD_DATA = 3;
 	private static final int METHOD_DATA = 3;
 
-	private static final int[][] SHARED_FIELD_INDEXES = new int[256][FIELD_DATA];
-	private static final int[][] SHARED_METHOD_INDEXES = new int[512][METHOD_DATA];
+	private static final int[][] SHARED_FIELD_INDEXES = new int[1024][FIELD_DATA];
+	private static final int[][] SHARED_METHOD_INDEXES = new int[2048][METHOD_DATA];
 	private static final MethodReferences[] SHARED_METHOD_REFERENCES = new MethodReferences[512];
-	private static final Code[] SHARED_CODE = new Code[512];
+	private static final Code[] SHARED_CODE = new Code[1024];
 
 	public static DeclarationPool read( ClassInputStream in, Class declaringClass, ConstantPool cp )
 			throws IOException {
@@ -42,6 +42,7 @@ public final class DeclarationPool
 	public Annotation[] classAnnotations = new Annotation[0];
 	private int fieldCount;
 	private int[][] fieldsMND;
+	private Annotation[][] fieldAnnotations;
 	private int methodCount;
 	private int[][] methodsMND;
 	private MethodReferences[] methodReferences;
@@ -60,11 +61,12 @@ public final class DeclarationPool
 		fieldsMND = SHARED_FIELD_INDEXES.length <= fieldCount
 			? SHARED_FIELD_INDEXES
 			: new int[fieldCount][FIELD_DATA];
+		fieldAnnotations = new Annotation[fieldCount][];
 		for ( int i = 0; i < fieldCount; i++ ) {
 			fieldsMND[i][0] = in.uint16bit();
 			fieldsMND[i][1] = in.uint16bit();
 			fieldsMND[i][2] = in.uint16bit();
-			readAttributes( i, in, cp );
+			readAttributes( i, fieldAnnotations, in, cp );
 		}
 		methodCount = in.uint16bit();
 		boolean share = SHARED_METHOD_INDEXES.length <= methodCount;
@@ -82,20 +84,20 @@ public final class DeclarationPool
 			methodsMND[i][0] = in.uint16bit();
 			methodsMND[i][1] = in.uint16bit();
 			methodsMND[i][2] = in.uint16bit();
-			readAttributes( i, in, cp );
+			readAttributes( i, methodAnnotations, in, cp );
 		}
-		readAttributes( -1, in, cp );
+		readAttributes( -1, null, in, cp );
 	}
 
-	private void readAttributes( int index, ClassInputStream in, ConstantPool cp )
+	private void readAttributes( int index, Annotation[][] annotations, ClassInputStream in, ConstantPool cp )
 			throws IOException {
 		int attributeCount = in.uint16bit();
 		for ( int a = 0; a < attributeCount; a++ ) {
-			readAttribute( index, cp, in );
+			readAttribute( index, annotations, cp, in );
 		}
 	}
 
-	private void readAttribute( int index, ConstantPool cp, ClassInputStream in )
+	private void readAttribute( int index, Annotation[][] annotations, ConstantPool cp, ClassInputStream in )
 			throws IOException {
 		String name = cp.utf( in.uint16bit() );
 		int length = in.int32bit();
@@ -103,7 +105,7 @@ public final class DeclarationPool
 			CodeAttribute code = CodeAttribute.read( cp, in );
 			codes[index] = code.code();
 			methodReferences[index] = code.references();
-			readAttributes( index, in, cp );
+			readAttributes( index, annotations, in, cp );
 		} else {
 			if ( "Deprecated".equals( name ) ) {
 				//TODO reflect somehow
@@ -112,11 +114,11 @@ public final class DeclarationPool
 				//TODO reflect somehow
 			} else if ( "RuntimeVisibleAnnotations".equals( name )
 					|| "RuntimeInvisibleAnnotations".equals( name ) ) {
-				Annotation[] annotations = AnnotationAttribute.readAnnotations( cp, in );
+				Annotation[] annotations2 = AnnotationAttribute.readAnnotations( cp, in );
 				if ( index < 0 ) {
-					classAnnotations = annotations;
+					classAnnotations = annotations2;
 				} else {
-					methodAnnotations[index] = annotations;
+					annotations[index] = annotations2;
 				}
 			} else if ( "RuntimeVisibleParameterAnnotations".equals( name )
 					|| "RuntimeVisibleParameterAnnotations".equals( name ) ) {

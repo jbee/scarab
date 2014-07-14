@@ -347,4 +347,8 @@ public final class Bytecode {
 		return code.getInt();
 	}
 
+	public void skipToEnd() {
+		code.position(code.limit());
+	}
+
 }

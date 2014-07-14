@@ -19,7 +19,7 @@ public final class ClassNode
 	public final int serial;
 	private Class key;
 	private ClassNode superclass;
-	private ArchiveNode archive;
+	public ArchiveNode archive;
 	public final PackageNode pkg;
 
 	public final Edges<Annotation, AnnotationNode> annotations = new Edges<Annotation, AnnotationNode>();
@@ -39,6 +39,7 @@ public final class ClassNode
 	public final Edges<Class, ClassNode> innerClasses = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> interfaces = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> implementations = new Edges<Class, ClassNode>();
+	
 	public final Edges<Class, ClassNode> references = new Edges<Class, ClassNode>();
 	public final Edges<Class, ClassNode> referencedBy = new Edges<Class, ClassNode>();
 	/**
@@ -75,6 +76,9 @@ public final class ClassNode
 	void declare( ClassDeclaration cls ) {
 		if ( !cls.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();
+		}
+		if (superclass != null) {
+			throw new IllegalArgumentException("Already defined: "+key);
 		}
 		this.key = cls.cls;
 		if ( key.modifiers.isAnnotation() ) {
@@ -113,7 +117,7 @@ public final class ClassNode
 		for ( MethodDeclaration m : cls.declarations.declaredMethods() ) {
 			declare( m );
 		}
-		this.archive.contains( this );
+		this.archive.includes( this );
 	}
 
 	public Modifiers modifiers() {

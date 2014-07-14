@@ -1,5 +1,6 @@
 package se.jbee.jvm.graph;
 
+import se.jbee.jvm.Archive;
 import se.jbee.jvm.Class;
 import se.jbee.jvm.Package;
 
@@ -31,7 +32,11 @@ public final class PackageNode
 	 * The <i>external</i> packages this package is {@link #referencedBy}.
 	 */
 	public final Edges<Package, PackageNode> dependents = new Edges<Package, PackageNode>();
-
+	/**
+	 * The archives that contain classes with this package (or any of its sub-packages)
+	 */
+	public final Edges<Archive, ArchiveNode> origins = new Edges<Archive, ArchiveNode>();
+	
 	PackageNode( ClassGraph graph, Package pkg, int serial ) {
 		super();
 		this.graph = graph;
@@ -85,6 +90,13 @@ public final class PackageNode
 		}
 		connects( other );
 	}
+	
+	void origins(ArchiveNode archive) {
+		origins.add(archive);
+		if (parent != null) {
+			parent.origins.add(archive);
+		}
+	}
 
 	private void connects( PackageNode other ) {
 		if ( key.levels() > 2 && other.parent != null ) {
@@ -124,4 +136,5 @@ public final class PackageNode
 	public String name() {
 		return key.canonicalName();
 	}
+
 }
