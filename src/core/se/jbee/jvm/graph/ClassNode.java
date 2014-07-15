@@ -1,6 +1,9 @@
 package se.jbee.jvm.graph;
 
 import static se.jbee.jvm.Annotation.annotation;
+
+import java.util.logging.Logger;
+
 import se.jbee.jvm.Annotation;
 import se.jbee.jvm.Archive;
 import se.jbee.jvm.Class;
@@ -15,6 +18,8 @@ import se.jbee.jvm.reflect.MethodDeclaration;
 public final class ClassNode
 		implements Node<Class> {
 
+	private static final Logger LOGGER = Logger.getLogger(ClassNode.class.getCanonicalName());
+	
 	private final ClassGraph graph;
 	public final int serial;
 	private Class key;
@@ -77,8 +82,9 @@ public final class ClassNode
 		if ( !cls.cls.equalTo( key ) ) {
 			throw new IllegalArgumentException();
 		}
-		if (superclass != null) {
-			throw new IllegalArgumentException("Already defined: "+key);
+		if (archive.id() != Archive.RUNTIME) {
+			LOGGER.warning("Duplicate definition of: "+key+". 2nd is ignored!\n1st in: "+archive.id()+"\n2nd in: "+cls.archive);
+			return;
 		}
 		this.key = cls.cls;
 		if ( key.modifiers.isAnnotation() ) {

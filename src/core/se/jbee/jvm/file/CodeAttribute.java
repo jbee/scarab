@@ -87,22 +87,19 @@ public final class CodeAttribute {
 		} else if ( opcode == Opcode.wide ) {
 			Opcode wide = bytecode.opcode();
 			bytecode.skipBytes( wide == Opcode.iinc
-				? 5
-				: 3 );
+				? 4 // u2 (varnum) + s2 (n)
+				: 2 ); // u2 (varnum
 		} else {
 			bytecode.alignToEven32BitPosition();
 			bytecode.skipBytes( 4 ); // 4 bytes default value
 			if ( opcode == Opcode.tableswitch ) {
 				int low = bytecode.int32();
 				int high = bytecode.int32();
-				if (low < 0 || low > high) {
-					bytecode.skipToEnd(); // FIXME could be 2 things: wrong bytecode or bug in bytecode processing before so this isn't really a tableswitch or padding is wrong -> skip over rest of code
-					return;
-				}
-				bytecode.skipBytes( ( high - low + 1 ) << 2 ); // x 2 bytes 
+				int n = high - low + 1;
+				bytecode.skipBytes( n * 4 ); // n x 4 bytes
 			} else if ( opcode == Opcode.lookupswitch ) {
 				int pairs = bytecode.int32();
-				bytecode.skipBytes( pairs << 3 ); // x 2 x 4 bytes / pair
+				bytecode.skipBytes( pairs * 8 ); // pairs x 2 x 4 bytes
 			} else {
 				throw new UnsupportedOperationException( "Unknown opcode: " + opcode );
 			}
