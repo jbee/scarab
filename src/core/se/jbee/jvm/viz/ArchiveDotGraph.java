@@ -1,38 +1,19 @@
 package se.jbee.jvm.viz;
 
-import static se.jbee.jvm.Packages.packages;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
 import se.jbee.jvm.Archive;
-import se.jbee.jvm.Package;
 import se.jbee.jvm.graph.ArchiveNode;
 import se.jbee.jvm.graph.ClassGraph;
-import se.jbee.jvm.io.ArchiveFilter;
 import se.jbee.jvm.io.JarScanner;
 
 public class ArchiveDotGraph {
 
 	public static void main(String[] args) throws IOException {
-		String archive = args[0];
-		String rootPackage = args[1];
-		final String archiveFilter = args[2];
-		
-		Package root = Package.pkg( rootPackage );
-		ClassGraph g = new ClassGraph( packages( root ) );
-		JarScanner s = new JarScanner(g, new ArchiveFilter() {
-			
-			@Override
-			public boolean process(Archive archive) {
-				return archive.filename().matches(archiveFilter);
-			}
-		});
-		
-		s.scan(archive);
-		write(g, System.out);
+		write(JarScanner.scan(args), System.out);
 	}
 	
 	public static void write(ClassGraph graph, PrintStream out) {

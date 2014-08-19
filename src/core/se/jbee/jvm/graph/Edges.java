@@ -2,6 +2,7 @@ package se.jbee.jvm.graph;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public final class Edges<K, T extends Node<K>>
@@ -40,6 +41,17 @@ public final class Edges<K, T extends Node<K>>
 
 	public T node( K key ) {
 		return nodes.get( key );
+	}
+	
+	public T nodeBySimpleName( String name ) {
+		for (Entry<K,T> e : nodes.entrySet()) {
+			String key = e.getKey().toString();
+			int i = key.lastIndexOf('.');
+			if (name.equals(key.substring(i+1))) {
+				return e.getValue();
+			}
+		}
+		return null;
 	}
 
 	@Override
